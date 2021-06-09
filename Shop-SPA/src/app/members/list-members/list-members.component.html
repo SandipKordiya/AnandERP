@@ -1,0 +1,61 @@
+<header class="page-content-header">
+  <div class="container-fluid">
+    <div class="tbl">
+      <div class="tbl-row">
+        <div class="tbl-cell">
+          <h3>Party
+            <!-- <small class="text-muted">23 candidates</small> -->
+          </h3>
+        </div>
+        <div class="tbl-cell tbl-cell-action">
+          <a href="/member/add" class="btn btn-rounded">Add Member</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!--.page-content-header-->
+
+<div class="container-fluid">
+  <div class="row">
+    <table id="table-edit" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th width="1">
+            #
+          </th>
+          <th>Name</th>
+          <th width="120">Date Created</th>
+          <th class="tabledit-toolbar-column"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of users">
+          <td>
+            <span class="tabledit-span tabledit-identifier">{{item.id}}</span>
+          </td>
+
+          <td>
+            <span class="tabledit-span">{{item.firstName}} {{item.lastName}}</span>
+          </td>
+          <td>
+            <span class="tabledit-span">{{item.created}} </span>
+          </td>
+
+          <td style="white-space: nowrap; width: 1%;">
+            <div class="tabledit-toolbar btn-toolbar" style="text-align: left;">
+              <div class="btn-group btn-group-sm" style="float: none;">
+                <button type="button" class="tabledit-edit-button btn btn-sm btn-default" style="float: none;">
+                  <span class="glyphicon glyphicon-pencil"></span>
+                </button>
+                <button type="button" class="tabledit-delete-button btn btn-sm btn-default" style="float: none;">
+                  <span class="glyphicon glyphicon-trash"></span>
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

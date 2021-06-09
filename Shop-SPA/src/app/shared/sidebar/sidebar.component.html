@@ -1,0 +1,112 @@
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-inner">
+    <perfect-scrollbar>
+    <div id="sidebar-menu" class="sidebar-menu">
+      <ul>
+        <li class="menu-title">
+          <span>Main</span>
+        </li>
+        <li>
+          <a [routerLink]="['/dashboard']" routerLinkActive="router-link-active">
+            <i class="la la-dashboard"></i>
+            <span> Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['/branch']" routerLinkActive="router-link-active"><i class="la la-file-pdf-o"></i>
+            <span>Branch</span></a>
+        </li>
+        <li class="submenu">
+          <a href="/brand">
+            <i class="la la-cube"></i> <span> Master</span> <span
+              class="menu-arrow"></span></a>
+          <ul style="display: none;">
+            <li><a [routerLink]="['/partytype']" routerLinkActive="router-link-active">Party Type</a></li>
+            <li><a [routerLink]="['/party']" routerLinkActive="router-link-active">Party Master</a></li>
+            <li><a [routerLink]="['/brand']" routerLinkActive="router-link-active">Product Brand</a></li>
+            <li><a [routerLink]="['/category']" routerLinkActive="router-link-active">Product Category</a></li>
+            <li><a [routerLink]="['/product/list']" routerLinkActive="router-link-active">Product Master</a></li>
+            <li><a [routerLink]="['/branch/productdetails']" routerLinkActive="router-link-active">Branch Product Details</a></li>
+          </ul>
+        </li>
+       
+        <li *ngIf="currentRole == 'Admin'" class="submenu">
+          <a href="/order/sale/list"><i class="la la-cube"></i> <span> Sales</span> <span class="menu-arrow"></span></a>
+          <ul style="display: none;">
+            <li><a [routerLink]="['/order/sale/list']" routerLinkActive="router-link-active">Sale List</a></li>
+            <li><a [routerLink]="['/order/sale']" routerLinkActive="router-link-active">Add Sale</a></li>
+            <li><a [routerLink]="['/order/sale/return/list']" routerLinkActive="router-link-active">Sale Return List</a></li>
+            <li><a [routerLink]="['/order/sale/return']" routerLinkActive="router-link-active">Add Sale Return</a></li>
+          </ul>
+        </li>
+        <li class="submenu">
+          <a href="/order/purchase/list"><i class="la la-cube"></i> <span> Purchase</span> <span
+              class="menu-arrow"></span></a>
+          <ul style="display: none;">
+            <li><a [routerLink]="['/order/purchase/list']" routerLinkActive="router-link-active">Purchase List</a></li>
+            <li><a [routerLink]="['/order/purchase']" routerLinkActive="router-link-active">Add Purchase</a></li>
+          </ul>
+        </li>
+        <li class="submenu">
+          <a href="/payment"><i class="la la-money"></i> <span> Account</span> <span
+              class="menu-arrow"></span></a>
+          <ul style="display: none;">
+            <li><a>Bank Master</a></li>
+            <li><a [routerLink]="['/payment']" routerLinkActive="router-link-active">Payment</a></li>
+          </ul>
+        </li>
+        <li class="submenu">
+          <a href="#"><i class="la la-files-o"></i> <span> Inventory </span> <span class="menu-arrow"></span></a>
+          <ul style="display: none;">
+            <li><a [routerLink]="['/order/stock']" routerLinkActive="router-link-active" >Stock Entry</a></li>
+            <li><a [routerLink]="['/order/stock/list']" routerLinkActive="router-link-active" >Stock List</a></li>
+
+            <li><a [routerLink]="['/order/stock/return']" routerLinkActive="router-link-active" >Stock Return</a></li>
+            <!-- <li><a href="taxes.html">Stock Adjustment</a></li> -->
+            <li><a [routerLink]="['/order/stock/transfer']" routerLinkActive="router-link-active" >Stock Transfer</a></li>
+          </ul>
+        </li>
+        <li>
+          <a [routerLink]="['/tax']" routerLinkActive="router-link-active"><i class="la la-users"></i>
+            <span>Tax</span></a>
+        </li>
+        <li>
+          <a [routerLink]="['/company']" routerLinkActive="router-link-active"><i class="la la-users"></i>
+            <span>Company</span></a>
+        </li>
+        <!-- <li class="submenu">
+          <a href="/product/list"><i class="la la-rocket"></i>
+            <span> Products</span> <span class="menu-arrow"></span></a>
+          <ul style="display: none;">
+            <li><a [routerLink]="['/brand']" routerLinkActive="router-link-active">Brands</a></li>
+            <li><a [routerLink]="['/category']" routerLinkActive="router-link-active">Categories</a></li>
+            <li><a [routerLink]="['/product/list']" routerLinkActive="router-link-active">Products</a></li>
+            <li><a [routerLink]="['/product/add']" routerLinkActive="router-link-active">Products add</a></li>
+          </ul>
+        </li> -->
+
+        <li class="menu-title">
+          <span>HR</span>
+        </li>
+        
+        <li class="submenu">
+          <a href="#"><i class="la la-money"></i> <span> Payroll </span> <span class="menu-arrow"></span></a>
+          <ul style="display: none;">
+            <li><a href="salary.html"> Employee Salary </a></li>
+            <li><a href="salary-view.html"> Payslip </a></li>
+            <li><a href="payroll-items.html"> Payroll Items </a></li>
+          </ul>
+        </li>
+        <li>
+          <a [routerLink]="['/company']" routerLinkActive="router-link-active"><i class="la la-cog"></i>
+            <span>Settings</span></a>
+        </li>
+
+      </ul>
+    </div>
+  </perfect-scrollbar>
+ 
+  </div>
+</div>
+<!-- /Sidebar -->

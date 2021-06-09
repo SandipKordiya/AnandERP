@@ -1,0 +1,119 @@
+<div class="container-fluid mt-3">
+  <app-pagetitle title="Branch Product Details" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <form #form="ngForm" (ngSubmit)="loadMembers()" autocomplete="off">
+            <div class="row">
+              <div class="col-md-2 mb-3">
+                <label for="branchId">Branch</label>
+                <select class="custom-select" name="branchId" [(ngModel)]="userParams.branchId"
+                  (change)="onBranchChange(userParams.branchId)" required>
+                  <option *ngFor='let role of branches' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-md-3 mb-3">
+                <label for="BrandId">Brand</label>
+                <select class="custom-select" name="brandId" [(ngModel)]="userParams.brandId">
+                  <option *ngFor='let role of brands' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="keywordParty">Product</label>
+                <div class="ng-autocomplete product">
+                  <ng-autocomplete [data]="data" tabindex="2" [searchKeyword]="keyword"
+                    (selected)='selectProduct($event)' name="productAutoName" [(ngModel)]="productAutoName"
+                    (inputChanged)='getServerResponse($event)' (inputFocused)='onFocused($event)'
+                    [itemTemplate]="itemTemplate" (inputCleared)="searchCleared()" (opened)="productOpened()"
+                    (closed)="productClosed()" [notFoundTemplate]="notFoundTemplate" [debounceTime]="600"
+                    [isLoading]="isLoadingResult" [minQueryLength]="1" placeHolder="Search Product. eg 'Name'" required>
+                  </ng-autocomplete>
+                  <div *ngIf="showProductheader" class="row product-row bg-light">
+                    <div class="col d-flex flex-nowrap">
+                      <div class="order-1 p-1 " style="width: 39%;">Product</div>
+                      <div class="order-2 p-1 " style="width: 15%;">Brand</div>
+                      <div class="order-4 p-1 " style="width: 15%;">MRP</div>
+                      <div class="order-6 p-1 " style="width: 15%;">Rate</div>
+                    </div>
+                  </div>
+                  <ng-template #itemTemplate let-item>
+                    <a href="javascript:void(0)">
+                      <div class="row">
+                        <div class="col d-flex flex-nowrap ">
+                          <div class="order-1 p-1 " style="width: 39%;"><span [innerHTML]="item.productName"></span>
+                          </div>
+                          <div class="order-2 p-1 " style="width: 15%;">{{item.brandName}}</div>
+                          <div class="order-4 p-1 " style="width: 15%;">{{item.mrp}}</div>
+                          <div class="order-6 p-1 " style="width: 15%;">{{item.rate}}</div>
+                        </div>
+                      </div>
+                    </a>
+                  </ng-template>
+
+                  <ng-template #notFoundTemplate let-notFound>
+                    {{errorMsg}}
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3 pt-4">
+                <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
+                <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Reset Filters</button>
+              </div>
+            </div>
+            <div class="row">
+
+
+
+
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="dataReport">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+        
+          <div class="table-responsive mt-3">
+            <table class="table table-centered table-bordered datatable dt-responsive nowrap table-hover table-sm"
+              style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Product</th>
+                  <th scope="col">Brand</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Batch</th>
+                  <th scope="col">MRP</th>
+                  <th scope="col">Stock</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of dataReport; let i = index">
+                  <th scope="row">{{i + 1}}</th>
+                  <td>{{item.productName}}</td>
+                  <td>{{item.brandName}}</td>
+                  <td>-</td>
+                  <td>{{item.batchNo}}</td>
+                  <td>{{item.mrp}}</td>
+                  <td [ngClass]="item.stock == 0 ? 'stockEmpty' : 'isStock'">
+                    {{item.stock}}
+                    </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,171 @@
+<div class="container-fluid">
+  <app-pagetitle title="Products" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+  <div class="row">
+    <div class="col">
+      <div class="card mb-3">
+        <div class="card-body">
+          <form (ngSubmit)="AddProduct()" [formGroup]="validationform" novalidate>
+          
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="firstName">Select Brand</label>
+                <select class="form-control"formControlName="brandId" [ngClass]="{'is-invalid': submit && form.brandId.errors}">
+                  <option *ngFor='let role of brands' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+                <div *ngIf="submit && form.brandId.errors" class="invalid-feedback">
+                  <span *ngIf="form.brandId.errors.required">Select Brand</span>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="lastName">Select Category</label>
+                <select class="form-control" formControlName="categoryId" [ngClass]="{'is-invalid': submit && form.categoryId.errors}">
+                  <option *ngFor='let role of categories' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+                <div *ngIf="submit && form.categoryId.errors" class="invalid-feedback">
+                  <span *ngIf="form.categoryId.errors.required">Select category</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="firstName">Product Name</label>
+                <input type="text" class="form-control" formControlName="productName" [ngClass]="{'is-invalid': submit && form.productName.errors}">
+                <div *ngIf="submit && form.productName.errors" class="invalid-feedback">
+                  <span *ngIf="form.productName.errors.required">Enter Product Name</span>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="lastName">Product Code</label>
+                <input type="text" class="form-control" formControlName="productCode" [ngClass]="{'is-invalid': submit && form.productCode.errors}">
+                <div *ngIf="submit && form.productCode.errors" class="invalid-feedback">
+                  <span *ngIf="form.productCode.errors.required">Enter Product Code</span>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="lastName">Product SKU</label>
+                <input type="text" class="form-control" formControlName="productSKU">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="Description">Description</label>
+              <textarea type="text" class="form-control" formControlName="description"></textarea>
+
+            </div>
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="firstName">Unit</label>
+                <select id="tax" class="form-control" formControlName="code">
+                  <option value="Pcs">Pcs</option>
+                  <option value="EA">EA</option>
+                  <option value="Kg">Kg</option>
+                  <option value="Liter">Liter</option>
+                  <option value="Box">Box</option>
+                  <option value="Drum">Drum</option>
+                  <option value="Unit">Unit</option>
+                </select>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="lastName">Tax</label>
+                <select class="form-control" formControlName="taxId" [ngClass]="{'is-invalid': submit && form.taxId.errors}">
+                  <option *ngFor='let role of taxes' [ngValue]="role.id">
+                    {{role.name}} | {{role.rate}}%
+                  </option>
+                </select>
+                <div *ngIf="submit && form.taxId.errors" class="invalid-feedback">
+                  <span *ngIf="form.taxId.errors.required">Select Tax</span>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="lastName">Tax Effect Date</label>
+                <input type="text" class="form-control" formControlName="taxEffectDate">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="lastName">HSN Code</label>
+                <input type="text" class="form-control" formControlName="hSNCode">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="firstName">Purchage Rate</label>
+                <input type="number" class="form-control" formControlName="purchageRate"               
+                >
+               
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="lastName">Sale Margin</label>
+                <input type="number" class="form-control" formControlName="saleMargin"
+                [ngClass]="{'is-invalid': submit && form.saleMargin.errors}">
+                <div *ngIf="submit && form.saleMargin.errors" class="invalid-feedback">
+                  <span *ngIf="form.saleMargin.errors.required">Enter Sale Margin Rate.</span>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="lastName">MRP</label>
+                <input type="number" class="form-control" formControlName="mRP" 
+                [ngClass]="{'is-invalid': submit && form.mRP.errors}">
+                <div *ngIf="submit && form.mRP.errors" class="invalid-feedback">
+                  <span *ngIf="form.mRP.errors.required">Enter MRP Value</span>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="lastName">Sale Rate</label>
+                <input type="number" class="form-control" formControlName="saleRate">
+              </div>
+            </div>
+
+
+
+
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="openingStock">Opening Stock</label>
+                <input type="number" class="form-control" formControlName="openingStock">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="website">Opening Date</label>
+                <input type="text" class="form-control" formControlName="openingDate" bsDatepicker>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="website">Current Stock</label>
+                <input type="number" class="form-control" formControlName="currentStock">
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col">
+                <label class="checkbox-inline mb-2">
+                  <input type="checkbox" formControlName="isReturnable">
+                  Is Returnable?</label> <br />
+                <label class="checkbox-inline mb-2">
+                  <input type="checkbox"formControlName="isAllowMinStockSale">
+                  Allow Negetive Balance?</label> <br />
+                <label class="checkbox-inline mb-2">
+                  <input type="checkbox"> Allow Min Stock Sale?</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8 mb-3">
+                <label for="address">Remarks</label>
+                <textarea type="text" class="form-control" formControlName="remarks"></textarea>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="website">Warranty(In Months)</label>
+                <input type="number" min="0" class="form-control" formControlName="warrantyMonth">
+              </div>
+            </div>
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Add
+              Product</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

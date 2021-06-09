@@ -1,0 +1,118 @@
+<div class="container-fluid">
+  <app-pagetitle title="Party Types" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div>
+            <!--  -->
+            <a href="javascript:void(0);" class="btn btn-success mb-2" (click)="openModal(template)">
+              <i class="mdi mdi-plus mr-2"></i> Add Party Type
+            </a>
+          </div>
+          <div class="table-responsive mt-3">
+            <table class="table table-centered datatable dt-responsive nowrap"
+              style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+              <thead class="thead-light">
+                <tr>
+                  <th>#</th>
+                  <th>Type</th>
+                  <th>Prefix Code</th>
+                  <th>Created </th>
+                  <!-- <th>Status</th> -->
+                  <th class="text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of branches; let i= index">
+                  <td>{{i +1}}</td>
+                  <td>{{item.type}}</td>
+                  <td>{{item.prefixCode}}</td>
+                  <td>{{item.created | date: 'dd-MM-yyyy'}}</td>
+                  <td>
+                    <a (click)="updateModal(item, templateUpdate)" class="mr-3 text-primary" v-b-tooltip.hover title="Edit">
+                      <i class="mdi mdi-pencil font-size-18"></i>
+                    </a>
+                    <a (click)="deletePartyType(item.id)" class="text-danger" v-b-tooltip.hover title="Delete">
+                      <i class="mdi mdi-trash-can font-size-18"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Add Party Type</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #editForm="ngForm" id="editForm" (ngSubmit)="addBoard()">
+      <div class="form-group">
+        <label for="exampleInputEmail1">Party Type</label>
+        <input type="text" class="form-control" name="type" [(ngModel)]="model.type" placeholder="Enter Party Type">
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Prefix Code</label>
+        <input type="text" class="form-control" name="prefixCode" [(ngModel)]="model.prefixCode"
+          placeholder="Enter Prefix Code">
+      </div>
+      <div class="form-group">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" name="isAccountledger" [(ngModel)]="model.isAccountledger"
+            id="isAccountledger">
+          <label class="custom-control-label" for="isAccountledger">Is Account Ledger</label>
+        </div>
+      </div>
+      <div class="form-group row d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary">Submit</button>
+
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #templateUpdate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Update Party Type</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #editForm="ngForm" id="editForm" (ngSubmit)="updatePartyType()">
+      <div class="form-group">
+        <label for="exampleInputEmail1">Party Type</label>
+        <input type="text" class="form-control" name="type" [(ngModel)]="model.type" placeholder="Enter Party Type">
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Prefix Code</label>
+        <input type="text" class="form-control" name="prefixCode" [(ngModel)]="model.prefixCode"
+          placeholder="Enter Prefix Code">
+      </div>
+      <div class="form-group">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" name="isAccountledger" [(ngModel)]="model.isAccountledger"
+            id="isAccountledger">
+          <label class="custom-control-label" for="isAccountledger">Is Account Ledger</label>
+        </div>
+      </div>
+      <div class="form-group row d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary">Update</button>
+
+      </div>
+    </form>
+  </div>
+</ng-template>

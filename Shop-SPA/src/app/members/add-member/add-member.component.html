@@ -1,0 +1,67 @@
+<div class="container-fluid">
+  <div class="row no-gutters d-flex justify-content-center">
+    <div class="col-lg-8 pr-lg-2">
+      <div class="card mb-3">
+        <div class="card-header">
+          <h5 class="mb-0">Add New Branch Member</h5>
+        </div>
+        <div class="card-body bg-light">
+          <form #editForm="ngForm" id="editForm" (ngSubmit)="addUser()">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="event-name">Select Branch</label>
+                  <select class="form-control" name="branchId" [(ngModel)]="model.branchId" required>
+                    <option *ngFor='let role of branches' [ngValue]="role.id">
+                      {{role.name}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="event-state">First Name</label>
+                  <input class="form-control" type="text" name="firstName" [(ngModel)]="model.firstName"
+                    placeholder="First Name" required></div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="event-country">Last Name</label><input class="form-control" type="text" name="lastName"
+                    [(ngModel)]="model.lastName" placeholder="Last Name"></div>
+              </div>
+
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="event-state">Email <code class="mb-2 text-danger">Authentication info will send on this mail.</code></label>
+                  <input class="form-control" type="text" name="email" [(ngModel)]="model.email" placeholder="Email" required>
+                </div>
+
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="event-state">User Name</label>
+                  <input class="form-control" type="text" name="username" [(ngModel)]="model.username"
+                    placeholder="User Name" required></div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="event-country">Password</label>
+                  <input class="form-control" type="text" name="password" [(ngModel)]="model.password"
+                    placeholder="Password" required></div>
+              </div>
+
+              <div class="col-12">
+                <div class="form-group d-flex justify-content-center">
+                  <button class="btn btn-primary btn-lg" [disabled]="!editForm.valid">Submit</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

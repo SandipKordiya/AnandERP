@@ -1,0 +1,31 @@
+export interface Party {
+  id: number;
+  partyTypeId: number;
+  name: string;
+  invoiceName: string;
+  address: string;
+  state: string;
+  city: string;
+  area: string;
+  pincode: string;
+  telephone: string;
+  mobile: string;
+  website: string;
+  email: string;
+  gstin: string;
+  panNo: string;
+  adharNo: string;
+  cINNo: string;
+  openingBalance: number;
+  balanceSign: string;
+  currentBalance: number;
+  creditDays: number;
+  creditAmount: number;
+  referance: string;
+  note: string;
+  created: Date;
+  isBillingEnabled: boolean;
+  billingActionDate: Date;
+  isBlocked: boolean;
+  blockedDate: Date;
+}

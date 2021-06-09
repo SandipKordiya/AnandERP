@@ -1,0 +1,47 @@
+<div class="container-fluid">
+  <app-pagetitle title="Products Upload" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body text-center">
+          <div class="d-flex justify-content-center mb-2">
+            <a href="javascript:void(0);" class="btn btn-success mb-2 ml-2" 
+            (click)="downloadMyFile()">
+              <i class="mdi mdi-plus mr-2"></i> Download Excel file
+            </a> <br />
+          </div>
+          <p class="card-title-desc">One record already in file please remove it. That just for sample purpose.</p>
+
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="row d-flex justify-content-center">
+            <div class="col-md-7">
+              <div class="alert alert-light" role="alert">{{ message }}</div>
+              <h4 class="card-title">Product Bulk Import</h4>
+              <p class="card-title-desc"> <em>Choose file…</em> and selected file name text.</p>
+              <div *ngIf="currentFile" class="progress">
+                <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+                  attr.aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"
+                  [ngStyle]="{ width: progress + '%' }">
+                  {{ progress }}%
+                </div>
+              </div>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" (change)="selectFile($event)" id="customFile">
+                <label class="custom-file-label" for="customFile">Choose file</label>
+              </div>
+              <hr />
+              <button type="button" class="btn btn-primary btn-lg btn-block" [disabled]="!selectedFiles"  (click)="upload()">
+                <i class="fa"
+                [ngClass]="{'fa-spin fa-spinner': isLoading, 'fa-cloud': !isLoading}"></i> {{button}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

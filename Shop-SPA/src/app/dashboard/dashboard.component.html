@@ -1,0 +1,141 @@
+<div class="container-fluid">
+  <app-pagetitle title="Dashboard" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+  <app-quick-links></app-quick-links>
+  <div class="row mt-2">
+    <div class="col-xl-12">
+      <div class="row">
+        <div *ngFor="let stat of statData" class="col-md-3">
+          <app-stat [title]="stat.title" [value]="stat.value" [icon]="stat.icon"></app-stat>
+        </div>
+      </div>
+      <!-- end row -->
+    </div>
+
+  </div>
+ <!-- end row -->
+ <div class="row">
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <app-bar-chart></app-bar-chart>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <div class="dropdown float-right" ngbDropdown>
+            <a href="javascript: void(0);" class="dropdown-toggle arrow-none card-drop" data-toggle="dropdown"
+              aria-expanded="false" ngbDropdownToggle>
+              <i class="mdi mdi-dots-vertical"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+              <!-- item-->
+              <a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
+              <!-- item-->
+              <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
+              <!-- item-->
+              <a href="javascript:void(0);" class="dropdown-item">Profit</a>
+              <!-- item-->
+              <a href="javascript:void(0);" class="dropdown-item">Action</a>
+            </div>
+          </div>
+
+          <h4 class="card-title mb-3">Sources</h4>
+
+          <div>
+            <div class="text-center">
+              <p class="mb-2">Total sources</p>
+              <h4>$ 7652</h4>
+              <div class="text-success">
+                <i class="mdi mdi-menu-up font-size-14"> </i>2.2 %
+              </div>
+            </div>
+
+            <div class="table-responsive mt-4">
+              <table class="table table-hover mb-0 table-centered table-nowrap">
+                <tbody>
+                  <tr>
+                    <td style="width: 60px;">
+                      <div class="avatar-xs">
+                        <div class="avatar-title rounded-circle bg-light">
+                          <img src="assets/images/companies/img-1.png" alt="" height="20">
+                        </div>
+                      </div>
+                    </td>
+
+                    <td>
+                      <h5 class="font-size-14 mb-0">Source 1</h5>
+                    </td>
+                    <td>
+                      <div id="spak-chart1"></div>
+                    </td>
+                    <td>
+                      <p class="text-muted mb-0">$ 2478</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="avatar-xs">
+                        <div class="avatar-title rounded-circle bg-light">
+                          <img src="assets/images/companies/img-2.png" alt="" height="20">
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <h5 class="font-size-14 mb-0">Source 2</h5>
+                    </td>
+
+                    <td>
+                      <div id="spak-chart2"></div>
+                    </td>
+                    <td>
+                      <p class="text-muted mb-0">$ 2625</p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="avatar-xs">
+                        <div class="avatar-title rounded-circle bg-light">
+                          <img src="assets/images/companies/img-3.png" alt="" height="20">
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <h5 class="font-size-14 mb-0">Source 3</h5>
+                    </td>
+                    <td>
+                      <div id="spak-chart3"></div>
+                    </td>
+                    <td>
+                      <p class="text-muted mb-0">$ 2856</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="text-center mt-4">
+              <a href="javascript: void(0);" class="btn btn-primary btn-sm">View more</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
+
+          <h4 class="card-title mb-4">Sales Analytics</h4>
+
+          <app-sales-pie-chart></app-sales-pie-chart>
+
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+</div>

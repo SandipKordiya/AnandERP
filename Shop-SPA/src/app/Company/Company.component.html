@@ -1,0 +1,133 @@
+<div class="content container-fluid">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="row">
+          <div class="col-sm-12">
+            <h3 class="page-title">Company Settings</h3>
+          </div>
+        </div>
+      </div>
+      <!-- /Page Header -->
+
+      <form #userForm="ngForm" (ngSubmit)="userForm.form.valid && onSubmit(userForm)">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Company Name <span class="text-danger">*</span></label>
+              <input type="text" name="name" class="form-control" [(ngModel)]="company.name" #name="ngModel"
+              [ngClass]="{ 'is-invalid': userForm.submitted && name.invalid }" required>
+            <div class="invalid-feedback" *ngIf="userForm.submitted && name.invalid">
+              <p *ngIf="name.errors.required">Name is required</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Heading</label>
+              <input class="form-control " name="heading" [(ngModel)]="company.heading" type="text">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>Address</label>
+              <textarea class="form-control" name="address" [(ngModel)]="company.address" #address="ngModel"
+                [ngClass]="{ 'is-invalid': userForm.submitted && address.invalid }" required>
+
+               </textarea>
+              <div *ngIf="userForm.submitted && address.invalid" class="invalid-feedback">
+                <div *ngIf="address.errors.required">Email is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-3">
+            <div class="form-group">
+              <label>State/Province</label>
+              <select class="custom-select d-block w-100" name="stateId" [(ngModel)]="company.stateId"
+              (change)="getCities($event.target.value)">
+              <option value="">Choose your State</option>
+              <option *ngFor="let item of states" [ngValue]="item.id">
+                {{item.name}}
+              </option>
+            </select>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-3">
+            <div class="form-group">
+              <label>City</label>
+              <select class="custom-select d-block w-100"  name="cityId"
+              [(ngModel)]="company.cityId">
+              <option value="">Choose City</option>
+              <option *ngFor='let role of cities' [ngValue]="role.id">
+                {{role.name}}
+              </option>
+            </select>
+            </div>
+          </div>
+         
+          <div class="col-sm-6 col-md-6 col-lg-3">
+            <div class="form-group">
+              <label>Postal Code</label>
+              <input class="form-control" name="postCode" [(ngModel)]="company.postCode" type="text">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-control" name="email" [(ngModel)]="company.email" #email="ngModel"
+                [ngClass]="{ 'is-invalid': userForm.submitted && email.invalid }" email required>
+              <div *ngIf="userForm.submitted && email.invalid" class="invalid-feedback">
+                <div *ngIf="email.errors.required">Email is required</div>
+                <div *ngIf="email.errors.email">Must be a valid email address</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Mobile Number</label>
+              <input class="form-control" name="mobile" [(ngModel)]="company.mobile" type="text">
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>GSTIN</label>
+              <input class="form-control" name="gSTIN" [(ngModel)]="company.gSTIN"  type="text">
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>CINO</label>
+              <input class="form-control" name="cINO" [(ngModel)]="company.cINO" type="text">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>PANNO</label>
+              <input class="form-control" name="pANNO" [(ngModel)]="company.pANNO" type="text">
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Website Url</label>
+              <input class="form-control" name="website" [(ngModel)]="company.website" type="text">
+            </div>
+          </div>
+        </div>
+        <div class="submit-section">
+          <button type="submit" class="btn btn-primary submit-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

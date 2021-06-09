@@ -1,0 +1,48 @@
+<div class="table-responsive mt-3">
+  <table id="basic-datatable"
+  class="table table-centered table-hover table-striped table-sm  table-bordered dt-responsive nowrap datatables no-footer dtr-inline">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Invoice No</th>
+        <th scope="col">Date</th>
+        <th scope="col">Branch</th>
+        <th scope="col">ItemName</th>
+        <th scope="col">Brand</th>
+        <th scope="col">Batch</th>
+        <th scope="col">Exp</th>
+
+        <th scope="col">Free</th>
+        <th scope="col">Qty</th>
+        <th scope="col">Rate</th>
+        <th scope="col">Tax</th>
+        <th scope="col">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of dataReport; let i = index" class="w-100">
+        <th scope="row">{{i + 1}}</th>
+        <td>{{item.invoiceNo}}</td>
+        <td>{{item.created |date: 'dd-MM-yyyy'}}</td>
+        <td>{{item.branchName}}</td>
+        <td>{{item.productName}}</td>
+        <td>{{item.brandName}}</td>
+        <td>{{item.batchNo}}</td>
+        <td>{{item.expireDate}}</td>
+        <td>{{item.freeQuantity}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{{item.rate}}</td>
+        <td>{{item.taxRate}}</td>
+        <td>{{item.amount}}</td>
+      </tr>
+      <tr>
+        <td colspan="9" class="text-right">Total</td>
+        <td colspan="1">{{TotalQty}}</td>
+        <td colspan="2" class="text-right"></td>
+        <td>
+          {{TotalAmount.toFixed(2)}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

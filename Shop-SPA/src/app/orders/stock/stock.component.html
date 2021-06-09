@@ -1,0 +1,311 @@
+<div class="container-fluid">
+  <app-pagetitle title="Stock Entry" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body pb-0">
+          <form #editForm="ngForm" id="editForm" (ngSubmit)="AddProduct()" novalidate>
+            <div class="form-row border-bottom">
+              <div class="col-md-2 mb-3">
+                <label for="invoiceNo">Invoice Number</label>
+                <input type="text" class="form-control" name="invoiceNo" autocomplete="off"
+                  [(ngModel)]="model.invoiceNo" required>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="invoiceNo">From Branch</label>
+                <select class="custom-select" name="fromBranchId" [(ngModel)]="model.fromBranchId" required>
+                  <option *ngFor='let role of branches' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="invoiceNo">To Branch</label>
+                <select class="custom-select" tabindex="1" name="branchId" [(ngModel)]="model.branchId" required>
+                  <option *ngFor='let role of branches' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+              </div>
+           
+              <div class="col-md-2 mb-3">
+                <label for="purchaseDate">Date</label>
+                <input type="text" id="purchaseDate" placeholder="Datepicker" [textMask]="mask"
+                  [ngModel]="purchaseDate | date:'MM/dd/yyyy'" (blur)="onBlur()" (change)='todate($event.target.value)'
+                  class="form-control" name="purchaseDate" autocomplete="off" required>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label></label>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" name="isForStock" 
+                  id="isForStock"
+                  #isForStock
+                  [checked]="model.isForStock" 
+                  [ngModel]="model.isForStock" class="custom-control-input"
+                    > <label class="custom-control-label" for="isForStock">
+                    Is For Stock</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-row pt-1">
+              <div class="col-md-5 mb-3">
+                <label for="partyId">Product Item</label>
+                <span *ngIf="model" class="product-show p-1">MRP: {{model.mrp}} | Rate: {{model.rate}} | Stock:
+                  {{model.stock}}</span>
+                <div class="ng-autocomplete product">
+                  <ng-autocomplete [data]="data"
+                  [searchKeyword]="keyword" (selected)='selectProduct($event)'
+                    name="productAutoName" [(ngModel)]="productAutoName" (inputChanged)='getServerResponse($event)'
+                    (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" (inputCleared)="searchCleared()"
+                    (opened)="productOpened()" (closed)="productClosed()" [notFoundTemplate]="notFoundTemplate"
+                    [debounceTime]="600" [isLoading]="isLoadingResult" [minQueryLength]="1"
+                    placeHolder="Search Product. eg 'Name'" required>
+                  </ng-autocomplete>
+                  <div *ngIf="showProductheader" class="row product-row bg-light">
+                    <div class="col d-flex flex-nowrap">
+                      <div class="order-1 p-1 " style="width: 39%;">Product</div>
+                      <div class="order-2 p-1 " style="width: 15%;">Brand</div>
+                      <div class="order-4 p-1 " style="width: 15%;">MRP</div>
+                      <div class="order-6 p-1 " style="width: 15%;">Rate</div>
+                    </div>
+                  </div>
+                  <ng-template #itemTemplate let-item>
+                    <a href="javascript:void(0)">
+                      <div class="row">
+                        <div class="col d-flex flex-nowrap ">
+                          <div class="order-1 p-1 " style="width: 39%;"><span [innerHTML]="item.productName"></span>
+                          </div>
+                          <div class="order-2 p-1 " style="width: 15%;">{{item.brandName}}</div>
+                          <div class="order-4 p-1 " style="width: 15%;">{{item.mrp}}</div>
+                          <div class="order-6 p-1 " style="width: 15%;">{{item.rate}}</div>
+                        </div>
+                      </div>
+                    </a>
+                  </ng-template>
+
+                  <ng-template #notFoundTemplate let-notFound>
+                    {{errorMsg}}
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="date">Batch Number</label>
+                <select class="custom-select" tabindex="3" name="batchNo" (change)="selectBatch()" [(ngModel)]="model.batchNo"
+                  required>
+                  <option *ngFor='let role of batchProducts' [ngValue]="role.batchNo">
+                    {{role.batchNo}}
+                  </option>
+                </select>
+                <div class="invalid-feedback"> Valid last name is required. </div>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="expireDate">Expire Date</label>
+                <!-- <input type="text" placeholder="Datepicker" class="form-control" name="expireDate"
+                  [(ngModel)]="model.expireDate" bsDatepicker autocomplete="off"> -->
+                <input type="text" id="expireDate" placeholder="Datepicker" [textMask]="mask"
+                  [ngModel]="productExpireDate | date:'MM/dd/yyyy'" (blur)="onProductBlur()"
+                  (change)='productExpireDateSelect($event.target.value)' class="form-control" name="expireDate"
+                  autocomplete="off" required>
+              </div>
+              <div class="col-md-1 mb-3">
+                <label for="mrp">MRP</label>
+                <input type="number" class="form-control" min="0" name="mrp" [(ngModel)]="model.mrp" required>
+                <div class="invalid-feedback"> Valid last name is required. </div>
+              </div>
+              <div class="col-md-1 mb-3">
+                <label for="quantity">Quantity</label>
+                <input type="number" min="1" 
+                tabindex="4"
+                class="form-control" name="quantity" (change)="onchangeQty()"
+                  [(ngModel)]="model.quantity" required>
+                <div class="invalid-feedback"> Valid last name is required. </div>
+              </div>
+             
+
+            </div>
+
+            <div class="form-row">
+              <div class="col-md-2 mb-3">
+                <label for="partyId">Rate <code *ngIf="model.saleMargin">M.Rate: {{model.saleMargin}}</code> </label>
+                <input type="number" class="form-control" name="rate" (change)="onchangeQty()" 
+                [(ngModel)]="model.rate">
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="date">Discount % </label>
+                <!-- <code> AMT: {{(this.model.rate * this.model.quantity) * this.model.discount / 100  }}</code> -->
+
+                <input type="number" class="form-control" name="discount" (change)="onchangeQty()"
+                  [(ngModel)]="model.discount">
+                <div class="invalid-feedback"> Valid last name is required. </div>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="taxType">Other Discount %</label>
+                <!-- <code> AMT: {{(model.otherDiscount * (model.amount * model.quantity))/100  }}</code> -->
+
+                <input type="number" class="form-control" name="otherDiscount" (change)="onchangeQty()"
+                  [(ngModel)]="model.otherDiscount">
+                <div class="invalid-feedback"> Valid last name is required. </div>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="taxType">Tax</label>
+                <select class="custom-select" name="taxId" (change)="onTaxSelect(model.taxId)" [(ngModel)]="model.taxId"
+                  required>
+                  <option *ngFor='let item of taxes' [ngValue]="item.id">
+                    {{item.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-1 mb-3">
+                <label for="taxType">Amount</label>
+                <input type="number" class="form-control" name="amount" [(ngModel)]="model.amount" required>
+                <div class="invalid-feedback"> Valid last name is required. </div>
+              </div>
+
+              <div class="col-md-2 pt-3">
+                <button class="btn btn-primary btn-block mt-3"  tabindex="5" [disabled]="editForm.invalid">Add <span
+                    class="fa fa-plus"></span></button>
+              </div>
+            </div>
+          </form><!-- /form .needs-validation -->
+        </div>
+      </div>
+      <div class="card card-fluid">
+        <div class="table-responsive" *ngIf="products.length">
+          <table class="table table-hover table-sm mb-0">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th style="min-width:100px">Item</th>
+                <th>Batch</th>
+                <th>Expired</th>
+                <th>MRP</th>
+                <th>Rate</th>
+                <th>QTY</th>
+                <th>Free</th>
+                <th>Disc%</th>
+                <th>O. Disc%</th>
+                <th>Tax(%)</th>
+                <th>Amount(₹)</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let item of products; let i = index">
+                <th scope="row">{{i + 1}}</th>
+                <td>{{item.productName}}</td>
+                <td>{{item.batchNo}}</td>
+                <td>{{item.expireDate | date:'MM/dd/yyyy'}}</td>
+                <td *ngIf="!orderId">{{item.mRP}}</td>
+                <td *ngIf="orderId">{{item.mrp}}</td>
+                <td>{{item.rate}}</td>
+                <td>{{item.quantity}}</td>
+                <td>{{item.schQuantity}}</td>
+                <td>
+                  {{item.discount}}%
+                </td>
+                <td>{{item.otherDiscount}}%
+                </td>
+                <td>
+                  {{item.taxRate}}% </td>
+                <td>₹{{item.amount}}</td>
+                <td class=" align-middle text-right">
+                  <a (click)='editProduct(item)' href="javascript:void(0);" class="mr-3" ngbTooltip="Edit"><i
+                      class="mdi mdi-pencil font-size-18"></i></a>
+
+                  <a (click)="deleteProduct(item)" href="javascript:void(0);" class="text-danger" ngbTooltip="Delete"><i
+                      class="mdi mdi-trash-can font-size-18"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="!products.length" class="d-flex content-justify-center   pl-3">
+          <p>No items are added.</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card card-team">
+            <div class="card-body">
+              <div class="card-title">               
+                <span>Gross Amount:</span>
+                <h5 data-filter-by="text" class="H5-filter-by-text">₹{{finalGrossAmount.toFixed(2)}}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card card-team">
+            <div class="card-body">
+              <div class="card-title">               
+                <span>Discount Amount:</span>
+                <h5 data-filter-by="text" class="H5-filter-by-text">₹{{finalDiscountAmount.toFixed(2)}}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card card-team">
+            <div class="card-body">
+              <div class="card-title">               
+                <span>Total Tax:</span>
+                <h5 data-filter-by="text" class="H5-filter-by-text">₹{{finalTotalTaxAmount.toFixed(2)}}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card card-team">
+            <div class="card-body" style="
+            padding-bottom: 1px;
+        ">
+              <div class="card-title">               
+                <span>Other :</span>
+                <mat-form-field class="no-padding">
+                  <input type="number" min="0" autocomplete="off" (change)="onOtherChange()" matInput
+                    [(ngModel)]="finalOtherAmount">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card card-team">
+            <div class="card-body">
+              <div class="card-title">               
+                <span>Round Off :</span>
+                <h5 data-filter-by="text" class="H5-filter-by-text">{{finalRoundOffAmount}}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card card-team">
+            <div class="card-body">
+              <div class="card-title">               
+                <span>Grand Total:</span>
+                <h5 data-filter-by="text" class="H5-filter-by-text" *ngIf="finalOtherAmount != undefined && finalOtherAmount != 0"> 
+                  ₹{{finalCalculatedAmount}}</h5>
+                <h5 data-filter-by="text" class="H5-filter-by-text" *ngIf="finalOtherAmount === 0">
+                  ₹{{finalGrandTotalAmount}}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card invoice">
+        <div class="card-body ">
+          <div class="submit-section d-flex justify-content-center">
+            <button [disabled]="!products.length" (click)="submitPurchase()"
+              class="btn btn-lg btn-primary submit-btn ml-1">{{btn}}</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

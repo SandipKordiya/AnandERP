@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Add Scheme</h2>
+
+<form (ngSubmit)="AddScheme()" [formGroup]="validationform" novalidate>
+  <div class="row">
+    <div class="col-md-12 mb-3">
+      <label for="productName">Product
+        <code>MRP: {{data.product.mrp}}, M.Rate: {{data.product.saleMargin}},
+           T.Rate: {{data.product.taxRate}}%</code>
+      </label>
+      <input type="text" class="form-control" readonly disabled formControlName="productName">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="firstName">Quantity</label>
+      <input type="number" class="form-control" (change)="calculateRate()" formControlName="quantity"
+        [ngClass]="{'is-invalid': submit && form.quantity.errors}">
+      <div *ngIf="submit && form.quantity.errors" class="invalid-feedback">
+        <span *ngIf="form.quantity.errors.required">Enter Quantity</span>
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="lastName">Sch Quantity</label>
+      <input type="number" class="form-control" (change)="calculateRate()" formControlName="schQuantity"
+        [ngClass]="{'is-invalid': submit && form.schQuantity.errors}">
+      <div *ngIf="submit && form.schQuantity.errors" class="invalid-feedback">
+        <span *ngIf="form.schQuantity.errors.required">Enter Scheme Quantity</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 mb-3">
+      <label for="schRate">Scheme Rate </label>
+      <input type="number" class="form-control" readonly disabled formControlName="schRate">
+    </div>
+  </div>
+  <hr class="mb-4">
+  <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
+</form>

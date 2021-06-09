@@ -1,0 +1,165 @@
+<div class="container-fluid mt-3">
+  <app-pagetitle title="Item wise Sales" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <form #form="ngForm" (ngSubmit)="loadMembers()" autocomplete="off">
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="branchId">Branch</label>
+                <select class="custom-select" name="branchId"
+                 [(ngModel)]="userParams.branchId" 
+                 (change)="onBranchChange(userParams.branchId)"
+                 required>
+                  <option *ngFor='let role of branches' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label>FromDate: </label>
+                <input type="text" class="form-control" name="fromDate" autocomplete="off"
+                  [(ngModel)]="userParams.fromDate" bsDatepicker [bsValue]="userParams.fromDate"
+                  [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label>To Date: </label>
+                <input type="text" class="form-control" name="toDate" autocomplete="off" [(ngModel)]="userParams.toDate"
+                  bsDatepicker [bsValue]="userParams.toDate"
+                  [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="BrandId">Brand</label>
+                <select class="custom-select" name="brandId" [(ngModel)]="userParams.brandId">
+                  <option *ngFor='let role of brands' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="keywordParty">Party</label>
+                <div class="ng-autocomplete">
+                  <ng-autocomplete [data]="dataParty" [searchKeyword]="keywordParty"
+                    (selected)='selectPartyEvent($event)' (inputChanged)='getPartyServerResponse($event)'
+                    (inputFocused)='onPartyFocused($event)' [itemTemplate]="partyTemplate"
+                    (inputCleared)="searchPartyCleared()" [notFoundTemplate]="notFoundTTemplate" [debounceTime]="600"
+                    [isLoading]="isLoadingResultParty" [minQueryLength]="1" placeHolder="Search Party. eg 'Name'"
+                    required>
+                  </ng-autocomplete>
+
+                  <ng-template #partyTemplate let-item>
+                    <a href="javascript:void(0)">
+                      <div class="row">
+                        <div class="col-10">
+                          <span [innerHTML]="item.name"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </ng-template>
+
+                  <ng-template #notFoundTTemplate let-notFound>
+                    No data found
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="keywordParty">Product</label>
+                <div class="ng-autocomplete product">
+                  <ng-autocomplete [data]="data" tabindex="2" [searchKeyword]="keyword"
+                    (selected)='selectProduct($event)' name="productAutoName" [(ngModel)]="productAutoName"
+                    (inputChanged)='getServerResponse($event)' (inputFocused)='onFocused($event)'
+                    [itemTemplate]="itemTemplate" (inputCleared)="searchCleared()" (opened)="productOpened()"
+                    (closed)="productClosed()" [notFoundTemplate]="notFoundTemplate" [debounceTime]="600"
+                    [isLoading]="isLoadingResult" [minQueryLength]="1" placeHolder="Search Product. eg 'Name'" required>
+                  </ng-autocomplete>
+                  <div *ngIf="showProductheader" class="row product-row bg-light">
+                    <div class="col d-flex flex-nowrap">
+                      <div class="order-1 p-1 " style="width: 39%;">Product</div>
+                      <div class="order-2 p-1 " style="width: 15%;">Brand</div>
+                      <div class="order-4 p-1 " style="width: 15%;">MRP</div>
+                      <div class="order-6 p-1 " style="width: 15%;">Rate</div>
+                    </div>
+                  </div>
+                  <ng-template #itemTemplate let-item>
+                    <a href="javascript:void(0)">
+                      <div class="row">
+                        <div class="col d-flex flex-nowrap ">
+                          <div class="order-1 p-1 " style="width: 39%;"><span [innerHTML]="item.productName"></span>
+                          </div>
+                          <div class="order-2 p-1 " style="width: 15%;">{{item.brandName}}</div>
+                          <div class="order-4 p-1 " style="width: 15%;">{{item.mrp}}</div>
+                          <div class="order-6 p-1 " style="width: 15%;">{{item.rate}}</div>
+                        </div>
+                      </div>
+                    </a>
+                  </ng-template>
+
+                  <ng-template #notFoundTemplate let-notFound>
+                    {{errorMsg}}
+                  </ng-template>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3 pt-4">
+                <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
+                <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Reset Filters</button>
+              </div>
+
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="dataReport">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Sales Report: <strong>From Date: {{userParams.fromDate}}  - To Date: {{userParams.toDate}}</strong> </h5>
+          <div class="table-responsive mt-3">
+            <table class="table table-centered table-bordered datatable dt-responsive nowrap table-hover table-sm"
+              style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Invoice</th>
+                  <th scope="col">Party</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Batch</th>
+                  <th scope="col">Expire</th>
+                  <th scope="col">Product</th>
+                  <th scope="col">MRP</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">F. Quantity</th>
+                  <th scope="col">Rate</th>
+                  <th scope="col">GST</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of dataReport; let i = index">
+                  <th scope="row">{{i + 1}}</th>
+                  <td>{{item.invoiceNo}}</td>
+                  <td>{{item.partyName}}</td>
+                  <td>{{item.saleDate |date: 'dd-MM-yyyy'}}</td>
+                  <td>{{item.batchNo}}</td>
+                  <td>{{item.expireDate |date: 'dd-MM-yyyy'}}</td>
+                  <td>{{item.productName}}</td>
+                  <td>{{item.mrp}}</td>
+                  <td>{{item.quantity}}</td>
+                  <td>{{item.schQuantity}}</td>
+                  <td>{{item.rate.toFixed(2)}}</td>
+                  <td>{{item.taxRate}}%</td>
+                  <td>{{item.amount.toFixed(2)}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

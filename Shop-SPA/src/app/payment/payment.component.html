@@ -1,0 +1,211 @@
+<div class="content container-fluid">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="row">
+          <div class="col-sm-12">
+            <h3 class="page-title text-center">Payment: {{paymentNumber}}</h3>
+          </div>
+        </div>
+      </div>
+      <!-- /Page Header -->
+
+      <form #f="ngForm" id="editForm" (ngSubmit)="f.form.valid && onSubmit()" novalidate>
+        <div class="form-group">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" (change)="getOrderList()" name="isReceived"
+              [(ngModel)]="model.isReceived" id="invalidCheck3">
+            <label class="form-check-label h4" for="invalidCheck3">
+              Payment Received?
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Branch</label>
+              <select class="form-control select" name="branchId" [(ngModel)]="model.branchId" #branchId="ngModel"
+                [ngClass]="{ 'is-invalid': f.submitted && branchId.invalid }" required>
+                <option *ngFor='let role of branches' [ngValue]="role.id">
+                  {{role.name}}
+                </option>
+              </select>
+              <div *ngIf="f.submitted && branchId.invalid" class="invalid-feedback">
+                <div *ngIf="branchId.errors.required">Branch is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Amount  <code *ngIf="remainAmount != 0">{{remainAmount.toFixed(2)}}</code></label>
+              <input class="form-control " (change)="onAmountChange()" name="amount" [(ngModel)]="model.amount"
+                type="number" #amount="ngModel" [ngClass]="{ 'is-invalid': f.submitted && amount.invalid }" required>
+              <div *ngIf="f.submitted && amount.invalid" class="invalid-feedback">
+                <div *ngIf="amount.errors.required">Amount is required</div>
+              </div>
+             
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Party <span class="text-danger">*</span> </label>
+              <div class="ng-autocomplete w-100">
+                <ng-autocomplete [data]="dataParty" [searchKeyword]="keywordParty" (selected)='selectPartyEvent($event)'
+                  (inputChanged)='getPartyServerResponse($event)' (inputFocused)='onPartyFocused($event)'
+                  [itemTemplate]="partyTemplate" (inputCleared)="searchPartyCleared()"
+                  [notFoundTemplate]="notFoundTemplate" [debounceTime]="600" [isLoading]="isLoadingResultParty"
+                  [minQueryLength]="2" placeHolder="Search Party. eg 'Name'" required>
+                </ng-autocomplete>
+
+                <ng-template #partyTemplate let-item>
+                  <a href="javascript:void(0)">
+                    <div class="row">
+                      <div class="col-12">
+                        <strong><span [innerHTML]="item.name"></span></strong>
+                        <p class="text-muted mb-0">
+                          {{item.city}}, {{item.email}}
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </ng-template>
+
+                <ng-template #notFoundTemplate let-notFound>
+                  {{errorMsgParty}}
+                </ng-template>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-md-6">
+            <div class="card" *ngIf="selectedParty">
+              <div class="card-body">
+                <address class="mb-0">
+                  <strong [innerHTML]="selectedParty.name"></strong><br>
+                  {{selectedParty.city}}, {{selectedParty.email}}<br>
+                  GSTN: {{selectedParty.gstin}}<br>
+                  <abbr title="Phone">M:</abbr> {{selectedParty.mobile}}<br>
+                  <code>Created: {{selectedParty.created}}</code>
+                </address>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Payment Mode</label>
+              <select class="form-control select" name="paymentMode" [(ngModel)]="model.paymentMode"
+                #paymentMode="ngModel" [ngClass]="{ 'is-invalid': f.submitted && paymentMode.invalid }" required>
+                <option value="Cash">Cash</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Cash on Hand">Cash on Hand</option>
+              </select>
+              <div *ngIf="f.submitted && paymentMode.invalid" class="invalid-feedback">
+                <div *ngIf="paymentMode.errors.required">Payment Mode is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Payment Date</label>
+              <input type="text" placeholder="Payment Date" class="form-control" name="paymentDate"
+                [(ngModel)]="model.paymentDate" bsDatepicker autocomplete="off" #paymentDate="ngModel"
+                [ngClass]="{ 'is-invalid': f.submitted && paymentDate.invalid }" required>
+            </div>
+            <div *ngIf="f.submitted && paymentDate.invalid" class="invalid-feedback">
+              <div *ngIf="paymentDate.errors.required">Payment Date Mode is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Reference No</label>
+              <input type="text" name="referenceNo" class="form-control" [(ngModel)]="model.referenceNo">
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Source Bank</label>
+              <input class="form-control " name="sourceBank" [(ngModel)]="model.sourceBank" type="text">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Bank</label>
+              <input class="form-control" name="bankId" [(ngModel)]="model.bankId" type="number">
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>CINO</label>
+              <input class="form-control" name="cINO" [(ngModel)]="model.cINO" type="text">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>Remark</label>
+              <textarea class="form-control" [(ngModel)]="model.remark">
+              </textarea>
+            </div>
+          </div>
+        </div>
+        <div class="submit-section">
+          <button type="submit" class="btn btn-primary submit-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row mt-5">
+    <div class="col-md-12">
+      <div class="card card-table mb-0">
+        <div class="card-header">
+          <h4 class="card-title mb-0">All Bills</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover table-center mb-0">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Invoice Number</th>
+                  <th>Create Date</th>
+                  <th>Party Name</th>
+                  <th>Net Amount</th>
+                  <th>To be Paid</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="invoicelist">
+                <tr *ngFor="let item of invoicelist; let i = index;">
+                  <td>{{item.id}}</td>
+                  <td>{{item.invoiceNo}}</td>
+                  <td>{{item.created | date: 'dd-MM-yyyy'}}</td>
+                  <td>{{item.partyName}}</td>
+                  <td>{{item.amount}}</td>
+                  <td>{{item.remaining}}</td>
+                  <td>
+                    <input type="checkbox" class="checkmail" [attr.checked]="item.mode ? true : null">
+                  </td>
+                </tr>
+              </tbody>
+
+            </table>
+            <h3 *ngIf="!invoicelist" class="text-center d-flex justify-content-center pt-3 pb-3">No bills found.</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

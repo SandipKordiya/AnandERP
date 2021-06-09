@@ -1,0 +1,96 @@
+<div class="container-fluid">
+  <div class="row no-gutters d-flex justify-content-center">
+    <div class="col">
+      <div class="panel panel-info">
+        <div class="panel-heading mb-2">
+          <h3 class="panel-title mb-0">Product: {{product.productName}}</h3>
+          <span>Created: {{product.created}}</span>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-md-8 col-lg-8">
+              <table class="table table-user-information">
+                <tbody>
+                  <tr>
+                    <td>Brand:</td>
+                    <td>{{product.brandId}}</td>
+                  </tr>
+                  <tr>
+                    <td>Category:</td>
+                    <td>{{product.categoryId}}</td>
+                  </tr>
+                  <tr>
+                    <td>Info</td>
+                    <td>Name: {{product.productName}} <br />
+                     SKU: {{product.productSKU}} <br />
+                    Code: {{product.productCode}}</td>
+                  </tr>
+
+                  <tr>
+                    <td>MRP</td>
+                    <td>Rs. {{product.mrp}}</td>
+                  </tr>
+                  <tr>
+                    <td>Sale:</td>
+                    <td>Sale Rate: Rs. {{product.saleRate}} <br>
+                    Sale Margin: {{product.saleMargin}}</td>
+                  </tr>
+                  <tr>
+                    <td>Purchase Rate</td>
+                    <td>
+                      Rs. {{product.purchageRate}} 
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Is Stockable Product</td>
+                    <td>
+                      {{product.isStockable}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Is Returnable</td>
+                    <td>
+                      {{product.isReturnable}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Is Allow Min Sale</td>
+                    <td>
+                      {{product.isAllowMinStockSale}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Remark</td>
+                    <td>
+                      {{product.remark}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>             
+            </div>
+            <div class="col-md-4 col-lg-4">
+              <table class="table table-user-information">
+                <tbody>
+                  <tr>
+                    <td>Tax:</td>
+                    <td>{{product.taxId}}</td>
+                  </tr>
+                  <tr>
+                    <td>taxEffectDate:</td>
+                    <td>{{product.taxEffectDate}}</td>
+                  </tr>
+                  <tr>
+                    <td>warrantyMonth:</td>
+                    <td>{{product.warrantyMonth}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <a href="#" class="btn btn-primary mt-3">Edit</a>
+              <a href="#" class="btn btn-danger mt-3 ml-2">Delete</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

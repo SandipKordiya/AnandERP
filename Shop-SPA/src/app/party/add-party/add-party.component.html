@@ -1,0 +1,224 @@
+<div class="container-fluid">
+  <app-pagetitle title="Add Party" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+  <div class="row">
+    <form (ngSubmit)="AddParty()" [formGroup]="validationform" novalidate>
+      <div class="row">
+        <div class="col-6">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title mb-4">Client Details</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="validationCustom01">Party Type</label>
+                    <select class="form-control" formControlName="partyTypeId">
+                      <option *ngFor='let role of partyTypes' [ngValue]="role.id">
+                        {{role.type}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="validationCustom02">Party Code</label>
+                    <input type="text" class="form-control" formControlName="partyCode">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="name">Party Name</label>
+                    <input type="text" class="form-control" formControlName="name" placeholder="Party Name"
+                      [ngClass]="{'is-invalid': submit && form.name.errors}">
+                    <div *ngIf="submit && form.name.errors" class="invalid-feedback">
+                      <span *ngIf="form.name.errors.required">Required!</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="invoiceName">Invoice Name</label>
+                    <input type="text" class="form-control" formControlName="invoiceName" placeholder="Invoice name">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="validationCustom04">State</label>
+                    <select class="custom-select d-block w-100" formControlName="stateId"
+                      (change)="getCities($event.target.value)" [ngClass]="{'is-invalid': submit && form.stateId.errors}">
+                      <option value="">Choose your State</option>
+                      <option *ngFor="let item of states" [ngValue]="item.id">
+                        {{item.name}}
+                      </option>
+                    </select>
+
+                    <div *ngIf="submit && form.stateId.errors" class="invalid-feedback">
+                      <span *ngIf="form.stateId.errors.required">Please provide a valid state.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="city">City</label>
+                    <select class="custom-select d-block w-100" formControlName="cityId"
+                      [ngClass]="{'is-invalid': submit && form.cityId.errors}">
+                      <option value="">Choose City</option>
+                      <option *ngFor='let role of cities' [ngValue]="role.id">
+                        {{role.name}}
+                      </option>
+                    </select>
+                    <div *ngIf="submit && form.cityId.errors" class="invalid-feedback">
+                      <span *ngIf="form.cityId.errors.required">Please provide a valid city.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="validationCustom05">Area</label>
+                    <input type="text" class="form-control" id="validationCustom05" formControlName="area"
+                      placeholder="Area" [ngClass]="{'is-invalid': submit && form.area.errors}">
+                    <div *ngIf="submit && form.area.errors" class="invalid-feedback">
+                      <span *ngIf="form.area.errors.required">Please provide a valid area.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="validationCustom05">postcode</label>
+                    <input type="text" class="form-control" formControlName="postcode" placeholder="postcode"
+                      [ngClass]="{'is-invalid': submit && form.postcode.errors}">
+                    <div *ngIf="submit && form.postcode.errors" class="invalid-feedback">
+                      <span *ngIf="form.postcode.errors.required">Please provide a valid postcode.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea type="text" class="form-control" formControlName="address"
+                      placeholder="1234 Main St"></textarea>
+
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control" formControlName="email" placeholder="email"
+                      [ngClass]="{'is-invalid': submit && form.email.errors}">
+                    <div *ngIf="submit && form.email.errors" class="invalid-feedback">
+                      <span *ngIf="form.email.errors.required">Please provide a valid email.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="mobile">Mobile</label>
+                    <input type="text" class="form-control" formControlName="mobile" placeholder="mobile"
+                      [ngClass]="{'is-invalid': submit && form.mobile.errors}">
+                    <div *ngIf="submit && form.mobile.errors" class="invalid-feedback">
+                      <span *ngIf="form.mobile.errors.required">Please provide a valid mobile.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+        </div>
+        <div class="col-6">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title mb-4">Account Details</h4>
+
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label for="openingBalance">Opening Balance</label>
+                  <input type="number" min="0" class="form-control" formControlName="openingBalance">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="balanceSign">Balance Sign</label>
+                  <input type="text" class="form-control" formControlName="balanceSign">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="currentBalance">Current Balance</label>
+                  <input type="number" min="0" class="form-control" formControlName="currentBalance">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label for="creditDays">Credit Days</label>
+                  <input type="number" min="0" class="form-control" formControlName="creditDays">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="creditAmount">Credit Amount</label>
+                  <input type="number" min="0" class="form-control" formControlName="creditAmount">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="referance">Referance</label>
+                  <input type="text" class="form-control" formControlName="referance">
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title mb-4">Tax Details</h4>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="panNo">Pan Number</label>
+                    <input type="text" class="form-control" formControlName="panNo">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="adharNo">AdharCard Number</label>
+                    <input type="text" class="form-control" formControlName="adharNo">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+
+                  <div class="form-group">
+                    <label for="gSTIN">GSTIN</label>
+                    <input type="text" class="form-control" formControlName="gSTIN"
+                      (ngModelChange)="form.gSTIN = $event.toUpperCase()" placeholder="GSTIN"
+                      [ngClass]="{'is-invalid': submit && form.gSTIN.errors}">
+                    <a target="_blank" class="link mt-1" href="https://services.gst.gov.in/services/searchtp">Check GSTIN/UIN Status</a>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="invalidCheck">
+                      <label class="custom-control-label" for="invalidCheck">Agree to terms and conditions</label>
+                      <div class="invalid-feedback">
+                        You must agree before submitting.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end">
+            <!-- <button class="btn btn-info btn-lg ml-2" (click)="resetParty()" type="submit">Reset</button> -->
+            <button class="btn btn-primary btn-block btn-lg" type="submit">Save Party</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,96 @@
+<div class="container-fluid mt-3">
+  <app-pagetitle title="Stock Ledger" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <form #form="ngForm" (ngSubmit)="loadMembers()" autocomplete="off">
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="branchId">Branch</label>
+                <select class="custom-select" name="branchId" [(ngModel)]="userParams.branchId" required>
+                  <option *ngFor='let role of branches' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="BrandId">Brand</label>
+                <select class="custom-select" name="brandId" [(ngModel)]="userParams.brandId">
+                  <option *ngFor='let role of brands' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label>FromDate: </label>
+                <input type="text" class="form-control" name="fromDate" autocomplete="off"
+                  [(ngModel)]="userParams.fromDate" bsDatepicker [bsValue]="userParams.fromDate"
+                  [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD HH:mm:ss' }">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label>To Date: </label>
+                <input type="text" class="form-control" name="toDate" autocomplete="off" [(ngModel)]="userParams.toDate"
+                  bsDatepicker [bsValue]="userParams.toDate" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD HH:mm:ss' }">
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-3 pt-4">
+                <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
+                <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Reset Filters</button>
+              </div>
+
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="dataReport">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Stock Ledger: <strong>From Date: {{userParams.fromDate}} - To Date:
+              {{userParams.toDate}}</strong> </h5>
+          <div class="table-responsive mt-3">
+            <table class="table table-centered table-bordered datatable dt-responsive nowrap table-hover table-sm"
+              style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Item</th>
+                  <th scope="col">Latest MRP</th>
+                  <th scope="col">P. Rate</th>
+                  <th scope="col">Opening Qty</th>
+                  <th scope="col">Opening Amt</th>
+                  <th scope="col">Inward Qty</th>
+                  <th scope="col">Inward Amt</th>
+                  <th scope="col">Outward Qty</th>
+                  <th scope="col">Outward Amt</th>
+                  <th scope="col">Closing Qty</th>
+                  <th scope="col">Closing Amt</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of dataReport; let i = index">                 
+                  <td>{{item.productName}}</td>
+                  <td>{{item.mrp}}</td>
+                  <td>{{item.pRate}}</td>
+                  <td>{{item.openingQty}}</td>
+                  <td>{{item.openingMRP}}</td>
+                  <td>{{item.inwardQty}}</td>
+                  <td>{{item.inwardMRP}}</td>
+                  <td>{{item.outwardQty}}</td>
+                  <td>{{item.outwardMRP}}</td>
+                  <td>{{item.closingQty}}</td>
+                  <td>{{item.closingMRP}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

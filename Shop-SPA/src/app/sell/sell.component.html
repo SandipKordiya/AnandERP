@@ -1,0 +1,298 @@
+<div class="container-fluid">
+  <div class="row no-gutters">
+    <div class="col-lg-12">
+
+      <div class="card mb-3">
+        <div class="card-header">
+          <h5 class="mb-0">Add Sell Entry</h5>
+        </div>
+        <div class="card-body bg-light">
+          <form #editForm="ngForm" id="editForm" (ngSubmit)="AddProduct()">
+
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="firstName">invoice Number</label>
+                <input type="text" class="form-control" name="invoiceNo" [(ngModel)]="invoiceNumber" placeholder="">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="firstName">Select branch</label>
+                <select class="form-control" name="branchId" [(ngModel)]="model.branchId" required>
+                  <option *ngFor='let role of branches' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="address">Party</label>
+                <div class="ng-autocomplete">
+                  <ng-autocomplete [data]="dataParty" [searchKeyword]="keywordParty"
+                    (selected)='selectPartyEvent($event)' (inputChanged)='getPartyServerResponse($event)'
+                    (inputFocused)='onPartyFocused($event)' [itemTemplate]="partyTemplate"
+                    (inputCleared)="searchPartyCleared()" [notFoundTemplate]="notFoundTemplate" [debounceTime]="600"
+                    [isLoading]="isLoadingResultParty" [minQueryLength]="2" placeHolder="Search Party. eg 'Name'"
+                    required>
+                  </ng-autocomplete>
+
+                  <ng-template #partyTemplate let-item>
+                    <a href="javascript:void(0)">
+                      <div class="row">
+                        <div class="col-10">
+                          <span [innerHTML]="item.name"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </ng-template>
+
+                  <ng-template #notFoundTemplate let-notFound>
+                    {{errorMsgParty}}
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              
+              <label for="address">Product <code *ngIf="model.productName" >( Name: {{model.productName}} | Stock: <strong>{{ model.purchaseQuantity - model.sellQuantity}}</strong> | Rate: {{model.rate}} )</code></label>
+              <div class="ng-autocomplete">
+                <ng-autocomplete [data]="data" [searchKeyword]="keyword" (selected)='selectEvent($event)'
+                  (inputChanged)='getServerResponse($event)' (inputFocused)='onFocused($event)'
+                  [itemTemplate]="itemTemplate" (inputCleared)="searchCleared()" [notFoundTemplate]="notFoundTemplate"
+                  [debounceTime]="600" [isLoading]="isLoadingResult" [minQueryLength]="2" [heading]="headinghtml"
+                  placeHolder="Search Product. eg 'Name'" required>
+                </ng-autocomplete>
+
+                <ng-template #itemTemplate let-item>
+                  <a href="javascript:void(0)">
+                    <div class="row">
+                      <div class="col-10">
+                        <table class="table table-sm">
+                          <!-- <thead>
+                            <tr>
+                              <th scope="col">Product</th>
+                              <th scope="col">Batch</th>
+                              <th scope="col">Quantity</th>
+                              <th scope="col">Rate</th>
+                              <th scope="col">MRP</th>
+                              <th scope="col">Sale Price</th>
+                            </tr>
+                          </thead> -->
+                          <tbody>
+                            <tr>
+                              <td [innerHTML]="item.productName"></td>
+                              <td>{{item.purchaseQuantity}}</td>
+                              <td>{{item.batchNo}}</td>
+                              <td>{{item.quantity}}</td>
+                              <td>{{item.rate}}</td>
+                              <td>{{item.mrp}}</td>
+                              <td>{{item.saleRate}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </a>
+                </ng-template>
+
+                <ng-template #notFoundTemplate let-notFound>
+                  <div [innerHTML]="notFound"></div>
+                </ng-template>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="batchNo">Batch No</label>
+                <input type="text" class="form-control" name="batchNo" [(ngModel)]="model.batchNo">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="firstName">Date</label>
+                <input type="text" placeholder="Datepicker" class="form-control" name="date" [(ngModel)]="model.date"
+                  bsDatepicker autocomplete="off" required>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="expireDate">Expire Date</label>
+                <input type="text" placeholder="expire Date" class="form-control" name="expireDate"
+                  [(ngModel)]="model.expireDate" bsDatepicker autocomplete="off">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="lastName">tax type</label>
+                <input type="text" class="form-control" name="taxtype" [(ngModel)]="model.taxtype">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="qty">QTY</label>
+                <input type="number" class="form-control" name="qty" [(ngModel)]="model.qty" required>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="website">MRP</label>
+                <input type="number" class="form-control" name="mrp" [(ngModel)]="model.mrp" required>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="website">MRP Disc %</label>
+                <input type="number" class="form-control" name="mrpDisc" [(ngModel)]="model.mRPDiscount">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="currentBalance">Tax</label>
+                <select class="form-control" name="taxId" [(ngModel)]="model.taxId" required>
+                  <option *ngFor='let role of taxes' [ngValue]="role.id">
+                    {{role.name}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2 mb-3">
+                <label for="openingBalance">Rate</label>
+                <input type="text" class="form-control" name="rate" [(ngModel)]="model.rate">
+
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="discount">Discount(%)</label>
+                <input type="number" class="form-control" name="discount" [(ngModel)]="model.discount">
+                <code>D. Amount: {{(model.discount * (model.amount * model.qty))/100  }}</code>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="otherDiscount">Other Disc.(%)</label>
+                <input type="number" class="form-control" name="otherDiscount" [(ngModel)]="model.otherDiscount">
+                <code>D.Amount: {{(model.otherDiscount * (model.amount * model.qty))/100  }}</code>
+
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="purchageRate">Sale Rate</label>
+                <input type="number" class="form-control" name="saleRate" [(ngModel)]="model.saleRate">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="amount">Amount</label>
+                <input type="number" class="form-control" name="amount" [(ngModel)]="model.amount * model.qty" required>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block" type="submit" [disabled]="editForm.invalid"> + Add</button>
+          </form>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-hover" *ngIf="products.length">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th style="min-width:100px">Item</th>
+                <th>Batch</th>
+                <th>Expired</th>
+                <th>MRP</th>
+                <th>Rate</th>
+                <th>QTY</th>
+                <th>Free</th>
+                <th>Disc%</th>
+                <!-- <th>Oth. Disc</th> -->
+                <th *ngIf="model.taxType == 'IntraState'">CGST(%)</th>
+                <th *ngIf="model.taxType == 'IntraState'">SGST(%)</th>
+                <th *ngIf="model.taxType == 'InterState'">IGST(%)</th>
+                <th>Amount(₹)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of products">
+                <th scope="row">{{item.productId}}</th>
+                <td>{{item.productName}}</td>
+                <td>{{model.batchNo}}</td>
+                <td>{{item.expireDate | date:'MM/dd/yyyy'}}</td>
+                <!-- <td *ngIf="!orderId">{{item.mRP}}</td> -->
+                <td *ngIf="orderId">{{item.mrp}}</td>
+                <td>{{item.rate}}</td>
+                <td>{{item.quantity}}</td>
+                <td>{{item.freeQuantity}}</td>
+                <td>
+
+                  <small> Dis: {{item.discount}}%</small> <br />
+                  <small> O.Dis: {{item.otherDiscount}}%</small>
+
+                </td>
+                <td *ngIf="model.taxType == 'IntraState'">
+                  {{item.taxRate /2}}%
+
+                </td>
+                <td *ngIf="model.taxType == 'IntraState'">
+                  {{item.taxRate / 2}}%
+
+                </td>
+                <td *ngIf="model.taxType == 'InterState'">
+                  {{item.taxRate}}%
+
+                </td>
+                <td>₹{{item.amount}}</td>
+                <td class=" align-middle text-right">
+                  <a (click)='editProduct(item)' href="javascript:void(0);" class="mr-3" ngbTooltip="Edit"><i
+                      class="mdi mdi-pencil font-size-18"></i></a>
+                  <a (click)="deleteProduct(item)" href="javascript:void(0);" class="text-danger" ngbTooltip="Delete"><i
+                      class="mdi mdi-trash-can font-size-18"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="!products.length" class="d-flex content-justify-center">
+            <p>No items are added.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card invoice">
+        <div class="card-body">
+
+          <div class="row mt-3">
+            <div class="col-lg-7 terms-and-conditions">
+              <strong>Terms and Conditions</strong>
+              Thank you for your business. We do expect payment within 21 days, so please process this invoice within
+              that time. There will be a 1.5% interest charge per month on late invoices.
+            </div>
+            <div class="col-lg-5 clearfix">
+              <div class="table-responsive no-border">
+                <table class="table table-hover mb-0 finalCalculation">
+                  <tbody>
+                    <tr>
+                      <th>Gross Amount:</th>
+                      <td class="text-right">₹{{finalGrossAmount.toFixed(2)}} </td>
+                    </tr>
+                    <tr>
+                      <th>Discount Amount: <span class="text-regular"></span></th>
+                      <td class="text-right">₹{{finalDiscountAmount.toFixed(2)}}</td>
+                    </tr>
+                    <tr>
+                      <th>Total Tax: <span class="text-regular"></span></th>
+                      <td class="text-right">₹{{finalTotalTaxAmount.toFixed(2)}}</td>
+                    </tr>
+                    <tr>
+                      <th>Others: <span class="text-regular"></span></th>
+                      <td class="d-flex flex-row-reverse p-0">
+                        <mat-form-field class="example-full-width">
+                          <input type="number" min="0" autocomplete="off" (change)="onOtherChange()" matInput
+                            [(ngModel)]="finalOtherAmount">
+                        </mat-form-field>
+
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Round Off: <span class="text-regular"></span></th>
+                      <td class="text-right">{{finalRoundOffAmount}}</td>
+                    </tr>
+                    <tr>
+                      <th>Grand Total:</th>
+                      <td class="text-right text-primary">
+                        <h5 *ngIf="finalOtherAmount != undefined && finalOtherAmount != 0">₹{{finalCalculatedAmount}}
+                        </h5>
+
+                        <h5 *ngIf="finalOtherAmount === 0">₹{{finalGrandTotalAmount}}</h5>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

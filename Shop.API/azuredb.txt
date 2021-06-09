@@ -1,0 +1,1 @@
+﻿Server=tcp:ayurveda-sql.database.windows.net,1433;Initial Catalog=AnandERP;Persist Security Info=False;User ID=appuser;Password=UveshPC@321;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;

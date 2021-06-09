@@ -1,0 +1,115 @@
+<div class="container-fluid mt-3">
+  <app-pagetitle title="Party Sales Ledger" [breadcrumbItems]="breadCrumbItems"></app-pagetitle>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <form #form="ngForm" class="form-inline mb-3" (ngSubmit)="loadMembers()" autocomplete="off">
+            <div class="form-group">
+              <label>Select Party: </label>
+              <!-- <input type="number" class="form-control ml-1" style="width: 70px;" name="partyId"
+        [(ngModel)]="userParams.partyId"> -->
+              <div class="ng-autocomplete">
+                <ng-autocomplete [data]="dataParty" [searchKeyword]="keywordParty" (selected)='selectPartyEvent($event)'
+                  (inputChanged)='getPartyServerResponse($event)' (inputFocused)='onPartyFocused($event)'
+                  [itemTemplate]="partyTemplate" (inputCleared)="searchPartyCleared()"
+                  [notFoundTemplate]="notFoundTTemplate" [debounceTime]="600" [isLoading]="isLoadingResultParty"
+                  [minQueryLength]="1" placeHolder="Search Party. eg 'Name'" required>
+                </ng-autocomplete>
+
+                <ng-template #partyTemplate let-item>
+                  <a href="javascript:void(0)">
+                    <div class="row">
+                      <div class="col-10">
+                        <span [innerHTML]="item.name"></span>
+                      </div>
+                    </div>
+                  </a>
+                </ng-template>
+
+                <ng-template #notFoundTTemplate let-notFound>
+                  No data found
+                </ng-template>
+              </div>
+            </div>
+            <div class="form-group px-2">
+              <label>FromDate: </label>
+              <input type="text" class="form-control" name="fromDate" autocomplete="off"
+                [(ngModel)]="userParams.fromDate" bsDatepicker [bsValue]="userParams.fromDate"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+            </div>
+            <div class="form-group px-2">
+              <label>To Date: </label>
+              <input type="text" class="form-control" name="toDate" autocomplete="off" [(ngModel)]="userParams.toDate"
+                bsDatepicker [bsValue]="userParams.toDate"
+                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }">
+            </div>
+            <div class="form-group">
+              <mat-checkbox name="isSale" [checked]="userParams.isSale" [(ngModel)]="userParams.isSale"
+                class="example-margin" color="primary">Sales</mat-checkbox>
+            </div>
+            <button class="btn btn-primary ml-1" type="submit">Apply Filters</button>
+            <button (click)="resetFilters()" class="btn btn-info ml-1" type="submit">Reset Filters</button>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive mt-3">
+            <table class="table table-centered table-bordered datatable dt-responsive nowrap"
+              style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Voucher</th>
+                  <th scope="col">Debit</th>
+                  <th scope="col">Credit</th>
+                  <th scope="col">Closing</th>
+                  <!-- <th scope="col">Type</th> -->
+                  <th scope="col">Transaction Type</th>
+                  <th scope="col">Remark</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of users; let i = index">
+                  <th scope="row">{{i + 1}}</th>
+                  <td>{{item.created |date: 'dd-MM-yyyy'}}</td>
+                  <td>{{item.invoiceNo}}</td>
+                  <td>{{item.debit.toFixed(2)}}</td>
+                  <td>{{item.credit.toFixed(2)}}</td>
+                  <td>{{item.closing.toFixed(2)}}</td>
+                  <!-- <td>{{item.orderType}}</td> -->
+                  <td>{{item.type}}</td>
+                  <td *ngIf="i == 0">Opening Balance</td>
+                  <td *ngIf="i > 0">{{item.remark}}</td>
+                </tr>
+                <tr class="bg-light footer-border">
+                  <th colspan="3" class="text-right">Total</th>
+                  <td>{{TotalDebit.toFixed(2)}}</td>
+                  <td>{{TotalCredit.toFixed(2)}}</td>
+                  <td>{{TotalClosing.toFixed(2)}}</td>
+                  <td></td>
+                  <td colspan="2"></td>
+                </tr>
+                <tr class="bg-light footer-border">
+                  <th colspan="3" class="text-right">Total Balance C/F</th>
+                  <td>-</td>
+                  <td>{{TotalClosing.toFixed(2)}}</td>
+                  <td>-</td>
+                  <td></td>
+                  <td colspan="2"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
