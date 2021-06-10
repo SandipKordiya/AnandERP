@@ -18,15 +18,14 @@ import { Options } from 'select2';
 import { Observable } from 'rxjs';
 import { Select2OptionData } from 'ng-select2';
 import { ProductService } from '../../_services/product.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
-const noop = () => {
-};
-
+const noop = () => {};
 
 @Component({
   selector: 'app-sell',
   templateUrl: './sell.component.html',
-  styleUrls: ['./sell.component.scss']
+  styleUrls: ['./sell.component.scss'],
 })
 export class SellComponent implements OnInit {
   breadCrumbItems: Array<{}>;
@@ -51,18 +50,15 @@ export class SellComponent implements OnInit {
   taxTypeList: any = ['IntraState', 'InterState'];
   showProductheader: boolean = false;
 
-
   keyword = 'productName';
   partyAutoSelect: any;
   keywordParty = 'name';
-
 
   data: any;
   public batchProducts: any[] = [];
   public options: Options;
   errorMsg: string;
   isLoadingResult: boolean;
-
 
   dataParty: any;
   errorMsgParty: string;
@@ -75,8 +71,9 @@ export class SellComponent implements OnInit {
     guide: true,
     showMask: true,
     // keepCharPositions : true,
-    mask: [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]
+    mask: [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/],
   };
+
   productAutoName: any;
   saleDate: any;
   dueDate: any;
@@ -91,15 +88,33 @@ export class SellComponent implements OnInit {
   order: any;
   btn: string = 'Save';
 
+  saleForm = new FormGroup({
+    invoiceNo: new FormControl(''),
+    branchId: new FormControl(''),
+    party: new FormControl(''),
+  });
 
-  constructor(private http: HttpClient, private branchService: BranchService,
+  handleAddProduct() {
+    console.log(this.saleForm.value);
+  }
+
+  constructor(
+    private http: HttpClient,
+    private branchService: BranchService,
     private route: ActivatedRoute,
     private productService: ProductService,
-    private authService: AuthService, private taxService: TaxService, private router: Router,
-    private spinner: NgxSpinnerService, private alertify: AlertifyService, private _decimalPipe: DecimalPipe,
-    private shopService: ShopService) {
-    this.breadCrumbItems = [{ label: 'Sale' }, { label: 'New Sale Invoice', active: true }];
-
+    private authService: AuthService,
+    private taxService: TaxService,
+    private router: Router,
+    private spinner: NgxSpinnerService,
+    private alertify: AlertifyService,
+    private _decimalPipe: DecimalPipe,
+    private shopService: ShopService
+  ) {
+    this.breadCrumbItems = [
+      { label: 'Sale' },
+      { label: 'New Sale Invoice', active: true },
+    ];
   }
 
   ngOnInit() {
@@ -124,7 +139,7 @@ export class SellComponent implements OnInit {
   }
 
   getOrderFromRepo(): void {
-    this.shopService.getSaleOrder(this.orderId).subscribe(data => {
+    this.shopService.getSaleOrder(this.orderId).subscribe((data) => {
       this.order = data;
       this.model.invoiceNo = data.invoiceNo;
       this.partyId = data.partyId;
@@ -144,7 +159,7 @@ export class SellComponent implements OnInit {
   }
 
   getOrderItemsFromRepo(id): void {
-    this.shopService.getSaleOrderItems(id).subscribe(data => {
+    this.shopService.getSaleOrderItems(id).subscribe((data) => {
       this.products = data;
       console.log('order items', this.products);
     });
@@ -184,7 +199,6 @@ export class SellComponent implements OnInit {
     this.onChangedueCallback(this.dueDate);
   }
 
-
   onProductChange(event) {
     // console.log(event);
     this.productExpireDate = event;
@@ -202,14 +216,14 @@ export class SellComponent implements OnInit {
   getServerResponse(event) {
     this.isLoadingResult = true;
     // this.http.get(this.baseUrl + 'product/find/sell/' + event)
-    this.http.get(this.baseUrl + 'product/find/purchase/' + event)
-      .subscribe(data => {
-
+    this.http
+      .get(this.baseUrl + 'product/find/purchase/' + event)
+      .subscribe((data) => {
         if (data == undefined) {
           this.data = [];
           // this.errorMsg = data.Error;
         } else {
-          console.log(data);
+          console.log('product', data);
           this.showProductheader = true;
           this.data = data;
         }
@@ -227,9 +241,16 @@ export class SellComponent implements OnInit {
   }
 
   selectBatch() {
-    console.log('this.model.productId', this.model.productId, '-batchNo-', this.model.batchNo)
-    var data = this.batchProducts.find(x => x.id === this.model.productId && x.batchNo === this.model.batchNo);
-    console.log('data batch', data)
+    console.log(
+      'this.model.productId',
+      this.model.productId,
+      '-batchNo-',
+      this.model.batchNo
+    );
+    var data = this.batchProducts.find(
+      (x) => x.id === this.model.productId && x.batchNo === this.model.batchNo
+    );
+    console.log('data batch', data);
     this.selectEvent(data);
   }
 
@@ -246,7 +267,7 @@ export class SellComponent implements OnInit {
     this.model.discount = 0;
     this.model.otherDiscount = 0;
 
-    // this.model.rate = item.rate;  
+    // this.model.rate = item.rate;
     // this.model.amount = item.rate * item.quantity;
     this.model.saleRate = item.saleRate;
     this.model.taxId = item.taxId;
@@ -269,7 +290,7 @@ export class SellComponent implements OnInit {
     this.model.mRPDiscount = 0;
     this.model.discount = 0;
     this.model.otherDiscount = 0;
-    this.model.rate = item.rate;  
+    this.model.rate = item.rate;
     // this.model.amount = item.rate * item.quantity;
     this.model.saleRate = item.saleRate;
     this.model.taxId = item.taxId;
@@ -285,7 +306,7 @@ export class SellComponent implements OnInit {
       this.onchangeQty();
     }
 
-    console.log('amount', item.rate * item.quantity)
+    console.log('amount', item.rate * item.quantity);
   }
 
   onchangeQty() {
@@ -294,12 +315,12 @@ export class SellComponent implements OnInit {
     let otherdiscountCount = 0;
 
     let grossamount = this.model.rate * this.model.quantity;
-    console.log('grossamount', grossamount)
+    console.log('grossamount', grossamount);
 
     if (this.model.mRPDiscount > 0) {
       mrpdiscountAmount = (grossamount * this.model.mRPDiscount) / 100;
       this.model.mrpdiscountAmount = mrpdiscountAmount;
-      console.log('mrpdiscountAmount', mrpdiscountAmount)
+      console.log('mrpdiscountAmount', mrpdiscountAmount);
     } else {
       this.model.mrpdiscountAmount = 0;
     }
@@ -313,24 +334,23 @@ export class SellComponent implements OnInit {
       this.model.discountCount = 0;
     }
     grossamount = grossamount - discountCount;
-    console.log('grossamount', grossamount)
+    console.log('grossamount', grossamount);
 
     if (this.model.otherDiscount > 0) {
       otherdiscountCount = (grossamount * this.model.otherDiscount) / 100;
       this.model.otherdiscountCount = otherdiscountCount;
-      console.log('otherdiscountCount', otherdiscountCount)
+      console.log('otherdiscountCount', otherdiscountCount);
     } else {
       this.model.otherdiscountCount = 0;
     }
     grossamount = grossamount - otherdiscountCount;
-    console.log('grossamount', grossamount)
+    console.log('grossamount', grossamount);
 
     const tax = (grossamount * this.productTaxRate) / 100;
     this.model.taxAmount = tax;
-    console.log('tax', tax)
+    console.log('tax', tax);
 
     this.model.amount = (grossamount + tax).toFixed(2);
-
   }
 
   onChangeSearch(val: string) {
@@ -338,8 +358,7 @@ export class SellComponent implements OnInit {
     // And reassign the 'data' which is binded to 'data' property.
   }
 
-  onFocused(e) {
-  }
+  onFocused(e) {}
   productOpened() {
     this.showProductheader = true;
   }
@@ -349,9 +368,9 @@ export class SellComponent implements OnInit {
 
   getPartyServerResponse(event) {
     this.isLoadingResultParty = true;
-    this.http.get(this.baseUrl + 'party/findFromSP/' + event)
-      .subscribe(data => {
-
+    this.http
+      .get(this.baseUrl + 'party/findFromSP/' + event)
+      .subscribe((data) => {
         if (data == undefined) {
           this.dataParty = [];
           // this.errorMsgParty = data.Error;
@@ -360,14 +379,15 @@ export class SellComponent implements OnInit {
           this.dataParty = data;
 
           if (this.orderId !== undefined) {
-            let party = this.dataParty.filter(x => x.Id == this.order.partyId);
-            console.log('party', party)
+            let party = this.dataParty.filter(
+              (x) => x.Id == this.order.partyId
+            );
+            console.log('party', party);
             this.dataParty = party;
             this.partyAutoSelect = party[0].name;
 
             this.selectPartyEvent(party[0]);
           }
-
         }
 
         this.isLoadingResultParty = false;
@@ -383,11 +403,9 @@ export class SellComponent implements OnInit {
     console.log(item);
     this.PartyDueDays = item.totalDays;
     this.isBillingEnabled = item.isBillingEnabled;
-    if (item.stateId == 4030)
-      this.model.taxType = "IntraState";
+    if (item.stateId == 4030) this.model.taxType = 'IntraState';
 
-    if (item.stateId != 4030)
-      this.model.taxType = "InterState";
+    if (item.stateId != 4030) this.model.taxType = 'InterState';
     this.partyId = item.id;
   }
 
@@ -408,30 +426,46 @@ export class SellComponent implements OnInit {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     let branchName = localStorage.getItem('branchName');
-    this.model.invoiceNo = branchName.slice(0, 3).toUpperCase() + '/T-' + result;
+
+    this.saleForm.patchValue({
+      invoiceNo: branchName.slice(0, 3).toUpperCase() + '/T-' + result,
+    });
+
     return result;
   }
 
   AddProduct() {
-    console.log('this.model.expireDate', this.model.expireDate)
-    var data = this.products.find(x => x.productId === this.model.productId && x.batchNo === this.model.batchNo);
+    console.log('this.model.expireDate', this.model.expireDate);
+    var data = this.products.find(
+      (x) =>
+        x.productId === this.model.productId && x.batchNo === this.model.batchNo
+    );
     this.onchangeQty();
     if (data) {
       let index = this.products.indexOf(data);
 
       if (this.isProductAdd) {
-        this.products[index].quantity = parseInt(this.model.quantity) + parseInt(this.products[index].quantity);
+        this.products[index].quantity =
+          parseInt(this.model.quantity) +
+          parseInt(this.products[index].quantity);
         this.model.quantity = this.products[index].quantity;
         this.products[index].batchNo = this.model.batchNo;
         this.products[index].mRPDiscount = this.model.mRPDiscount;
-        this.products[index].expireDate = moment(this.productExpireDate).format('YYYY-M-D');
+        this.products[index].expireDate = moment(this.productExpireDate).format(
+          'YYYY-M-D'
+        );
         this.products[index].mRP = this.model.mrp;
         this.products[index].rate = this.model.rate;
         this.products[index].saleRate = this.model.saleRate;
         this.products[index].freeQuantity = this.model.freeQuantity;
         this.products[index].discount = this.model.discount;
         this.products[index].otherDiscount = this.model.otherDiscount;
-        this.products[index].amount = parseFloat((parseFloat(this.model.amount) + parseFloat(this.products[index].amount)).toFixed(2));
+        this.products[index].amount = parseFloat(
+          (
+            parseFloat(this.model.amount) +
+            parseFloat(this.products[index].amount)
+          ).toFixed(2)
+        );
         this.model.amount = this.products[index].amount.toFixed(2);
         this.products[index].taxId = this.model.taxId;
         this.products[index].taxRate = this.productTaxRate;
@@ -442,7 +476,9 @@ export class SellComponent implements OnInit {
         this.products[index].quantity = parseInt(this.model.quantity);
         this.products[index].batchNo = this.model.batchNo;
         this.products[index].mRPDiscount = this.model.mRPDiscount;
-        this.products[index].expireDate = moment(this.productExpireDate).format('YYYY-M-D');
+        this.products[index].expireDate = moment(this.productExpireDate).format(
+          'YYYY-M-D'
+        );
         this.products[index].mRP = this.model.mrp;
         this.products[index].rate = this.model.rate;
         this.products[index].saleRate = this.model.saleRate;
@@ -455,10 +491,7 @@ export class SellComponent implements OnInit {
         this.products[index].taxAmount = this.model.taxAmount;
         this.products[index].taxName = this.productTax;
         this.products[index].partyId = this.partyId;
-
       }
-
-
     } else {
       const item = {
         productId: this.model.productId,
@@ -479,10 +512,10 @@ export class SellComponent implements OnInit {
         taxId: this.model.taxId,
         taxRate: this.productTaxRate,
         taxAmount: this.model.taxAmount,
-        taxName: this.productTax
+        taxName: this.productTax,
       };
       // const disAmount1 = (item.discount * (item.mRP * item.quantity)) / 100;
-      // const disAmount2 = (item.otherDiscount * (item.mRP * item.quantity)) / 100;    
+      // const disAmount2 = (item.otherDiscount * (item.mRP * item.quantity)) / 100;
       console.log('add product', item);
       this.products.push(item);
     }
@@ -491,7 +524,7 @@ export class SellComponent implements OnInit {
     this.clearProduct();
     this.onChangeSearch('');
     this.isProductAdd = true;
-    console.log('this.finalGrandTotalAmount', this.finalGrandTotalAmount)
+    console.log('this.finalGrandTotalAmount', this.finalGrandTotalAmount);
   }
 
   clearProduct(): void {
@@ -543,29 +576,50 @@ export class SellComponent implements OnInit {
     this.isProductAdd = false;
   }
 
-
   getColumnTotal() {
-    const { GrossAmount, TotalTaxAmount, GrandTotalAmount, discount, otherDiscount } = this.products.reduce((acc, item) => {
-      acc.GrossAmount = parseFloat(acc.GrossAmount) + (parseFloat(item.rate) * parseFloat(item.quantity));
-      acc.TotalTaxAmount = parseFloat(acc.TotalTaxAmount) + parseFloat(item.taxAmount);
-      acc.GrandTotalAmount = parseFloat(acc.GrandTotalAmount) + parseFloat(item.amount);
-      acc.discount = parseFloat(acc.discount) + ((parseFloat(acc.GrossAmount) * parseFloat(item.discount)) / 100);
-      acc.otherDiscount = parseFloat(acc.otherDiscount) + (((parseFloat(acc.GrossAmount) - parseFloat(acc.discount)) * parseFloat(item.otherDiscount)) / 100);
-      return acc;
-    }, {
-      GrossAmount: 0,
-      TotalTaxAmount: 0,
-      GrandTotalAmount: 0,
-      discount: 0,
-      otherDiscount: 0
-    });
+    const {
+      GrossAmount,
+      TotalTaxAmount,
+      GrandTotalAmount,
+      discount,
+      otherDiscount,
+    } = this.products.reduce(
+      (acc, item) => {
+        acc.GrossAmount =
+          parseFloat(acc.GrossAmount) +
+          parseFloat(item.rate) * parseFloat(item.quantity);
+        acc.TotalTaxAmount =
+          parseFloat(acc.TotalTaxAmount) + parseFloat(item.taxAmount);
+        acc.GrandTotalAmount =
+          parseFloat(acc.GrandTotalAmount) + parseFloat(item.amount);
+        acc.discount =
+          parseFloat(acc.discount) +
+          (parseFloat(acc.GrossAmount) * parseFloat(item.discount)) / 100;
+        acc.otherDiscount =
+          parseFloat(acc.otherDiscount) +
+          ((parseFloat(acc.GrossAmount) - parseFloat(acc.discount)) *
+            parseFloat(item.otherDiscount)) /
+            100;
+        return acc;
+      },
+      {
+        GrossAmount: 0,
+        TotalTaxAmount: 0,
+        GrandTotalAmount: 0,
+        discount: 0,
+        otherDiscount: 0,
+      }
+    );
     this.finalDiscountAmount = discount + otherDiscount;
     this.finalGrossAmount = GrossAmount;
     this.finalTotalTaxAmount = TotalTaxAmount;
-    this.finalGrandTotalAmount = parseFloat((this._decimalPipe.transform(GrandTotalAmount, "1.0-0")).replace(/,/g, ''));
-    this.finalRoundOffAmount = parseFloat((this.finalGrandTotalAmount - parseFloat(GrandTotalAmount)).toFixed(2));
+    this.finalGrandTotalAmount = parseFloat(
+      this._decimalPipe.transform(GrandTotalAmount, '1.0-0').replace(/,/g, '')
+    );
+    this.finalRoundOffAmount = parseFloat(
+      (this.finalGrandTotalAmount - parseFloat(GrandTotalAmount)).toFixed(2)
+    );
   }
-
 
   deleteProduct(item: any): void {
     const index: number = this.products.indexOf(item);
@@ -578,34 +632,38 @@ export class SellComponent implements OnInit {
 
   getList() {
     this.spinner.show();
-    this.branchService.getBranches()
-      .subscribe((res: any) => {
+    this.branchService.getBranches().subscribe(
+      (res: any) => {
         console.log(res);
         this.branches = res;
         this.spinner.hide();
-      }, error => {
+      },
+      (error) => {
         this.alertify.error(error.error);
-      });
+      }
+    );
   }
 
   getTaxList() {
     this.spinner.show();
-    this.taxService.getTaxes()
-      .subscribe((res: any) => {
+    this.taxService.getTaxes().subscribe(
+      (res: any) => {
         console.log(res);
         this.taxes = res;
         this.spinner.hide();
-      }, error => {
+      },
+      (error) => {
         this.alertify.error(error);
-      });
+      }
+    );
   }
 
   onTaxSelect(id: number) {
-    let item = this.taxes.find(x => x.id === id);
+    let item = this.taxes.find((x) => x.id === id);
     this.productTaxRate = item.rate;
     this.productTax = item.name;
-    console.log('taxrate', this.productTaxRate)
-    console.log('item', item)
+    console.log('taxrate', this.productTaxRate);
+    console.log('item', item);
     this.onchangeQty();
   }
 
@@ -613,7 +671,8 @@ export class SellComponent implements OnInit {
     if (this.finalOtherAmount == undefined) {
       this.finalOtherAmount = 0;
     }
-    this.finalCalculatedAmount = this.finalGrandTotalAmount + this.finalOtherAmount;
+    this.finalCalculatedAmount =
+      this.finalGrandTotalAmount + this.finalOtherAmount;
   }
 
   onRoundOffChange() {
@@ -629,7 +688,7 @@ export class SellComponent implements OnInit {
         saleDate: moment(this.model.saleDate).format('YYYY-M-D'),
         dueDate: moment(this.model.dueDate).format('YYYY-M-D'),
         branchId: this.model.branchId,
-        status: "Unpaid",
+        status: 'Unpaid',
         doctor: '',
         isRetail: false,
         grossAmount: this.finalGrossAmount,
@@ -638,18 +697,20 @@ export class SellComponent implements OnInit {
         roundOff: this.finalRoundOffAmount,
         netAmount: this.finalGrandTotalAmount,
         description: null,
-        SalesItems: this.products
+        SalesItems: this.products,
       };
       console.log('SaleModel', SaleModel);
-      this.shopService.addSale(this.currentUser, SaleModel).subscribe(next => {
-        this.alertify.success('New sale entry Added.');
-        this.router.navigate(['/order/sale/list']);
-      }, error => {
-        this.alertify.error(error.error);
-      });
-    }
-    else {
-      console.log('this.model', this.model)
+      this.shopService.addSale(this.currentUser, SaleModel).subscribe(
+        (next) => {
+          this.alertify.success('New sale entry Added.');
+          this.router.navigate(['/order/sale/list']);
+        },
+        (error) => {
+          this.alertify.error(error.error);
+        }
+      );
+    } else {
+      console.log('this.model', this.model);
       const purchaseModel = {
         invoiceNo: this.model.invoiceNo,
         partyId: this.partyId,
@@ -665,76 +726,80 @@ export class SellComponent implements OnInit {
         taxAmount: this.finalTotalTaxAmount,
         roundOff: this.finalRoundOffAmount,
         netAmount: this.finalGrandTotalAmount,
-        description: null
+        description: null,
       };
       const saleUpdateModel = {
         saleForUpdateDto: purchaseModel,
-        salesItems: this.products
-      }
+        salesItems: this.products,
+      };
 
       console.log(saleUpdateModel);
-      this.shopService.updateSale(this.orderId, saleUpdateModel).subscribe(next => {
-        this.alertify.success('sale entry updated.');
-        this.router.navigate(['/order/sale/list']);
-      }, error => {
-        this.alertify.error(error.error);
-      });
+      this.shopService.updateSale(this.orderId, saleUpdateModel).subscribe(
+        (next) => {
+          this.alertify.success('sale entry updated.');
+          this.router.navigate(['/order/sale/list']);
+        },
+        (error) => {
+          this.alertify.error(error.error);
+        }
+      );
     }
-
-
   }
 
   getProductsByProductIdAndPartyId(id: number): void {
-    this.shopService.getProductsByProductIdByParty(id, this.partyId, this.model.branchId).subscribe(next => {
-      this.batchProducts = next;
-      console.log('batchProducts', this.batchProducts)
-    }, error => {
-      this.alertify.error(error.error);
-    });
+    this.shopService
+      .getProductsByProductIdByParty(id, this.partyId, this.model.branchId)
+      .subscribe(
+        (next) => {
+          this.batchProducts = next;
+          console.log('batchProducts', this.batchProducts);
+        },
+        (error) => {
+          this.alertify.error(error.error);
+        }
+      );
   }
 
-
   getSchemeByProductId() {
-    console.log('isscheme', this.model.isSchemeApplied)
+    console.log('isscheme', this.model.isSchemeApplied);
 
     if (this.model.productId && this.model.batchNo) {
-      this.productService.getScheme(this.model.productId)
-          .subscribe((res: any) => {
-            console.log('scheme', res);
-            this.scheme = res;
-            if(res == null) {
-              this.model.freeQuantity = 0;
-              this.onchangeQty();
-              console.log('sch last rate', this.model.pastSaleRate)
-              if (this.model.pastSaleRate != null)
-                this.model.rate = this.model.pastSaleRate;
-      
-              if (this.model.pastSaleRate == null)
-                this.getRate();
-            }
+      this.productService.getScheme(this.model.productId).subscribe(
+        (res: any) => {
+          console.log('scheme', res);
+          this.scheme = res;
+          if (res == null) {
+            this.model.freeQuantity = 0;
+            this.onchangeQty();
+            console.log('sch last rate', this.model.pastSaleRate);
+            if (this.model.pastSaleRate != null)
+              this.model.rate = this.model.pastSaleRate;
 
-            if(res != null) {
-               this.model.isSchemeApplied = true;
-               this.model.rate = this.scheme.schRate;
-               this.model.schTotalQuantity = this.scheme.quantity;
-               this.model.freeQuantity = this.scheme.schQuantity;
-               this.onchangeQty();
-            }
-           
-            this.spinner.hide();
-          }, error => {
-            this.alertify.error(error);
-          });
+            if (this.model.pastSaleRate == null) this.getRate();
+          }
+
+          if (res != null) {
+            this.model.isSchemeApplied = true;
+            this.model.rate = this.scheme.schRate;
+            this.model.schTotalQuantity = this.scheme.quantity;
+            this.model.freeQuantity = this.scheme.schQuantity;
+            this.onchangeQty();
+          }
+
+          this.spinner.hide();
+        },
+        (error) => {
+          this.alertify.error(error);
+        }
+      );
     } else {
       this.alertify.error('Select Product and Batch Number');
     }
-
   }
   getRate(): void {
-
     let mrp = this.model.mrp;
-    let tax = '1.' + ("00" + this.productTaxRate).slice(-2);
-    console.log('tax', tax)
+    let tax = '1.' + ('00' + this.productTaxRate).slice(-2);
+    console.log('tax', tax);
     let rate = this.model.saleMargin;
     let quantity = 0;
     let schquantity = 0;
@@ -753,13 +818,13 @@ export class SellComponent implements OnInit {
 
     mrp = mrp / parseFloat(tax);
     const rateValue = (mrp * rate) / 100;
-    let qtyRatio = (mrp - rateValue) * quantity / (quantity + schquantity);
-    const rateDiscount = qtyRatio * discount / 100;
+    let qtyRatio = ((mrp - rateValue) * quantity) / (quantity + schquantity);
+    const rateDiscount = (qtyRatio * discount) / 100;
 
     qtyRatio = qtyRatio - rateDiscount;
 
     this.model.rate = parseFloat(qtyRatio.toFixed(2));
     this.onchangeQty();
-    console.log('rate', qtyRatio)
+    console.log('rate', qtyRatio);
   }
 }

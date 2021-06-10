@@ -54,7 +54,10 @@ import { PosComponent } from './pos/pos.component';
 import { BranchProductsComponent } from './reporting/branch-products/branch-products.component';
 
 const routes: Routes = [
-  { path: 'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule) },
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
+  },
   {
     path: '',
     component: LayoutComponent,
@@ -64,64 +67,69 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'branch', component: BranchComponent },
       { path: 'bank', component: BankComponent },
-      { path: 'branch/:branchName/users', component: UserComponent},
+      { path: 'branch/:branchName/users', component: UserComponent },
       { path: 'brand', component: BrandComponent },
       { path: 'category', component: CategoryComponent },
-      { path: 'company', component: CompanyComponent},
-      { path: 'payment', component: PaymentComponent},
+      { path: 'company', component: CompanyComponent },
+      { path: 'payment', component: PaymentComponent },
       { path: 'partytype', component: PartyTypeComponent },
       { path: 'party/add', component: AddPartyComponent },
-      { path: 'party/edit/:id', component: AddPartyComponent , resolve: { party: PartyResolver }},
+      {
+        path: 'party/edit/:id',
+        component: AddPartyComponent,
+        resolve: { party: PartyResolver },
+      },
       { path: 'party', component: PartyComponent },
       { path: 'party/ledger', component: LedgerComponent },
       { path: 'tax', component: TaxComponent },
-      { path: 'order/invoice/:type/:id', component: OrderInvoiceComponent , resolve: { order: OrderResolver }},
-      { path: 'order/purchase', component: PurchaseComponent },
-      { path: 'order/purchase/return', component: PurchaseReturnComponent },
-      { path: 'order/purchase/return/list', component: PurchaseReturnListComponent },
-      { path: 'order/pur/edit/:type/:id', component: PurchaseComponent , resolve: { order: OrderResolver }},
-      { path: 'order/purchase/list', component: ListComponent },
-      { path: 'order/sale', component: SellComponent },
-      { path: 'order/sale/edit/:id', component: SellComponent},
-      { path: 'order/sale/return', component: SaleReturnComponent },
-      { path: 'order/sale/return/list', component: SaleReturnListComponent },
-      { path: 'order/sale/list', component: SelllistComponent },
-      { path: 'order/stock', component: StockComponent },
-      { path: 'order/stock/list', component: StockListComponent },
-      { path: 'order/stock/return', component: StockReturnComponent },
-      { path: 'order/stock/return/list', component: StockReturnListComponent },
-      { path: 'order/stock/transfer', component: StockTransferComponent },
-      { path: 'order/stock/transfer/list', component: StockTransferListComponent },
-      { path: 'invoice/:id', component: InvoiceComponent , resolve: { order: OrderResolver }},
+      {
+        path: 'order',
+        loadChildren: () =>
+          import('./_modules/order-module/order-module.module').then(
+            (mod) => mod.OrderModuleModule
+          ),
+      },
+      {
+        path: 'invoice/:id',
+        component: InvoiceComponent,
+        resolve: { order: OrderResolver },
+      },
       { path: 'member/add', component: AddMemberComponent },
       { path: 'members/list', component: ListMembersComponent },
       { path: 'product/list', component: ProductComponent },
       { path: 'product/upload', component: UploadBulkComponent },
       { path: 'product/add', component: AddProductComponent },
-      { path: 'product/edit/:id', component: AddProductComponent , resolve: { product: ProductViewResolver }},
-      { path: 'product/view/:id', component: ViewProductComponent, resolve: { product: ProductViewResolver } },
+      {
+        path: 'product/edit/:id',
+        component: AddProductComponent,
+        resolve: { product: ProductViewResolver },
+      },
+      {
+        path: 'product/view/:id',
+        component: ViewProductComponent,
+        resolve: { product: ProductViewResolver },
+      },
 
-      { path: 'sales/duelist', component: InvoiceDueListComponent},
-      { path: 'sales/details', component: SalesDetailsComponent},
+      { path: 'sales/duelist', component: InvoiceDueListComponent },
+      { path: 'sales/details', component: SalesDetailsComponent },
 
-      { path: 'purchase/itemwise', component: ItemWisePurchaseComponent},
-      { path: 'sales/itemwise', component: ItemWiseSalesComponent}, 
-      { path: 'branch/products', component: BranchProductsComponent},
+      { path: 'purchase/itemwise', component: ItemWisePurchaseComponent },
+      { path: 'sales/itemwise', component: ItemWiseSalesComponent },
+      { path: 'branch/products', component: BranchProductsComponent },
 
-      { path: 'payment/party/status', component: PaymentStatusComponent},
+      { path: 'payment/party/status', component: PaymentStatusComponent },
 
-      { path: 'stock/ledger', component: StockLedgerComponent},
-      { path: 'stock/warehouse', component: StockWarehouseComponent},
-     
+      { path: 'stock/ledger', component: StockLedgerComponent },
+      { path: 'stock/warehouse', component: StockWarehouseComponent },
 
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-    ]
+    ],
   },
-  { path: 'pos', component: PosComponent},
+  { path: 'pos', component: PosComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'top' })],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -50,8 +50,9 @@
               </div>
             </div>
             <div class="mb-3">
-              
-              <label for="address">Product <code *ngIf="model.productName" >( Name: {{model.productName}} | Stock: <strong>{{ model.purchaseQuantity - model.sellQuantity}}</strong> | Rate: {{model.rate}} )</code></label>
+
+              <label for="address">Product <code
+                  *ngIf="model.productName">( Name: {{model.productName}} | Stock: <strong>{{ model.purchaseQuantity - model.sellQuantity}}</strong> | Rate: {{model.rate}} )</code></label>
               <div class="ng-autocomplete">
                 <ng-autocomplete [data]="data" [searchKeyword]="keyword" (selected)='selectEvent($event)'
                   (inputChanged)='getServerResponse($event)' (inputFocused)='onFocused($event)'

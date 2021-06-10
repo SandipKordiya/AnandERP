@@ -4,28 +4,29 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body pb-0">
-          <div class="alert alert-danger text-center" *ngIf="PartyDueDays != null && PartyDueDays != undefined" role="alert">
+          <div class="alert alert-danger text-center" *ngIf="PartyDueDays != null && PartyDueDays != undefined"
+            role="alert">
             Party Blocked. Reason : Payment Due {{PartyDueDays}} Days
           </div>
           <!-- <div class="alert alert-success text-center" *ngIf="isBillingEnabled" role="alert">
             Admin Allowed to sell.
           </div> -->
-          <form #editForm="ngForm" id="editForm" (ngSubmit)="AddProduct()" novalidate>
+          <form [formGroup]="saleForm" (ngSubmit)="handleAddProduct()" novalidate>
             <div class="form-row border-bottom">
               <div class="col-md-2 mb-3">
                 <label for="invoiceNo">Invoice Number</label>
-                <input type="text" class="form-control" name="invoiceNo" autocomplete="off"
-                  [(ngModel)]="model.invoiceNo" required>
+                <input type="text" class="form-control" name="invoiceNo" autocomplete="off" formControlName="invoiceNo"
+                  required>
               </div>
               <div class="col-md-2 mb-3">
                 <label for="invoiceNo">Branch</label>
-                <select class="custom-select" name="branchId" [(ngModel)]="model.branchId" required>
+                <select class="custom-select" name="branchId" formControlName="branchId" required>
                   <option *ngFor='let role of branches' [ngValue]="role.id">
                     {{role.name}}
                   </option>
                 </select>
               </div>
-              <div class="col-md-4 mb-3">
+              <!-- <div class="col-md-4 mb-3">
                 <div class="d-flex justify-content-between">
                   <label for="partyId">Party </label>
                 </div>
@@ -45,26 +46,34 @@
                           <div class="order-1 p-1" style="width: 80%;">
                             <span [innerHTML]="item.name"></span><span class="ml-1"> ({{item.partyType}})</span>
                           </div>
-                          <!-- <div class="order-2 p-1" style="width: 20%;">{{item.partyType.type}}</div> -->
-                        </div>
-                      </div>
-                    </a>
-                  </ng-template>
+            </div>
+        </div>
+        </a>
+        </ng-template>
 
-                  <ng-template #notFoundTTemplate let-notFound>
-                    No data found
-                  </ng-template>
+        <ng-template #notFoundTTemplate let-notFound>
+          No data found
+        </ng-template>
+      </div>
+    </div> -->
+
+              <!-- party input -->
+              <div class="col-md-4 mb-3">
+                <div class="d-flex justify-content-between">
+                  <label for="partyId">Party </label>
                 </div>
+                <app-party-input formControlName="party"></app-party-input>
               </div>
+              <!-- party input -->
               <div class="col mb-3">
                 <label for="saleDate">Date</label>
-                <input type="text" id="saleDate" placeholder="Datepicker" [textMask]="mask"
+                <input type="text" id="saleDate" disabled placeholder="Datepicker" [textMask]="mask"
                   [ngModel]="saleDate | date:'MM/dd/yyyy'" (blur)="onBlur()" (change)='todate($event.target.value)'
                   class="form-control" name="saleDate" autocomplete="off" required>
               </div>
               <div class="col mb-3">
                 <label for="dueDate">Due</label>
-                <input type="text" id="dueDate" placeholder="Datepicker" [textMask]="mask"
+                <input type="text" id="dueDate" disabled placeholder="Datepicker" [textMask]="mask"
                   [ngModel]="dueDate | date:'MM/dd/yyyy'" (blur)="ondueBlur()" (change)='toduedate($event.target.value)'
                   class="form-control" name="dueDate" autocomplete="off" required>
               </div>
@@ -79,7 +88,7 @@
             </div>
             <div class="form-row pt-1">
 
-              <div class="col-md-5 mb-3">
+              <!-- <div class="col-md-5 mb-3">
                 <label for="partyId">Product Item</label>
                 <span *ngIf="model" class="product-show p-1">Stock:
                   {{model.stock}}</span>
@@ -117,7 +126,17 @@
                     {{errorMsg}}
                   </ng-template>
                 </div>
+              </div> -->
+
+              <!-- product input  -->
+              <div class="col-md-5 mb-3">
+                <label for="product">Product Item</label>
+                <app-product-input></app-product-input>
               </div>
+              <!-- product input  -->
+
+
+
               <div class="col-md-2 mb-3">
                 <label for="date">Batch</label>
                 <select class="custom-select" name="batchNo" (change)="selectBatch()" [(ngModel)]="model.batchNo"
@@ -204,8 +223,8 @@
                 <mat-checkbox name="isSchemeApplied" [disabled]="!model.productId && !model.brandId"
                   [checked]="model.isSchemeApplied" (change)="getSchemeByProductId()"
                   [(ngModel)]="model.isSchemeApplied" class="example-margin" color="primary">Apply Scheme</mat-checkbox>
-                <button class="btn btn-primary btn-block" [disabled]="editForm.invalid && !isBillingEnabled">Add <span
-                    class="fa fa-plus"></span></button>
+                <button class="btn btn-primary btn-block">Add <span class="fa fa-plus"></span></button>
+                <!-- [disabled]="saleForm.invalid && !isBillingEnabled" -->
               </div>
             </div>
           </form><!-- /form .needs-validation -->

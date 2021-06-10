@@ -14,16 +14,16 @@
       </div> -->
       <div class="card">
         <div class="card-body pb-0">
-          <form #editForm="ngForm" id="editForm" (ngSubmit)="AddProduct()" novalidate>
+          <form [formGroup]='addPurchaseForm' id="editForm" (ngSubmit)="AddProduct()" novalidate>
             <div class="form-row border-bottom">
               <div class="col-md-2 mb-3">
                 <label for="invoiceNo">Invoice Number</label>
-                <input type="text" class="form-control" name="invoiceNo" autocomplete="off"
-                  [(ngModel)]="model.invoiceNo" required>
+                <input type="text" formControlName='invoiceNo' class="form-control" name="invoiceNo" autocomplete="off"
+                  required>
               </div>
               <div class="col-md-2 mb-3">
                 <label for="invoiceNo">Branch</label>
-                <select class="custom-select" name="branchId" [(ngModel)]="model.branchId" required>
+                <select class="custom-select" tabindex="-1" formControlName='branch' name="branchId" required>
                   <option *ngFor='let role of branches' [ngValue]="role.id">
                     {{role.name}}
                   </option>
@@ -33,40 +33,22 @@
                 <div class="d-flex justify-content-between">
                   <label for="partyId">Party </label>
                 </div>
-                <div class="ng-autocomplete">
-                  <ng-autocomplete [data]="dataParty" [searchKeyword]="keywordParty" name="partyAutoSelect"
-                    [(ngModel)]="partyAutoSelect" (selected)='selectPartyEvent($event)'
-                    (inputChanged)='getPartyServerResponse($event)' (inputFocused)='onPartyFocused($event)'
-                    [itemTemplate]="partyTemplate" (inputCleared)="searchPartyCleared()"
-                    [notFoundTemplate]="notFoundTTemplate" [debounceTime]="600" [isLoading]="isLoadingResultParty"
-                    [minQueryLength]="1" placeHolder="Search Party. eg 'Name'" required>
-                  </ng-autocomplete>
-
-                  <ng-template #partyTemplate let-item>
-                    <a href="javascript:void(0)">
-                      <div class="row">
-                        <div class="col-10">
-                          <span [innerHTML]="item.name"></span>
-                        </div>
-                      </div>
-                    </a>
-                  </ng-template>
-
-                  <ng-template #notFoundTTemplate let-notFound>
-                    No data found
-                  </ng-template>
-                </div>
+                <app-party-input (onChangeHandler)="onChangeParty($event)" formControlName='party'>
+                </app-party-input>
               </div>
+
               <div class="col-md-2 mb-3">
                 <label for="purchaseDate">P. Date</label>
-                <input type="text" id="purchaseDate" placeholder="Datepicker" [textMask]="mask"
+                <!-- <input type="text" id="purchaseDate" placeholder="Datepicker" [textMask]="mask"
                   [ngModel]="purchaseDate | date:'MM/dd/yyyy'" (blur)="onBlur()" (change)='todate($event.target.value)'
-                  class="form-control" name="purchaseDate" autocomplete="off" required>
+                  class="form-control" name="purchaseDate" autocomplete="off" required> -->
+                <app-date-input skipIndex="-1" formControlName='PDate'></app-date-input>
               </div>
+
               <div class="col-md-2 mb-3">
                 <label for="taxType">Tax Type</label>
-                <!-- <input type="text" class="form-control" autocomplete="off" id="taxType" required=""> -->
-                <select class="custom-select" aria-readonly="true" name="taxType" [(ngModel)]="model.taxType" required>
+                <select class="custom-select" tabindex="-1" formControlName="TaxType" aria-readonly="true"
+                  name="taxType" required>
                   <option *ngFor='let item of taxTypeList' [ngValue]="item">
                     {{item}}
                   </option>
@@ -77,76 +59,38 @@
 
               <div class="col-md-4 mb-3">
                 <label for="partyId">Product Item</label>
-                <!-- <input type="text" class="form-control" id="partyId" required="">
-                <div class="invalid-feedback"> Valid last name is required. </div> -->
-                <div class="ng-autocomplete">
-                  <ng-autocomplete [data]="data" [searchKeyword]="keyword" (selected)='selectEvent($event)'
-                    name="productAutoName" [(ngModel)]="productAutoName" (inputChanged)='getServerResponse($event)'
-                    (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" (inputCleared)="searchCleared()"
-                    [notFoundTemplate]="notFoundTemplate" [debounceTime]="600" (opened)="productOpened()"
-                    (closed)="productClosed()" [isLoading]="isLoadingResult" [minQueryLength]="1"
-                    placeHolder="Search Product. eg 'Name'" required>
-                  </ng-autocomplete>
-                  <div *ngIf="showProductheader" class="row product-row bg-light">
-                    <div class="col d-flex flex-nowrap">
-                      <div class="order-1 p-0" style="width: 39%;">Product</div>
-                      <div class="order-2 p-0" style="width: 20%;">Brand</div>
-                      <div class="order-3 p-0" style="width: 15%;">SaleMargin</div>
-                      <div class="order-4 p-0" style="width: 15%;">MRP</div>
-                      <div class="order-6 p-0" style="width: 15%;">TaxRate</div>
-                    </div>
-
-                  </div>
-                  <ng-template #itemTemplate let-item>
-                    <a href="javascript:void(0)">
-                      <div class="row">
-                        <div class="col d-flex flex-nowrap ">
-                          <div class="order-1 p-0" style="width: 39%;"><span [innerHTML]="item.productName"></span>
-                          </div>
-                          <div class="order-2 p-0" style="width: 20%;">{{item.brandName}}</div>
-                          <div class="order-3 p-0" style="width: 15%;">{{item.saleMargin}}</div>
-                          <div class="order-4 p-0" style="width: 15%;">{{item.mrp}}</div>
-                          <div class="order-6 p-0" style="width: 15%;">{{item.taxRate}}%</div>
-                        </div>
-                      </div>
-                    </a>
-                  </ng-template>
-
-
-                  <ng-template #notFoundTemplate let-notFound>
-                    {{errorMsg}}
-                  </ng-template>
-                </div>
+                <app-product-input (onChangeHandler)="onChangeProduct($event)" formControlName="productData">
+                </app-product-input>
               </div>
+
               <div class="col-md-3 mb-3">
                 <label for="date">Batch Number</label>
-                <input type="text" class="form-control" name="batchNo" [(ngModel)]="model.batchNo" required>
+                <input type="text" formControlName="batchNumber" class="form-control" name="batchNo" required>
                 <div class="invalid-feedback"> Valid last name is required. </div>
               </div>
               <div class="col-md-2 mb-3">
                 <label for="expireDate">Expire Date</label>
-                <!-- <input type="text" placeholder="Datepicker" class="form-control" name="expireDate"
-                  [(ngModel)]="model.expireDate" bsDatepicker autocomplete="off"> -->
-                <input type="text" id="expireDate" placeholder="Datepicker" [textMask]="mask"
-                  [ngModel]="productExpireDate | date:'MM/dd/yyyy'" (blur)="onProductBlur()"
-                  (change)='productExpireDateSelect($event.target.value)' class="form-control" name="expireDate"
-                  autocomplete="off" required>
+
+                <app-date-input formControlName='expireDate'></app-date-input>>
               </div>
+
               <div class="col-md-1 mb-3">
                 <label for="mrp">MRP</label>
-                <input type="number" class="form-control" min="0" name="mrp" [(ngModel)]="model.mrp" required>
+                <input type="number" formControlName='mrp' class="form-control" min="0" name="mrp" required>
                 <div class="invalid-feedback"> Valid last name is required. </div>
               </div>
+
               <div class="col-md-1 mb-3">
                 <label for="quantity">Quantity</label>
-                <input type="number" min="0" class="form-control" name="quantity" (change)="onchangeQty()"
-                  [(ngModel)]="model.quantity" required>
+                <input type="number" (keyup)="handleQuantityChange($event.target.value)" formControlName='quantity'
+                  min="0" class="form-control" name="quantity" required>
                 <div class="invalid-feedback"> Valid last name is required. </div>
               </div>
+
               <div class="col-md-1 mb-3">
                 <label for="schQuantity">SCH Qty</label>
-                <input type="number" min="0" class="form-control" name="schQuantity" autocomplete="off"
-                  [(ngModel)]="model.schQuantity" required>
+                <input type="number" formControlName='schQuantity' min="0" class="form-control" name="schQuantity"
+                  autocomplete="off" required>
                 <div class="invalid-feedback"> Valid last name is required. </div>
               </div>
 
@@ -154,29 +98,28 @@
 
             <div class="form-row">
               <div class="col-md-2 mb-3">
-                <label for="partyId">Rate <code *ngIf="model.saleMargin">M.Rate: {{model.saleMargin}}</code> </label>
-                <input type="number" class="form-control" name="rate" (change)="onchangeQty()" [(ngModel)]="model.rate">
+                <label for="partyId">Rate <code *ngIf="taxSaleMargin">M.Rate: {{taxSaleMargin}}</code> </label>
+                <input type="number" (keyup)="handleRateChange($event.target.value)" formControlName='rate'
+                  class="form-control" name="rate">
               </div>
               <div class="col-md-2 mb-3">
                 <label for="date">Discount % </label>
-                <!-- <code> AMT: {{(this.model.rate * this.model.quantity) * this.model.discount / 100  }}</code> -->
 
-                <input type="number" class="form-control" name="discount" (change)="onchangeQty()"
-                  [(ngModel)]="model.discount">
+                <input type="number" (keyup)="handleDiscountChange($event.target.value)" formControlName='discount'
+                  class="form-control" name="discount">
                 <div class="invalid-feedback"> Valid last name is required. </div>
               </div>
               <div class="col-md-2 mb-3">
                 <label for="taxType">O. Discount %</label>
-                <!-- <code> AMT: {{(model.otherDiscount * (model.amount * model.quantity))/100  }}</code> -->
 
-                <input type="number" class="form-control" name="otherDiscount" (change)="onchangeQty()"
-                  [(ngModel)]="model.otherDiscount">
+                <input type="number" (keyup)="handleOtherDiscountChange($event.target.value)"
+                  formControlName='OtherDiscount' class="form-control" name="otherDiscount">
                 <div class="invalid-feedback"> Valid last name is required. </div>
               </div>
               <div class="col-md-2 mb-3">
                 <label for="taxType">Tax</label>
-                <select class="custom-select" name="taxId" (change)="onTaxSelect(model.taxId)" [(ngModel)]="model.taxId"
-                  required>
+                <select class="custom-select" (change)="handleTaxRateChange($event.target.value)" formControlName='Tax'
+                  name="taxId" required>
                   <option *ngFor='let item of taxes' [ngValue]="item.id">
                     {{item.name}}
                   </option>
@@ -184,18 +127,19 @@
               </div>
               <div class="col-md-1 mb-3">
                 <label for="taxType">Amount</label>
-                <input type="number" class="form-control" name="amount" [(ngModel)]="model.amount" required>
+                <input type="number" readonly formControlName='Amount' class="form-control" name="amount" required>
                 <div class="invalid-feedback"> Valid last name is required. </div>
               </div>
 
               <div class="col-md-2 pt-3">
-                <button class="btn btn-primary btn-block mt-2" [disabled]="editForm.invalid">Add <span
-                    class="fa fa-plus"></span></button>
+                <button class="btn btn-primary btn-block mt-2">Add <span class="fa fa-plus"></span></button>
               </div>
             </div>
           </form><!-- /form .needs-validation -->
         </div>
       </div>
+      <!-- <app-added-product-list [products]='products'></app-added-product-list> -->
+
       <div class="card card-fluid">
         <div class="table-responsive" *ngIf="products.length">
           <table class="table table-hover table-sm mb-0">
@@ -221,18 +165,17 @@
             <tbody>
               <tr *ngFor="let item of products; let i = index">
                 <th scope="row">{{i + 1}}</th>
-                <td>{{item.productName}}</td>
-                <td>{{item.batchNo}}</td>
+                <td>{{item.productData.item.productName}}</td>
+                <td>{{item.batchNumber}}</td>
                 <td>{{item.expireDate | date:'MM/dd/yyyy'}}</td>
-                <td *ngIf="!orderId">{{item.mRP}}</td>
-                <td *ngIf="orderId">{{item.mrp}}</td>
+                <td>{{item.mrp}}</td>
                 <td>{{item.rate}}</td>
                 <td>{{item.quantity}}</td>
                 <td>{{item.schQuantity}}</td>
                 <td>
                   {{item.discount}}%
                 </td>
-                <td>{{item.otherDiscount}}%
+                <td>{{item.OtherDiscount}}%
                 </td>
                 <td>
                   {{item.taxRate}}% </td>
@@ -255,7 +198,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <!-- <div class="row">
         <div class="col">
           <div class="card card-team">
             <div class="card-body">
@@ -346,7 +289,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
     </div>
   </div>

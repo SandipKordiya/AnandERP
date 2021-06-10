@@ -14,7 +14,6 @@ import { AngularMaterialModule } from './angular-material.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
@@ -73,12 +72,20 @@ import { NumberFormatPipe } from './shared/pipes/number.pipe';
 import { HeaderComponent } from './components/header/header.component';
 import { LeftMenuComponent } from './components/left-menu/left-menu.component';
 import { SidenavService } from './_services/sidenav.service';
-import { PerfectScrollbarConfigInterface, PerfectScrollbarModule, PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
+import {
+  PerfectScrollbarConfigInterface,
+  PerfectScrollbarModule,
+  PERFECT_SCROLLBAR_CONFIG,
+} from 'ngx-perfect-scrollbar';
 import { UserComponent } from './user/user.component';
 import { LayoutsModule } from './layouts/layouts.module';
 import { WidgetModule } from './shared/widget/widget.module';
 import { PagetitleComponent } from './shared/pagetitle/pagetitle.component';
-import { NgbPaginationModule, NgbTooltipModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbPaginationModule,
+  NgbTooltipModule,
+  NgbTypeaheadModule,
+} from '@ng-bootstrap/ng-bootstrap';
 import { PurchaseSortableDirective } from './purchase/purchase-sortable.directive';
 import { ProductSortableDirective } from './_directives/product-sortable.directive';
 import { UploadBulkComponent } from './product/upload-bulk/upload-bulk.component';
@@ -120,13 +127,17 @@ import { PosComponent } from './pos/pos.component';
 import { QuickLinksComponent } from './dashboard/quick-links/quick-links.component';
 import { BranchProductsComponent } from './reporting/branch-products/branch-products.component';
 import { PurchaseTaxDetailsComponent } from './purchase/purchase-tax-details/purchase-tax-details.component';
+import { ProductInputComponent } from './_forms/product-input/product-input.component';
+import { PartyInputComponent } from './_forms/party-input/party-input.component';
+import { DateInputComponent } from './_forms/date-input/date-input.component';
+import { AddedProductListComponent } from './_forms/added-product-list/added-product-list.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true
+  suppressScrollX: true,
 };
 
 export function createTranslateLoader(http: HttpClient): any {
@@ -134,7 +145,7 @@ export function createTranslateLoader(http: HttpClient): any {
 }
 
 @NgModule({
-  declarations: [	
+  declarations: [
     AppComponent,
     DashboardComponent,
     BranchComponent,
@@ -190,11 +201,15 @@ export function createTranslateLoader(http: HttpClient): any {
     SalesPieChartComponent,
     SalesPartyComponent,
     BarChartComponent,
-      PosComponent,
-      QuickLinksComponent,
-      BranchProductsComponent,
-      PurchaseTaxDetailsComponent
-   ],
+    PosComponent,
+    QuickLinksComponent,
+    BranchProductsComponent,
+    PurchaseTaxDetailsComponent,
+    ProductInputComponent,
+    PartyInputComponent,
+    DateInputComponent,
+    AddedProductListComponent,
+  ],
   imports: [
     BrowserModule,
     CommonModule,
@@ -218,15 +233,17 @@ export function createTranslateLoader(http: HttpClient): any {
       config: {
         tokenGetter,
         whitelistedDomains: ['localhost:5000'],
-        blacklistedRoutes: ['http://ayurveda-api.ambicionestechnology.com/api/']
-      }
+        blacklistedRoutes: [
+          'http://ayurveda-api.ambicionestechnology.com/api/',
+        ],
+      },
     }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      }
+        deps: [HttpClient],
+      },
     }),
     AutocompleteLibModule,
     DataTablesModule,
@@ -239,7 +256,7 @@ export function createTranslateLoader(http: HttpClient): any {
     PerfectScrollbarModule,
     WidgetModule,
     NgApexchartsModule,
-    SeletonLoaderModule
+    SeletonLoaderModule,
   ],
   providers: [
     AuthGuard,
@@ -269,10 +286,10 @@ export function createTranslateLoader(http: HttpClient): any {
     SidenavService,
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
-    }
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
+    },
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule { }
+export class AppModule {}
