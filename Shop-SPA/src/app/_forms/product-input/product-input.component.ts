@@ -14,6 +14,7 @@ import {
 } from '@angular/forms';
 import { MyServiceService } from '../my-service.service';
 import { isBs3 } from 'ngx-bootstrap/utils';
+import { ProductService } from 'src/app/_services/product.service';
 
 @Component({
   selector: 'app-product-input',
@@ -31,18 +32,17 @@ export class ProductInputComponent implements OnInit, ControlValueAccessor {
   constructor(private _service: MyServiceService) {}
   isBs3 = isBs3();
 
-  // public suggestions$ = new FormControl('');
   public search;
-  noResult = false;
-  suggestions$: Observable<any[]>;
-  errorMessage: string;
-  searching = false;
-  searchFailed = false;
+  public noResult = false;
+  public suggestions$: Observable<any[]>;
+  public errorMessage: string;
+  public searching = false;
+  public searchFailed = false;
   @Output() onChangeHandler: EventEmitter<any> = new EventEmitter<string>();
 
   private onChange: (name: string) => void;
   private onTouched: () => void;
-  product = new FormControl();
+  public product = new FormControl();
 
   // search
   ngOnInit(): void {
@@ -65,9 +65,9 @@ export class ProductInputComponent implements OnInit, ControlValueAccessor {
 
   // typeahead functions
   onSelectHandler(e) {
-    this.onChange(e);
+    this.onChange(e.item);
     this.onTouched();
-    this.onChangeHandler.emit(e);
+    this.onChangeHandler.emit(e.item);
   }
   typeaheadNoResults(event: boolean): void {
     this.noResult = event;
@@ -75,8 +75,34 @@ export class ProductInputComponent implements OnInit, ControlValueAccessor {
 
   // reactive form functions
   writeValue(obj: any): void {
-    this.product.setValue(obj);
-    this.search = obj.value;
+    // console.log('TYPE OF PRODUCT INPUT', typeof obj);
+
+    if (obj === '') {
+      this.product.setValue('');
+      this.search = '';
+    } else if (obj && typeof obj !== 'object') {
+      this.searching = true;
+      this._service.viewProduct(obj).subscribe((product: any) => {
+        this.searching = false;
+
+        this.product.setValue(product.productName);
+
+        this.search = product.productName;
+
+        this.onChange(product);
+        this.onChangeHandler.emit(product);
+
+        catchError(() => {
+          this.searchFailed = true;
+
+          return of([]);
+        });
+      });
+    } else if (obj && typeof obj === 'object') {
+      this.product.setValue(obj.productName);
+
+      this.search = obj.productName;
+    }
   }
 
   registerOnChange(fn: any): void {

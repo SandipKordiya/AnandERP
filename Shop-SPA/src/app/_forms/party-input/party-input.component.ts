@@ -14,6 +14,7 @@ import {
   ControlValueAccessor,
 } from '@angular/forms';
 import { MyServiceService } from '../my-service.service';
+import { PartyService } from '../../_services/party.service';
 
 @Component({
   selector: 'app-party-input',
@@ -38,10 +39,12 @@ export class PartyInputComponent implements OnInit, ControlValueAccessor {
 
   private onChange: (name: string) => void;
   private onTouched: () => void;
-  party = new FormControl();
+
+  public party = new FormControl();
 
   constructor(private _service: MyServiceService) {}
 
+  // search
   ngOnInit(): void {
     this.suggestions$ = new Observable((observer: Observer<string>) => {
       observer.next(this.search);
@@ -64,7 +67,7 @@ export class PartyInputComponent implements OnInit, ControlValueAccessor {
   onSelectHandler(e) {
     this.onChange(e.item);
     this.onTouched();
-    this.onChangeHandler.emit(e);
+    this.onChangeHandler.emit(e.item);
   }
   typeaheadNoResults(event: boolean): void {
     this.noResult = event;
@@ -72,8 +75,38 @@ export class PartyInputComponent implements OnInit, ControlValueAccessor {
 
   // reactive form functions
   writeValue(obj: any): void {
-    this.party.setValue(obj);
-    this.search = obj.value;
+    // this will run when id is passed by parent
+    // console.log('TYPE OF PARTY INPUT', typeof obj, obj);
+    if (obj === '') {
+      this.party.setValue('');
+      this.search = '';
+    } else if (obj && typeof obj !== 'object') {
+      this.searching = true;
+      this._service.getParty(obj).subscribe((party) => {
+        this.searching = false;
+
+        this.party.setValue(party.name);
+
+        this.search = party.name;
+
+        this.onChange(party);
+
+        this.onChangeHandler.emit(party);
+
+        catchError(() => {
+          this.searchFailed = true;
+
+          return of([]);
+        });
+      });
+    } else if (obj && typeof obj === 'object') {
+      this.party.setValue(obj.name);
+
+      this.search = obj.name;
+    }
+
+    // this.party.setValue(obj);
+    // this.search = obj.value;
   }
 
   registerOnChange(fn: any): void {
