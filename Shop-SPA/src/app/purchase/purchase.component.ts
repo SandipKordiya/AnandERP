@@ -617,6 +617,7 @@ export class PurchaseComponent implements OnInit {
         invoiceNo: this.model.invoiceNo,
         partyId: this.partyId,
         taxType: this.model.taxtype,
+        
         purchaseDate: moment(this.purchaseDate).format('YYYY-M-D'),
         branchId: this.model.branchId,
         status: "Unpaid",
