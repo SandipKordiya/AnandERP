@@ -96,8 +96,8 @@
         <div class="card-title">
           <span>Other :</span>
           <mat-form-field class="no-padding">
-            <input type="number" [value]='finalOtherAmount' min="0" autocomplete="off" (change)="onOtherChange()"
-              matInput>
+            <input type="number" #otherAmount [value]='finalOtherAmount' min="0" autocomplete="off"
+              (change)="onOtherChange(otherAmount)" matInput>
           </mat-form-field>
         </div>
       </div>
@@ -139,9 +139,8 @@
         </div>
       </div>
       <div class="col-md-4">
-        <div class="submit-section d-flex justify-content-end">
-          <button (click)="openDialog()" class="btn btn-lg btn-info  submit-btn ml-1">Tax Details</button>
-        </div>
+        <app-tax-details-dialog [products]="products"></app-tax-details-dialog>
+
       </div>
     </div>
   </div>

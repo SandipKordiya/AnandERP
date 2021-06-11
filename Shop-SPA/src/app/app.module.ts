@@ -131,6 +131,8 @@ import { ProductInputComponent } from './_forms/product-input/product-input.comp
 import { PartyInputComponent } from './_forms/party-input/party-input.component';
 import { DateInputComponent } from './_forms/date-input/date-input.component';
 import { AddedProductListComponent } from './_forms/added-product-list/added-product-list.component';
+import { TaxDetailsDialogComponent } from './_forms/tax-details-dialog/tax-details-dialog.component';
+import { DialogTemplateComponent } from './_forms/dialog-template/dialog-template.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -209,6 +211,8 @@ export function createTranslateLoader(http: HttpClient): any {
     PartyInputComponent,
     DateInputComponent,
     AddedProductListComponent,
+    TaxDetailsDialogComponent,
+    DialogTemplateComponent,
   ],
   imports: [
     BrowserModule,

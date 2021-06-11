@@ -21,6 +21,7 @@ export class AddedProductListComponent implements OnInit, OnChanges {
   @Output() ProductChange: EventEmitter<any> = new EventEmitter<string>();
   @Input() updateFinal;
   @Input() products;
+
   ngOnChanges(changes: SimpleChanges) {
     console.log('CalculateFinalValues', changes);
     this.CalculateFinalValues();
@@ -46,7 +47,7 @@ export class AddedProductListComponent implements OnInit, OnChanges {
   public finalCalculatedAmount: number = 0;
   public gstTax: any = 0;
 
-  constructor(public dialog: MatDialog) {}
+  constructor() {}
   ngOnInit() {
     this.CalculateFinalValues();
   }
@@ -58,7 +59,7 @@ export class AddedProductListComponent implements OnInit, OnChanges {
     this.DeleteProduct.emit(item);
   }
 
-  CalculateFinalValues() {
+  CalculateFinalValues(otherAmount: any = 0) {
     this.finalGrossAmount = 0;
     this.finalDiscountAmount = 0;
     this.finalTotalTaxAmount = 0;
@@ -68,66 +69,22 @@ export class AddedProductListComponent implements OnInit, OnChanges {
     this.finalCalculatedAmount = 0;
 
     this.products.forEach((e) => {
-      this.finalGrossAmount += e.rate;
-      this.finalTotalTaxAmount += e.taxAmount;
+      this.finalGrossAmount += parseFloat(e.rate);
+      this.finalTotalTaxAmount += parseFloat(e.taxAmount);
+      this.finalDiscountAmount +=
+        parseFloat(e.discountAmount) + parseFloat(e.otherDiscountAmount);
+      this.finalGrandTotalAmount += parseFloat(e.Amount);
     });
+    this.finalGrandTotalAmount += parseFloat(otherAmount);
   }
 
   onProduchModified() {}
 
-  onOtherChange() {}
+  onOtherChange(e) {
+    console.log('otherAmounr', e.value);
+
+    this.CalculateFinalValues(e.value);
+  }
 
   submitPurchase() {}
-
-  openDialog(): void {
-    this.gstTax = [];
-    const TaxArray = this.products.filter(
-      (thing, i, arr) => arr.findIndex((t) => t.taxRate === thing.taxRate) === i
-    );
-
-    TaxArray.forEach((element) => {
-      let preElement;
-      var filterProducts = this.products.filter(
-        (item) => item.taxRate === element.taxRate
-      );
-      const { GrossAmount, TotalTaxAmount, GrandTotalAmount } =
-        filterProducts.reduce(
-          (acc, item) => {
-            acc.GrossAmount =
-              parseFloat(acc.GrossAmount) +
-              parseFloat(item.rate) * parseFloat(item.quantity);
-            acc.TotalTaxAmount =
-              parseFloat(acc.TotalTaxAmount) + parseFloat(item.taxAmount);
-            acc.GrandTotalAmount =
-              parseFloat(acc.GrandTotalAmount) + parseFloat(item.amount);
-            return acc;
-          },
-          {
-            GrossAmount: 0,
-            TotalTaxAmount: 0,
-            GrandTotalAmount: 0,
-          }
-        );
-
-      // this.model.taxType = "IntraState";
-
-      // this.model.taxType = "InterState";
-
-      this.gstTax.push({
-        amount: GrossAmount,
-        rate: element.taxRate,
-        cgst: TotalTaxAmount / 2,
-        sgst: TotalTaxAmount / 2,
-        igst: TotalTaxAmount,
-        cess: 0,
-        tax: TotalTaxAmount,
-        totalAmount: GrandTotalAmount,
-      });
-    });
-    console.log('distinct tax', this.gstTax);
-    const dialogRef = this.dialog.open(PurchaseTaxDetailsComponent, {
-      width: '600px',
-      data: { gstTax: this.gstTax },
-    });
-  }
 }

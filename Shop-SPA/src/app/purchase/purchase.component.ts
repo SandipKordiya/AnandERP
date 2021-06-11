@@ -1,26 +1,10 @@
-import { ShopService } from './../_services/shop.service';
 import { AlertifyService } from './../_services/alertify.service';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-
-import { noop, Observable, Observer, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
-
-import { environment } from 'src/environments/environment';
-import { Product } from '../_models/product';
-import csc from 'country-state-city';
 import { BranchService } from '../_services/branch.service';
-
-import * as moment from 'moment';
 import { AuthService } from '../_services/auth.service';
 import { TaxService } from '../_services/tax.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DecimalPipe } from '@angular/common';
-import { NumberFormatPipe } from '../shared/pipes/number.pipe';
-import { isUndefined } from 'ngx-bootstrap/chronos/utils/type-checks';
-import { MatDialog } from '@angular/material/dialog';
-import { PurchaseTaxDetailsComponent } from './purchase-tax-details/purchase-tax-details.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export interface TaxCollection {
@@ -120,25 +104,31 @@ export class PurchaseComponent implements OnInit {
       batchNumber: '123',
       expireDate: '2021-06-05T18:30:00.000Z',
       mrp: 151,
-      quantity: 2,
+      quantity: 1,
       schQuantity: 0,
-      rate: 166,
-      discount: 0,
-      OtherDiscount: 0,
+      rate: 150,
+      discount: 5,
+      OtherDiscount: 5,
       Tax: 1,
-      Amount: 340.3,
-      taxAmount: 8.299999999999999,
+      Amount: 142.5,
+      taxAmount: 7.5,
       taxPercentage: 5,
       taxMargin: 16,
+      discountAmount: 7.5,
+      otherDiscountAmount: 7.5,
     },
   ];
   // input properties
   taxes: any[];
   branches: any[];
   taxTypeList: any = ['IntraState', 'InterState'];
+
+  // additional form fields
   taxSaleMargin: number;
   TaxPercentage: number;
   TaxAmount: number;
+  DiscountAmount: number;
+  OtherDiscountAmount: number;
   // this property is for callbacks
   updateFinal: number = 0;
 
@@ -255,13 +245,19 @@ export class PurchaseComponent implements OnInit {
       let taxValue = (_rate / 100) * TaxPercentage.rate;
       let discountValue = (_rate / 100) * _discount;
       let OtherdiscountValue = (_rate / 100) * _otherDiscount;
-
+      this.DiscountAmount = discountValue;
+      this.OtherDiscountAmount = OtherdiscountValue;
+      if (_discount > 0 || _otherDiscount > 0) {
+        let taxDiscountValue = (taxValue / 100) * _discount;
+        let otherTaxdiscountValue = (taxValue / 100) * _otherDiscount;
+        taxValue -= taxDiscountValue + otherTaxdiscountValue;
+      }
       this.TaxAmount = taxValue;
       if (_quantity > 0) {
         temp_amount = _rate;
         temp_amount *= _quantity;
         temp_amount += taxValue;
-        if (discountValue > 0) {
+        if (_discount > 0) {
           temp_amount -= discountValue;
         }
         if (_otherDiscount > 0) {
@@ -342,6 +338,8 @@ export class PurchaseComponent implements OnInit {
       taxAmount: this.TaxAmount,
       taxPercentage: this.TaxPercentage,
       taxMargin: this.taxSaleMargin,
+      discountAmount: this.DiscountAmount,
+      otherDiscountAmount: this.OtherDiscountAmount,
     };
 
     console.log(productObjecct);
@@ -354,6 +352,8 @@ export class PurchaseComponent implements OnInit {
       taxAmount: this.TaxAmount,
       taxPercentage: this.TaxPercentage,
       taxMargin: this.taxSaleMargin,
+      discountAmount: this.DiscountAmount,
+      otherDiscountAmount: this.OtherDiscountAmount,
     };
     this.products[productObjecctIndex] = productObjecct;
     console.log('updatedProductObjecct', productObjecct);
@@ -367,6 +367,8 @@ export class PurchaseComponent implements OnInit {
       taxAmount: this.TaxAmount,
       taxPercentage: this.TaxPercentage,
       taxMargin: this.taxSaleMargin,
+      discountAmount: this.DiscountAmount,
+      otherDiscountAmount: this.OtherDiscountAmount,
     };
 
     let isOldProduct = this.products.findIndex(
