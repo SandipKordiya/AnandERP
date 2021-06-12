@@ -127,12 +127,7 @@ import { PosComponent } from './pos/pos.component';
 import { QuickLinksComponent } from './dashboard/quick-links/quick-links.component';
 import { BranchProductsComponent } from './reporting/branch-products/branch-products.component';
 import { PurchaseTaxDetailsComponent } from './purchase/purchase-tax-details/purchase-tax-details.component';
-import { ProductInputComponent } from './_forms/product-input/product-input.component';
-import { PartyInputComponent } from './_forms/party-input/party-input.component';
-import { DateInputComponent } from './_forms/date-input/date-input.component';
-import { AddedProductListComponent } from './_forms/added-product-list/added-product-list.component';
-import { TaxDetailsDialogComponent } from './_forms/tax-details-dialog/tax-details-dialog.component';
-import { DialogTemplateComponent } from './_forms/dialog-template/dialog-template.component';
+import { sharedModule } from './_shared/shared.module';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -207,12 +202,6 @@ export function createTranslateLoader(http: HttpClient): any {
     QuickLinksComponent,
     BranchProductsComponent,
     PurchaseTaxDetailsComponent,
-    ProductInputComponent,
-    PartyInputComponent,
-    DateInputComponent,
-    AddedProductListComponent,
-    TaxDetailsDialogComponent,
-    DialogTemplateComponent,
   ],
   imports: [
     BrowserModule,
@@ -262,6 +251,7 @@ export function createTranslateLoader(http: HttpClient): any {
     NgApexchartsModule,
     SeletonLoaderModule,
     DatepickerModule,
+    sharedModule,
   ],
   providers: [
     AuthGuard,
@@ -289,6 +279,7 @@ export function createTranslateLoader(http: HttpClient): any {
     StockTransferOrderService,
     StockReturnOrderService,
     SidenavService,
+
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
