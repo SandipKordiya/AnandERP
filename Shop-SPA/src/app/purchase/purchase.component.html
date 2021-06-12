@@ -27,6 +27,7 @@
               <div class="col-md-2">
                 <label for="invoiceNo">Invoice Number</label>
                 <input
+                  autofocus
                   type="text"
                   formControlName="invoiceNo"
                   class="form-control"
@@ -48,8 +49,20 @@
                 </select>
               </div>
               <div class="col-md-3">
-                <div class="d-flex justify-content-between">
-                  <label for="partyId">Party </label>
+                <div style="display: flex; justify-content: space-between">
+                  <label for="partyId">Party Item</label>
+                  <div
+                    style="cursor: context-menu"
+                    *ngIf="partyData.valid"
+                    mat-raised-button
+                    matTooltipPosition="above"
+                    [matTooltip]="partyMoreInfo"
+                    aria-label="Button that displays a tooltip when focused or hovered over"
+                  >
+                    <mat-icon aria-hidden="false" aria-label="Example home icon"
+                      >info</mat-icon
+                    >
+                  </div>
                 </div>
                 <app-party-input
                   (onChangeHandler)="onChangeParty($event)"
@@ -86,6 +99,7 @@
             <div class="form-row pt-1">
               <div class="col-md-4">
                 <label for="partyId">Product Item</label>
+
                 <app-product-input
                   [disabled]="partyData.invalid"
                   (onChangeHandler)="onChangeProduct($event)"
@@ -114,6 +128,7 @@
                 <label for="mrp">MRP</label>
                 <input
                   type="number"
+                  tabindex="-1"
                   formControlName="mrp"
                   class="form-control"
                   min="0"
@@ -126,6 +141,7 @@
                 <label for="quantity">Quantity</label>
                 <input
                   type="number"
+                  tabindex="-1"
                   (keyup)="handleQuantityChange($event.target.value)"
                   formControlName="quantity"
                   min="0"
@@ -139,6 +155,7 @@
                 <label for="schQuantity">SCH Qty</label>
                 <input
                   type="number"
+                  tabindex="-1"
                   formControlName="schQuantity"
                   min="0"
                   class="form-control"
@@ -167,6 +184,7 @@
 
                 <input
                   type="number"
+                  tabindex="-1"
                   (keyup)="handleDiscountChange($event.target.value)"
                   formControlName="discount"
                   class="form-control"
@@ -178,6 +196,7 @@
 
                 <input
                   type="number"
+                  tabindex="-1"
                   (keyup)="handleOtherDiscountChange($event.target.value)"
                   formControlName="OtherDiscount"
                   class="form-control"
@@ -188,6 +207,7 @@
                 <label for="taxType">Tax</label>
                 <select
                   class="custom-select"
+                  tabindex="-1"
                   (change)="handleTaxRateChange($event.target.value)"
                   formControlName="Tax"
                   required
@@ -201,6 +221,7 @@
                 <label for="taxType">Amount</label>
                 <input
                   type="number"
+                  tabindex="-1"
                   readonly
                   formControlName="Amount"
                   class="form-control"
@@ -227,100 +248,8 @@
         (EditProduct)="handleEditProduct($event)"
         (DeleteProduct)="handleDeleteProduct($event)"
         [products]="products"
+        [MainPostObject]="MainPostObject"
       ></app-added-product-list>
-
-      <!-- <div class="row">
-        <div class="col">
-          <div class="card card-team">
-            <div class="card-body">
-              <div class="card-title">
-                <span>Gross Amount:</span>
-                <h5 data-filter-by="text" class="H5-filter-by-text">₹{{finalGrossAmount.toFixed(2)}}</h5>
-              </div>
-            </div>
-          </div>
-        </div> -->
-      <!--   <div class="col">
-          <div class="card card-team">
-            <div class="card-body">
-              <div class="card-title">
-                <span>Total Discount:</span>
-                <h5 data-filter-by="text" class="H5-filter-by-text">₹{{finalDiscountAmount.toFixed(2)}}</h5>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card card-team">
-            <div class="card-body">
-              <div class="card-title">
-                <span>Total Tax:</span>
-                <h5 data-filter-by="text" class="H5-filter-by-text">₹{{finalTotalTaxAmount.toFixed(2)}}</h5>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card card-team">
-            <div class="card-body" style="
-            padding-bottom: 1px;
-        ">
-              <div class="card-title">
-                <span>Other :</span>
-                <mat-form-field class="no-padding">
-                  <input type="number" min="0" autocomplete="off" (change)="onOtherChange()" matInput
-                    [(ngModel)]="finalOtherAmount">
-                </mat-form-field>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card card-team">
-            <div class="card-body">
-              <div class="card-title">
-                <span>Round Off :</span>
-                <h5 data-filter-by="text" class="H5-filter-by-text">{{finalRoundOffAmount}}</h5>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card card-team">
-            <div class="card-body">
-              <div class="card-title">
-                <span>Grand Total:</span>
-                <h5 data-filter-by="text" class="H5-filter-by-text"
-                  *ngIf="finalOtherAmount != undefined && finalOtherAmount != 0">
-                  ₹{{finalCalculatedAmount}}</h5>
-                <h5 data-filter-by="text" class="H5-filter-by-text" *ngIf="finalOtherAmount === 0">
-                  ₹{{finalGrandTotalAmount}}</h5>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card invoice">
-        <div class="card-body ">
-          <div class="row">
-            <div class="col-md-4">
-
-            </div>
-            <div class="col-md-4">
-              <div class="submit-section d-flex justify-content-center">
-                <button [disabled]="!products.length" (click)="submitPurchase()"
-                  class="btn btn-lg btn-primary btn-block submit-btn ml-1">{{btn}}</button>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="submit-section d-flex justify-content-end">
-                <button (click)="openDialog()" class="btn btn-lg btn-info  submit-btn ml-1">Tax Details</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 </div>

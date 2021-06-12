@@ -10,8 +10,8 @@
         <tr>
           <th scope="col">NAME</th>
           <th scope="col">BRAND</th>
+          <th scope="col">QUANTITY</th>
           <th scope="col">MRP</th>
-          <th scope="col">RATE</th>
         </tr>
       </thead>
       <tbody>
@@ -22,24 +22,24 @@
           class="product-custom-list-group-item"
           *ngFor="let match of matches"
         >
-          <td scope="row">
+          <td scope="row " class="col-6">
             <li>
               {{ match.item.productName }}
             </li>
           </td>
-          <td scope="row">
+          <td scope="row" class="col-4">
             <li>
               {{ match.item.brandName }}
             </li>
           </td>
-          <td scope="row">
+          <td scope="row" class="col">
             <li>
               {{ match.item.mrp }}
             </li>
           </td>
-          <td scope="row">
+          <td scope="row" class="col">
             <li>
-              {{ match.item.rate }}
+              {{ match.item.mrp }}
             </li>
           </td>
         </tr>

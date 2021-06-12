@@ -3,6 +3,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { PurchaseTaxDetailsComponent } from 'src/app/purchase/purchase-tax-details/purchase-tax-details.component';
 import { DialogTemplateComponent } from '../dialog-template/dialog-template.component';
 
+export interface TaxCollection {
+  amount: number;
+  rate: number;
+  cgst: number;
+  sgst: number;
+  igst: number;
+  cess: number;
+  tax: number;
+  totalAmount: number;
+}
+
 @Component({
   selector: 'app-tax-details-dialog',
   templateUrl: './tax-details-dialog.component.html',
@@ -64,7 +75,7 @@ export class TaxDetailsDialogComponent implements OnInit {
     console.log('distinct tax', this.gstTax);
     const dialogRef = this.dialog.open(DialogTemplateComponent, {
       width: '600px',
-      data: { gstTax: this.gstTax },
+      data: { gstTax: <TaxCollection>this.gstTax },
     });
   }
   ngOnInit() {}

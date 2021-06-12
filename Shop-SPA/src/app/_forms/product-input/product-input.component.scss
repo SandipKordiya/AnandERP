@@ -1,9 +1,11 @@
 .product-custom-list-group {
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 60vw;
   padding-left: 0;
   margin: 0;
+  max-height: 40vh;
+
   list-style: none;
 
   &-item {
@@ -19,4 +21,7 @@
       cursor: pointer;
     }
   }
+}
+.dropdown-menu {
+  top: 60px !important;
 }

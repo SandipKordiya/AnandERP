@@ -6,17 +6,7 @@ import { AuthService } from '../_services/auth.service';
 import { TaxService } from '../_services/tax.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-
-export interface TaxCollection {
-  amount: number;
-  rate: number;
-  cgst: number;
-  sgst: number;
-  igst: number;
-  cess: number;
-  tax: number;
-  totalAmount: number;
-}
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-purchase',
@@ -37,87 +27,9 @@ export class PurchaseComponent implements OnInit {
     ];
   }
   breadCrumbItems: Array<{}>;
-  products: any[] = [
-    {
-      invoiceNo: '1223',
-      branch: 1,
-      party: {
-        id: 2011,
-        partyTypeId: 1,
-        partyCode: '345',
-        name: 'Test Sandip',
-        invoiceName: '',
-        address: 'Sandip Parmar',
-        countryId: 101,
-        stateId: 4030,
-        cityId: 57606,
-        area: 'Sahibaug',
-        pincode: null,
-        telephone: '',
-        mobile: '1234567',
-        webSite: '',
-        email: '',
-        gstin: '',
-        panNo: '',
-        adharNo: '',
-        cinNo: null,
-        openingBalance: 0,
-        balanceSign: '',
-        currentBalance: 0,
-        creditDays: 15,
-        creditAmount: 0,
-        referance: '',
-        note: '',
-        created: '2021-05-18T09:01:32.3053526',
-        branchId: 1,
-        isBillingEnabled: true,
-        billingActionDate: null,
-        isBlocked: false,
-        blockedDate: null,
-        partyType: {
-          id: 1,
-          type: 'test',
-          prefixCode: null,
-          isAccountledger: false,
-          created: '2021-06-01T11:16:36.259882',
-        },
-        branch: null,
-        country: null,
-        state: null,
-        city: null,
-        purchaseOrders: null,
-        sales: null,
-      },
-      PDate: '11/11/2021',
-      TaxType: 'IntraState',
-      productData: {
-        id: 2018,
-        productName: 'test',
-        brandId: 1,
-        brandName: 'test',
-        mrp: 150,
-        saleMargin: 16,
-        taxId: 1,
-        taxName: 'GST 5',
-        taxRate: 5,
-      },
-      batchNumber: '123',
-      expireDate: '6/6/2021',
-      mrp: 151,
-      quantity: 1,
-      schQuantity: 0,
-      rate: 150,
-      discount: 5,
-      OtherDiscount: 5,
-      Tax: 1,
-      Amount: 141.75,
-      taxAmount: 6.75,
-      taxPercentage: 5,
-      taxMargin: 16,
-      discountAmount: 7.5,
-      otherDiscountAmount: 7.5,
-    },
-  ];
+  partyMoreInfo = 'name brandname mrp';
+  products: any[] = [];
+  public MainPostObject: object;
   // input properties
   taxes: any[];
   branches: any[];
@@ -155,6 +67,9 @@ export class PurchaseComponent implements OnInit {
   get partyData() {
     return this.addPurchaseForm.get('party');
   }
+  get productDataFeild() {
+    return this.addPurchaseForm.get('productData');
+  }
 
   // get data for dropdown - methods
   public getTaxList() {
@@ -188,6 +103,8 @@ export class PurchaseComponent implements OnInit {
   // on select methods party/product dropdown
   public onChangeParty(e) {
     this.spinner.show();
+    let partyMoreInfo = `Name: ${e.name} Phone:${e.mobile} gstin:${e.gstin}  `;
+    this.partyMoreInfo = partyMoreInfo;
     console.log('Parent', e);
     //     let taxType
     //     if (e.stateId == 4030)
@@ -361,7 +278,7 @@ export class PurchaseComponent implements OnInit {
 
   AddProduct() {
     this.ChangeTotalAmount();
-
+    let f = this.addPurchaseForm.value;
     let productObjecct = {
       ...this.addPurchaseForm.value,
       taxAmount: this.TaxAmount,
@@ -381,7 +298,14 @@ export class PurchaseComponent implements OnInit {
     } else {
       this.addNewProduct();
     }
-
+    this.MainPostObject = {
+      products: this.products,
+      invoiceNo: this.products[0].invoiceNo,
+      partyId: f.party.id,
+      taxType: f.TaxType,
+      purchaseDate: moment(f.PDate).format('YYYY-M-D'),
+      branchId: f.branch,
+    };
     this.emptyForm();
 
     this.updateFinal += 1;

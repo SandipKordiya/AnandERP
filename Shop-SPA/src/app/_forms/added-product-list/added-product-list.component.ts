@@ -1,6 +1,10 @@
 import { DecimalPipe } from '@angular/common';
 import { DoCheck } from '@angular/core';
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
+import * as moment from 'moment';
+import { AlertifyService } from 'src/app/_services/alertify.service';
+import { ShopService } from 'src/app/_services/shop.service';
+
 @Component({
   selector: 'app-added-product-list',
   templateUrl: './added-product-list.component.html',
@@ -11,6 +15,7 @@ export class AddedProductListComponent implements OnInit, DoCheck {
   @Output() DeleteProduct: EventEmitter<any> = new EventEmitter<string>();
   // @Input() updateFinal;
   @Input() products;
+  @Input() MainPostObject;
 
   public finalGrossAmount: number = 0;
   public finalDiscountAmount: number = 0;
@@ -21,8 +26,13 @@ export class AddedProductListComponent implements OnInit, DoCheck {
   public finalCalculatedAmount: number = 0;
   public gstTax: any = 0;
   public otherAmount: any = 0;
+  public currentUser: number = parseInt(localStorage.getItem('userId'));
 
-  constructor(private _decimalPipe: DecimalPipe) {}
+  constructor(
+    private _decimalPipe: DecimalPipe,
+    private shopService: ShopService,
+    private alertify: AlertifyService
+  ) {}
   ngOnInit() {
     this.CalculateFinalValues();
   }
@@ -111,10 +121,37 @@ export class AddedProductListComponent implements OnInit, DoCheck {
   }
 
   onOtherChange(e) {
-    if (e && e.value > 0) {
+    if (e && e.value >= 0) {
       this.otherAmount = e.value;
     }
   }
-
-  submitPurchase() {}
+  submitPurchase() {
+    const purchaseModel = {
+      invoiceNo: this.MainPostObject.invoiceNo,
+      partyId: this.MainPostObject.partyId,
+      taxType: this.MainPostObject.taxType,
+      purchaseDate: this.MainPostObject.purchaseDate,
+      branchId: this.MainPostObject.branchId,
+      status: 'Unpaid',
+      grossAmount: this.finalGrossAmount,
+      discountAmount: this.finalDiscountAmount,
+      taxAmount: this.finalTotalTaxAmount,
+      roundOff: this.finalRoundOffAmount,
+      netAmount: this.finalGrandTotalAmount,
+      description: null,
+      PurchaseOrderItems: this.products,
+    };
+    console.log(purchaseModel);
+    this.shopService.addPurchase(this.currentUser, purchaseModel).subscribe(
+      (next) => {
+        this.alertify.success('New purchase entry Added.');
+        // this.router.navigate(['/order/purchase/list']);
+        console.log(next);
+      },
+      (error) => {
+        this.alertify.error(error.message);
+        console.log(error);
+      }
+    );
+  }
 }
