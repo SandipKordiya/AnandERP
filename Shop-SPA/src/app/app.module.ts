@@ -127,7 +127,9 @@ import { PosComponent } from './pos/pos.component';
 import { QuickLinksComponent } from './dashboard/quick-links/quick-links.component';
 import { BranchProductsComponent } from './reporting/branch-products/branch-products.component';
 import { PurchaseTaxDetailsComponent } from './purchase/purchase-tax-details/purchase-tax-details.component';
-import { sharedModule } from './_shared/shared.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormSharedModule } from './_forms/form-shared.module';
+import { MatInputModule } from '@angular/material/input';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -251,7 +253,9 @@ export function createTranslateLoader(http: HttpClient): any {
     NgApexchartsModule,
     SeletonLoaderModule,
     DatepickerModule,
-    sharedModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormSharedModule,
   ],
   providers: [
     AuthGuard,
@@ -285,6 +289,8 @@ export function createTranslateLoader(http: HttpClient): any {
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,
     },
   ],
+  exports: [MatFormFieldModule, MatInputModule],
+
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
