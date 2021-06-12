@@ -3,6 +3,7 @@ import {
   forwardRef,
   OnInit,
   Output,
+  Input,
   EventEmitter,
 } from '@angular/core';
 import { Observable, Observer, of } from 'rxjs';
@@ -39,13 +40,14 @@ export class ProductInputComponent implements OnInit, ControlValueAccessor {
   public searching = false;
   public searchFailed = false;
   @Output() onChangeHandler: EventEmitter<any> = new EventEmitter<string>();
-
+  @Input() disabled;
   private onChange: (name: string) => void;
   private onTouched: () => void;
   public product = new FormControl();
 
   // search
   ngOnInit(): void {
+    console.log(this.disabled);
     this.suggestions$ = new Observable((observer: Observer<string>) => {
       observer.next(this.search);
     }).pipe(

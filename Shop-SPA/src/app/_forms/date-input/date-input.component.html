@@ -5,23 +5,13 @@
   <input
     [textMask]="mask"
     [tabindex]="skipIndex"
-    [matDatepicker]="picker"
+    [formControl]="DateValue"
+    [class.error_message]="!isValidDate"
     placeholder="mm/dd/yyyy"
     (blur)="onBlur()"
-    #date
-    (dateInput)="dateChanged($event)"
+    [value]="date | date: 'MM/dd/yyyy'"
+    (keyup)="dateChanged($event)"
     autocomplete="off"
-    [value]="dateValue"
     class="form-control datepicker"
   />
-  <span class="datepicker-icon">
-    <mat-datepicker-toggle
-      [tabindex]="skipIndex"
-      [class]="'datepicker-icon-picker'"
-      matSuffix
-      [for]="picker"
-    >
-    </mat-datepicker-toggle>
-  </span>
 </div>
-<mat-datepicker #picker></mat-datepicker>

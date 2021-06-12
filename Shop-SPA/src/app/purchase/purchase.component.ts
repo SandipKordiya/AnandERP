@@ -151,6 +151,10 @@ export class PurchaseComponent implements OnInit {
     Tax: new FormControl(1, Validators.required),
     Amount: new FormControl('', Validators.required),
   });
+  // other properties
+  get partyData() {
+    return this.addPurchaseForm.get('party');
+  }
 
   // get data for dropdown - methods
   public getTaxList() {
@@ -241,7 +245,7 @@ export class PurchaseComponent implements OnInit {
     try {
       let TaxPercentage = this.taxes.find((e) => e.id === _taxid);
       this.TaxPercentage = TaxPercentage.rate;
-      // percentage to value
+      // percentage to value( don't try to understand just ask me i'll explain)
       let taxValue = (_rate / 100) * TaxPercentage.rate;
       let discountValue = (_rate / 100) * _discount;
       let OtherdiscountValue = (_rate / 100) * _otherDiscount;
