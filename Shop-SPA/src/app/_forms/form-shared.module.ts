@@ -17,32 +17,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
-  imports: [
-    MatDatepickerModule,
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TextMaskModule,
-    MatDialogModule,
-    TypeaheadModule.forRoot(),
-    MatInputModule,
-    MatSelectModule,
-  ],
-  declarations: [
-    AddedProductListComponent,
-    DateInputComponent,
-    DialogTemplateComponent,
-    PartyInputComponent,
-    ProductInputComponent,
-    TaxDetailsDialogComponent,
-  ],
-  exports: [
-    AddedProductListComponent,
-    DateInputComponent,
-    DialogTemplateComponent,
-    PartyInputComponent,
-    ProductInputComponent,
-    TaxDetailsDialogComponent,
-  ],
+  imports: [],
+  declarations: [],
+  exports: [],
 })
 export class FormSharedModule {}
