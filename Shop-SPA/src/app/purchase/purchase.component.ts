@@ -88,7 +88,7 @@ export class PurchaseComponent implements OnInit {
         purchaseOrders: null,
         sales: null,
       },
-      PDate: '2021-05-18T03:31:32.305Z',
+      PDate: '11/11/2021',
       TaxType: 'IntraState',
       productData: {
         id: 2018,
@@ -102,7 +102,7 @@ export class PurchaseComponent implements OnInit {
         taxRate: 5,
       },
       batchNumber: '123',
-      expireDate: '2021-06-05T18:30:00.000Z',
+      expireDate: '6/6/2021',
       mrp: 151,
       quantity: 1,
       schQuantity: 0,
@@ -110,8 +110,8 @@ export class PurchaseComponent implements OnInit {
       discount: 5,
       OtherDiscount: 5,
       Tax: 1,
-      Amount: 142.5,
-      taxAmount: 7.5,
+      Amount: 141.75,
+      taxAmount: 6.75,
       taxPercentage: 5,
       taxMargin: 16,
       discountAmount: 7.5,
@@ -249,8 +249,9 @@ export class PurchaseComponent implements OnInit {
       this.OtherDiscountAmount = OtherdiscountValue;
       if (_discount > 0 || _otherDiscount > 0) {
         let taxDiscountValue = (taxValue / 100) * _discount;
+        taxValue -= taxDiscountValue;
         let otherTaxdiscountValue = (taxValue / 100) * _otherDiscount;
-        taxValue -= taxDiscountValue + otherTaxdiscountValue;
+        taxValue -= otherTaxdiscountValue;
       }
       this.TaxAmount = taxValue;
       if (_quantity > 0) {
@@ -311,11 +312,6 @@ export class PurchaseComponent implements OnInit {
   // form submit function
   emptyForm() {
     this.addPurchaseForm.patchValue({
-      invoiceNo: '',
-      branch: 1,
-      party: '',
-      PDate: '',
-      TaxType: '',
       productData: '',
       batchNumber: '',
       expireDate: '',
@@ -386,6 +382,7 @@ export class PurchaseComponent implements OnInit {
 
     this.updateFinal += 1;
   }
+
   ngOnInit() {
     this.getBrancheList();
     this.getTaxList();

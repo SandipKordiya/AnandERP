@@ -36,7 +36,7 @@ export class TaxDetailsDialogComponent implements OnInit {
             acc.TotalTaxAmount =
               parseFloat(acc.TotalTaxAmount) + parseFloat(item.taxAmount);
             acc.GrandTotalAmount =
-              parseFloat(acc.GrandTotalAmount) + parseFloat(item.amount);
+              parseFloat(acc.GrandTotalAmount) + parseFloat(item.Amount);
             return acc;
           },
           {
@@ -62,7 +62,7 @@ export class TaxDetailsDialogComponent implements OnInit {
       });
     });
     console.log('distinct tax', this.gstTax);
-    const dialogRef = this.dialog.open(PurchaseTaxDetailsComponent, {
+    const dialogRef = this.dialog.open(DialogTemplateComponent, {
       width: '600px',
       data: { gstTax: this.gstTax },
     });

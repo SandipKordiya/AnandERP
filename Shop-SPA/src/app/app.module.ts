@@ -18,7 +18,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { BsDatepickerModule, DatepickerModule } from 'ngx-bootstrap/datepicker';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 // import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -261,6 +261,7 @@ export function createTranslateLoader(http: HttpClient): any {
     WidgetModule,
     NgApexchartsModule,
     SeletonLoaderModule,
+    DatepickerModule,
   ],
   providers: [
     AuthGuard,

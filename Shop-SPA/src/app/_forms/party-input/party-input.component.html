@@ -1,17 +1,35 @@
-<ng-template #partylistcustomListTemplate let-matches="matches" let-query="query" let-typeaheadTemplateMethods>
+<ng-template
+  #partylistcustomListTemplate
+  let-matches="matches"
+  let-query="query"
+  let-typeaheadTemplateMethods
+>
   <ul class="party-custom-list-group" [class.dropdown-menu]="isBs3">
-    <li class="party-custom-list-group-item" *ngFor="let match of matches"
+    <li
+      class="party-custom-list-group-item"
+      *ngFor="let match of matches"
       [class.active]="typeaheadTemplateMethods.isActive(match)"
       (click)="typeaheadTemplateMethods.selectMatch(match, $event)"
-      (mouseenter)="typeaheadTemplateMethods.selectActive(match)">
+      (mouseenter)="typeaheadTemplateMethods.selectActive(match)"
+    >
       {{ match.item.name }}
     </li>
   </ul>
 </ng-template>
-<input autofocus [(ngModel)]="search" [typeaheadScrollable]="true" [typeaheadOptionsInScrollableView]="5"
-  [optionsListTemplate]="partylistcustomListTemplate" [formControl]="party" typeaheadOptionField="name"
-  [typeahead]="suggestions$" [typeaheadAsync]="true" (typeaheadOnSelect)="onSelectHandler($event)"
-  (typeaheadNoResults)="typeaheadNoResults($event)" class="form-control" placeholder="Search Party. eg 'Name'">
+<input
+  [(ngModel)]="search"
+  [typeaheadScrollable]="true"
+  [typeaheadOptionsInScrollableView]="5"
+  [optionsListTemplate]="partylistcustomListTemplate"
+  [formControl]="party"
+  typeaheadOptionField="name"
+  [typeahead]="suggestions$"
+  [typeaheadAsync]="true"
+  (typeaheadOnSelect)="onSelectHandler($event)"
+  (typeaheadNoResults)="typeaheadNoResults($event)"
+  class="form-control"
+  placeholder="Search Party. eg 'Name'"
+/>
 <small *ngIf="searching" class="form-text text-muted">searching...</small>
 <div class="alert alert-danger" *ngIf="noResult">No Results Found</div>
 

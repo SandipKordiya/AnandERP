@@ -2,10 +2,25 @@
   [ngModel]="purchaseDate | date:'MM/dd/yyyy'" (blur)="onBlur()" (change)='todate($event.target.value)'
   class="form-control" name="purchaseDate" autocomplete="off" required> -->
 <div class="input-group mb-3">
-  <input [textMask]="mask" [tabindex]="skipIndex" [matDatepicker]="picker" placeholder="mm/dd/yyyy" (blur)="onBlur()"
-    #date (dateInput)='dateChanged($event)' autocomplete="off" [value]="dateValue" class="form-control datepicker">
+  <input
+    [textMask]="mask"
+    [tabindex]="skipIndex"
+    [matDatepicker]="picker"
+    placeholder="mm/dd/yyyy"
+    (blur)="onBlur()"
+    #date
+    (dateInput)="dateChanged($event)"
+    autocomplete="off"
+    [value]="dateValue"
+    class="form-control datepicker"
+  />
   <span class="datepicker-icon">
-    <mat-datepicker-toggle [tabindex]="skipIndex" [class]="'datepicker-icon-picker'" matSuffix [for]="picker">
+    <mat-datepicker-toggle
+      [tabindex]="skipIndex"
+      [class]="'datepicker-icon-picker'"
+      matSuffix
+      [for]="picker"
+    >
     </mat-datepicker-toggle>
   </span>
 </div>
