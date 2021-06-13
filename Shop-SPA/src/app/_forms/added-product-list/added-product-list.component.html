@@ -26,13 +26,13 @@
           <td>{{ item.productName }}</td>
           <td>{{ item.batchNo }}</td>
           <td>{{ item.expireDate | date: "MM/dd/yyyy" }}</td>
-          <td>{{ item.mRP }}</td>
+          <td>{{ item.mRP || item.mrp }}</td>
           <td>{{ item.rate | number }}</td>
           <td>{{ item.quantity }}</td>
           <td>{{ item.schQuantity }}</td>
           <td>{{ item.discount }}%</td>
           <td>{{ item.otherDiscount }}%</td>
-          <td>{{ item.taxPercentage }}%</td>
+          <td>{{ item.taxRate }}%</td>
 
           <td>{{ item.taxAmount }}</td>
           <td>₹{{ item.amount }}</td>

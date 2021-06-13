@@ -1,9 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { DoCheck } from '@angular/core';
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
-import * as moment from 'moment';
-import { AlertifyService } from 'src/app/_services/alertify.service';
-import { ShopService } from 'src/app/_services/shop.service';
 
 @Component({
   selector: 'app-added-product-list',
@@ -42,51 +39,6 @@ export class AddedProductListComponent implements OnInit, DoCheck {
     this.DeleteProduct.emit(item);
   }
 
-  // getColumnTotal() {
-  //   const {
-  //     GrossAmount,
-  //     TotalTaxAmount,
-  //     GrandTotalAmount,
-  //     discount,
-  //     otherDiscount,
-  //   } = this.products.reduce(
-  //     (acc, item) => {
-  //       acc.GrossAmount =
-  //         parseFloat(acc.GrossAmount) +
-  //         parseFloat(item.rate) * parseFloat(item.quantity);
-  //       acc.TotalTaxAmount =
-  //         parseFloat(acc.TotalTaxAmount) + parseFloat(item.taxAmount);
-  //       acc.GrandTotalAmount =
-  //         parseFloat(acc.GrandTotalAmount) + parseFloat(item.Amount);
-  //       acc.discount =
-  //         parseFloat(acc.discount) +
-  //         (parseFloat(acc.GrossAmount) * parseFloat(item.discount)) / 100;
-  //       acc.otherDiscount =
-  //         parseFloat(acc.otherDiscount) +
-  //         ((parseFloat(acc.GrossAmount) - parseFloat(acc.discount)) *
-  //           parseFloat(item.OtherDiscount)) /
-  //           100;
-  //       return acc;
-  //     },
-  //     {
-  //       GrossAmount: 0,
-  //       TotalTaxAmount: 0,
-  //       GrandTotalAmount: 0,
-  //       discount: 0,
-  //       otherDiscount: 0,
-  //     }
-  //   );
-  //   this.finalDiscountAmount = discount + otherDiscount;
-  //   this.finalGrossAmount = GrossAmount;
-  //   this.finalTotalTaxAmount = TotalTaxAmount;
-  //   this.finalGrandTotalAmount = parseFloat(
-  //     this._decimalPipe.transform(GrandTotalAmount, '1.0-0').replace(/,/g, '')
-  //   );
-  //   this.finalRoundOffAmount = parseFloat(
-  //     (this.finalGrandTotalAmount - parseFloat(GrandTotalAmount)).toFixed(2)
-  //   );
-  // }
-
   CalculateFinalValues() {
     this.finalGrossAmount = 0;
     this.finalDiscountAmount = 0;
@@ -98,10 +50,13 @@ export class AddedProductListComponent implements OnInit, DoCheck {
     let GrandTotalAmount: any = 0;
 
     this.products.forEach((e) => {
+      let discountValue = (e.rate / 100) * e.discount;
+      let OtherdiscountValue = (e.rate / 100) * e.otherDiscount;
+      this.finalDiscountAmount += discountValue + OtherdiscountValue;
+
       this.finalGrossAmount += parseFloat(e.rate);
       this.finalTotalTaxAmount += parseFloat(e.taxAmount);
-      this.finalDiscountAmount +=
-        parseFloat(e.discountAmount) + parseFloat(e.otherDiscountAmount);
+
       this.finalGrandTotalAmount += parseFloat(e.amount);
       GrandTotalAmount += parseFloat(e.amount);
     });

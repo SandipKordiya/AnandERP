@@ -64,7 +64,6 @@ export class DateInputComponent implements OnInit, ControlValueAccessor {
       let isValid = this.dateValidator(_Date);
       if (isValid) {
         this.date = _Date;
-
         this.onChange(_Date);
       } else {
         this.isValidDate = false;
@@ -94,6 +93,7 @@ export class DateInputComponent implements OnInit, ControlValueAccessor {
         if (isValid) {
           this.date = _Date;
           this.onChange(_Date);
+          this.date = _Date;
           // this.DateValue.setValue(_Date);
         } else {
           this.isValidDate = false;
@@ -103,6 +103,11 @@ export class DateInputComponent implements OnInit, ControlValueAccessor {
         this.isValidDate = false;
         this.onChange('');
       }
+    }
+    if (obj === '') {
+      console.log('DATE IS EMPTY');
+      // this.DateValue.setValue('');
+      this.date = '';
     }
   }
 

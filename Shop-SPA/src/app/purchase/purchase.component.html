@@ -56,8 +56,9 @@
                     *ngIf="partyData.valid"
                     mat-raised-button
                     matTooltipPosition="above"
-                    [matTooltip]="partyMoreInfo"
+                    matTooltip="Party Info"
                     aria-label="Button that displays a tooltip when focused or hovered over"
+                    (click)="openModal(template)"
                   >
                     <mat-icon aria-hidden="false" aria-label="Example home icon"
                       >info</mat-icon
@@ -128,7 +129,6 @@
                 <label for="mrp">MRP</label>
                 <input
                   type="number"
-                  tabindex="-1"
                   formControlName="mrp"
                   class="form-control"
                   min="0"
@@ -141,7 +141,6 @@
                 <label for="quantity">Quantity</label>
                 <input
                   type="number"
-                  tabindex="-1"
                   (keyup)="handleQuantityChange($event.target.value)"
                   formControlName="quantity"
                   min="0"
@@ -241,6 +240,26 @@
             </div>
           </form>
           <!-- /form .needs-validation -->
+          <!-- this is template for party information modal   -->
+          <ng-template #template>
+            <div class="modal-header">
+              <h4 class="modal-title pull-left">Party info</h4>
+              <button
+                type="button"
+                class="close pull-right"
+                aria-label="Close"
+                (click)="modalRef.hide()"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div *ngIf="partyData.valid" class="modal-body">
+              <div>Name: {{ partyMoreInfo.name }}</div>
+              <div>Phone: {{ partyMoreInfo.mobile }}</div>
+              <div>gstin: {{ partyMoreInfo.gstin }}</div>
+            </div>
+          </ng-template>
+          <!-- this is template for party information modal   -->
         </div>
       </div>
       <app-added-product-list

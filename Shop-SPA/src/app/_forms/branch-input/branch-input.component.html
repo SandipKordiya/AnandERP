@@ -1,0 +1,5 @@
+<select class="custom-select" tabindex="-1" formControl="branch" required>
+  <option *ngFor="let role of branches" [ngValue]="role.id">
+    {{ role.name }}
+  </option>
+</select>

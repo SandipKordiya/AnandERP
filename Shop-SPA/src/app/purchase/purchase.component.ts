@@ -1,5 +1,5 @@
 import { AlertifyService } from './../_services/alertify.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BranchService } from '../_services/branch.service';
 import { AuthService } from '../_services/auth.service';
@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 import { ShopService } from '../_services/shop.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-purchase',
@@ -15,22 +16,8 @@ import { ShopService } from '../_services/shop.service';
   styleUrls: ['./purchase.component.scss'],
 })
 export class PurchaseComponent implements OnInit {
-  constructor(
-    private route: ActivatedRoute,
-    private spinner: NgxSpinnerService,
-    private alertify: AlertifyService,
-    private branchService: BranchService,
-    private shopService: ShopService,
-    private router: Router,
-    private taxService: TaxService
-  ) {
-    this.breadCrumbItems = [
-      { label: 'PURCHASE' },
-      { label: 'New PURCHASE Invoice', active: true },
-    ];
-  }
   breadCrumbItems: Array<{}>;
-  partyMoreInfo = 'name brandname mrp';
+  partyMoreInfo;
   products: any[] = [];
   public MainPostObject: any;
   // input properties
@@ -46,9 +33,26 @@ export class PurchaseComponent implements OnInit {
   TaxAmount: number;
   DiscountAmount: number;
   OtherDiscountAmount: number;
+  status = 'Unpaid';
   // this property is for callbacks
   updateFinal: number = 0;
+  modalRef: BsModalRef;
 
+  constructor(
+    private route: ActivatedRoute,
+    private spinner: NgxSpinnerService,
+    private alertify: AlertifyService,
+    private branchService: BranchService,
+    private shopService: ShopService,
+    private router: Router,
+    private taxService: TaxService,
+    private modalService: BsModalService
+  ) {
+    this.breadCrumbItems = [
+      { label: 'PURCHASE' },
+      { label: 'New PURCHASE Invoice', active: true },
+    ];
+  }
   // form input values
   addPurchaseForm = new FormGroup({
     invoiceNo: new FormControl('', Validators.required),
@@ -77,7 +81,9 @@ export class PurchaseComponent implements OnInit {
   get productDataFeild() {
     return this.addPurchaseForm.get('productData');
   }
-
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
+  }
   // get data for dropdown - methods
   public getTaxList() {
     this.spinner.show();
@@ -110,8 +116,7 @@ export class PurchaseComponent implements OnInit {
   // on select methods party/product dropdown
   public onChangeParty(e) {
     this.spinner.show();
-    let partyMoreInfo = `Name: ${e.name} Phone:${e.mobile} gstin:${e.gstin}  `;
-    this.partyMoreInfo = partyMoreInfo;
+    this.partyMoreInfo = e;
     console.log('Parent', e);
     //     let taxType
     //     if (e.stateId == 4030)
@@ -205,6 +210,10 @@ export class PurchaseComponent implements OnInit {
   // update purchase
   getOrderItemsFromRepo(id): void {
     this.shopService.getPurchaseOrderItems(id).subscribe((data) => {
+      data.forEach((element, i) => {
+        data[i].mRP = element.mrp;
+        data[i].mRPDiscount = element.mrpDiscount;
+      });
       this.products = data;
       this.ChangeTotalAmount();
       console.log('order items', this.products);
@@ -212,15 +221,7 @@ export class PurchaseComponent implements OnInit {
   }
   getOrderFromRepo(): void {
     this.shopService.getPurchaseOrder(this.orderId).subscribe((data) => {
-      // this.order = data;
-      // this.model.invoiceNo = data.invoiceNo;
-      // this.partyId = data.partyId;
-      // this.model.taxType = data.taxType;
-      // this.model.purchaseDate = moment(data.purchaseDate).format('DD/MM/YYYY');
-      // this.model.branchId = data.branchId;
-      // this.model.status = data.status;
-
-      // this.getPartyServerResponse(data.partyName);
+      this.status = data.status;
       this.addPurchaseForm.patchValue({
         invoiceNo: data.invoiceNo,
         branch: data.branchId,
@@ -229,6 +230,13 @@ export class PurchaseComponent implements OnInit {
       });
       console.log('order', data);
       this.getOrderItemsFromRepo(data.id);
+      this.MainPostObject = {
+        products: this.products,
+        invoiceNo: data.invoiceNo,
+        partyId: data.partyId,
+        purchaseDate: moment(data.purchaseDate).format('YYYY-M-D'),
+        branchId: data.branchId,
+      };
     });
   }
 
@@ -276,7 +284,7 @@ export class PurchaseComponent implements OnInit {
       rate: '',
       discount: 0,
       OtherDiscount: 0,
-      Tax: 1,
+      Tax: '',
       Amount: '',
     });
     this.taxSaleMargin = 0;
@@ -308,7 +316,7 @@ export class PurchaseComponent implements OnInit {
       partyData: formData.party,
       productData: formData.productData,
     };
-    let productObjecct = {
+    let productObject = {
       ...item,
       taxAmount: this.TaxAmount,
       taxPercentage: this.TaxPercentage,
@@ -317,11 +325,11 @@ export class PurchaseComponent implements OnInit {
       otherDiscountAmount: this.OtherDiscountAmount,
     };
 
-    console.log(productObjecct);
-    this.products.push(productObjecct);
+    console.log(productObject);
+    this.products.push(productObject);
   }
 
-  private updateProduct(productObjecctIndex) {
+  private updateProduct(productObjectIndex) {
     let formData = this.addPurchaseForm.value;
 
     const item = {
@@ -347,7 +355,7 @@ export class PurchaseComponent implements OnInit {
       partyData: formData.party,
       productData: formData.productData,
     };
-    let productObjecct = {
+    let productObject = {
       ...item,
       taxAmount: this.TaxAmount,
       taxPercentage: this.TaxPercentage,
@@ -355,14 +363,14 @@ export class PurchaseComponent implements OnInit {
       discountAmount: this.DiscountAmount,
       otherDiscountAmount: this.OtherDiscountAmount,
     };
-    this.products[productObjecctIndex] = productObjecct;
-    console.log('updatedProductObjecct', productObjecct);
+    this.products[productObjectIndex] = productObject;
+    console.log('updatedProductObject', productObject);
   }
 
   AddProduct() {
     this.ChangeTotalAmount();
     let f = this.addPurchaseForm.value;
-    let productObjecct = {
+    let productObject = {
       ...this.addPurchaseForm.value,
       taxAmount: this.TaxAmount,
       taxPercentage: this.TaxPercentage,
@@ -372,7 +380,7 @@ export class PurchaseComponent implements OnInit {
     };
 
     let isOldProduct = this.products.findIndex(
-      (p) => p.batchNo === productObjecct.batchNumber
+      (p) => p.batchNo === productObject.batchNumber
     );
     if (isOldProduct >= 0) {
       this.updateProduct(isOldProduct);
@@ -383,7 +391,6 @@ export class PurchaseComponent implements OnInit {
       products: this.products,
       invoiceNo: f.invoiceNo,
       partyId: f.party.id,
-      taxType: f.TaxType,
       purchaseDate: moment(f.PDate).format('YYYY-M-D'),
       branchId: f.branch,
     };
@@ -425,7 +432,7 @@ export class PurchaseComponent implements OnInit {
         }
       );
     } else {
-      purchaseModel.status = 'Unpaid';
+      purchaseModel.status = this.status;
       const purchaseUpdateModel = {
         purchaseForUpdateDto: purchaseModel,
         purchaseOrderItems: this.products,

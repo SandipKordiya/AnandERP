@@ -29,14 +29,13 @@ export class TaxDetailsDialogComponent implements OnInit {
     this.gstTax = [];
 
     const TaxArray = this.products.filter(
-      (thing, i, arr) =>
-        arr.findIndex((t) => t.taxPercentage === thing.taxPercentage) === i
+      (thing, i, arr) => arr.findIndex((t) => t.taxRate === thing.taxRate) === i
     );
     console.log(TaxArray);
     TaxArray.forEach((element) => {
       let preElement;
       var filterProducts = this.products.filter(
-        (item) => item.taxPercentage === element.taxPercentage
+        (item) => item.taxRate === element.taxRate
       );
       const { GrossAmount, TotalTaxAmount, GrandTotalAmount } =
         filterProducts.reduce(
@@ -63,7 +62,7 @@ export class TaxDetailsDialogComponent implements OnInit {
 
       this.gstTax.push({
         amount: GrossAmount,
-        rate: element.taxPercentage,
+        rate: element.taxRate,
         cgst: TotalTaxAmount / 2,
         sgst: TotalTaxAmount / 2,
         igst: TotalTaxAmount,
