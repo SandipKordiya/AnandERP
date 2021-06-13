@@ -7,6 +7,7 @@ import { TaxService } from '../_services/tax.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
+import { ShopService } from '../_services/shop.service';
 
 @Component({
   selector: 'app-purchase',
@@ -15,10 +16,12 @@ import * as moment from 'moment';
 })
 export class PurchaseComponent implements OnInit {
   constructor(
+    private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     private alertify: AlertifyService,
     private branchService: BranchService,
-
+    private shopService: ShopService,
+    private router: Router,
     private taxService: TaxService
   ) {
     this.breadCrumbItems = [
@@ -29,13 +32,15 @@ export class PurchaseComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   partyMoreInfo = 'name brandname mrp';
   products: any[] = [];
-  public MainPostObject: object;
+  public MainPostObject: any;
   // input properties
   taxes: any[];
   branches: any[];
   taxTypeList: any = ['IntraState', 'InterState'];
 
   // additional form fields
+  public orderId;
+
   taxSaleMargin: number;
   TaxPercentage: number;
   TaxAmount: number;
@@ -64,6 +69,8 @@ export class PurchaseComponent implements OnInit {
     Amount: new FormControl('', Validators.required),
   });
   // other properties
+  public currentUser: number = parseInt(localStorage.getItem('userId'));
+
   get partyData() {
     return this.addPurchaseForm.get('party');
   }
@@ -195,41 +202,68 @@ export class PurchaseComponent implements OnInit {
       console.log(error);
     }
   }
+  // update purchase
+  getOrderItemsFromRepo(id): void {
+    this.shopService.getPurchaseOrderItems(id).subscribe((data) => {
+      this.products = data;
+      this.ChangeTotalAmount();
+      console.log('order items', this.products);
+    });
+  }
+  getOrderFromRepo(): void {
+    this.shopService.getPurchaseOrder(this.orderId).subscribe((data) => {
+      // this.order = data;
+      // this.model.invoiceNo = data.invoiceNo;
+      // this.partyId = data.partyId;
+      // this.model.taxType = data.taxType;
+      // this.model.purchaseDate = moment(data.purchaseDate).format('DD/MM/YYYY');
+      // this.model.branchId = data.branchId;
+      // this.model.status = data.status;
+
+      // this.getPartyServerResponse(data.partyName);
+      this.addPurchaseForm.patchValue({
+        invoiceNo: data.invoiceNo,
+        branch: data.branchId,
+        party: data.partyId,
+        PDate: moment(data.purchaseDate).format('DD/MM/YYYY'),
+      });
+      console.log('order', data);
+      this.getOrderItemsFromRepo(data.id);
+    });
+  }
 
   // edit/delete product
   handleEditProduct(e) {
     this.addPurchaseForm.patchValue({
-      invoiceNo: e.invoiceNo,
-      branch: e.branch,
-      party: e.party,
-      PDate: e.PDate,
-      TaxType: e.TaxType,
-      productData: e.productData,
-      batchNumber: e.batchNumber,
+      // branch: e.branchId,
+      // party: e.partyData,
+      productData: e.productData ? e.productData : e.productId,
+      batchNumber: e.batchNo,
       expireDate: e.expireDate,
-      mrp: e.mrp,
+      mrp: e.mRP,
       quantity: e.quantity,
       schQuantity: e.schQuantity,
       rate: e.rate,
       discount: e.discount,
-      OtherDiscount: e.OtherDiscount,
-      Tax: e.Tax,
-      Amount: e.Amount,
+      OtherDiscount: e.otherDiscount,
+      Tax: e.taxId,
+      Amount: e.amount,
     });
-    this.taxSaleMargin = e.taxMargin;
-    this.TaxPercentage = e.taxPercentage;
+    // this.taxSaleMargin = e.taxMargin;
+    this.TaxPercentage = e.taxRate;
     this.TaxAmount = e.taxAmount;
 
     console.log(e);
   }
   handleDeleteProduct(e) {
     let deleteProduct = this.products.findIndex(
-      (p) => p.batchNumber === e.batchNumber && p.invoiceNo === e.invoiceNo
+      (p) => p.batchNumber === e.batchNumber
     );
     console.log(deleteProduct);
 
     this.products.splice(deleteProduct, 1);
   }
+
   // form submit function
   emptyForm() {
     this.addPurchaseForm.patchValue({
@@ -250,8 +284,32 @@ export class PurchaseComponent implements OnInit {
     this.TaxAmount = 0;
   }
   private addNewProduct() {
+    let formData = this.addPurchaseForm.value;
+    const item = {
+      partyId: formData.party.id,
+      productId: formData.productData.id,
+      productName: formData.productData.productName,
+      branchId: formData.branch,
+      batchNo: formData.batchNumber,
+      mRPDiscount: 0,
+      expireDate: moment(formData.expireDate).format('YYYY-M-D'),
+      mRP: formData.mrp,
+      rate: formData.rate,
+      saleRate: 0,
+      quantity: formData.quantity,
+      schQuantity: formData.schQuantity,
+      discount: formData.discount,
+      otherDiscount: formData.OtherDiscount,
+      amount: formData.Amount,
+      taxId: formData.Tax,
+      taxRate: this.TaxPercentage,
+      taxAmount: this.TaxAmount,
+      taxName: 'GST ' + this.TaxPercentage,
+      partyData: formData.party,
+      productData: formData.productData,
+    };
     let productObjecct = {
-      ...this.addPurchaseForm.value,
+      ...item,
       taxAmount: this.TaxAmount,
       taxPercentage: this.TaxPercentage,
       taxMargin: this.taxSaleMargin,
@@ -264,8 +322,33 @@ export class PurchaseComponent implements OnInit {
   }
 
   private updateProduct(productObjecctIndex) {
+    let formData = this.addPurchaseForm.value;
+
+    const item = {
+      partyId: formData.party.id,
+      productId: formData.productData.id,
+      productName: formData.productData.productName,
+      branchId: formData.branch,
+      batchNo: formData.batchNumber,
+      mRPDiscount: 0,
+      expireDate: moment(formData.expireDate).format('YYYY-M-D'),
+      mRP: formData.mrp,
+      rate: formData.rate,
+      saleRate: 0,
+      quantity: formData.quantity,
+      schQuantity: formData.schQuantity,
+      discount: formData.discount,
+      otherDiscount: formData.OtherDiscount,
+      amount: formData.Amount,
+      taxId: formData.Tax,
+      taxRate: this.TaxPercentage,
+      taxAmount: this.TaxAmount,
+      taxName: 'GST ' + this.TaxPercentage,
+      partyData: formData.party,
+      productData: formData.productData,
+    };
     let productObjecct = {
-      ...this.addPurchaseForm.value,
+      ...item,
       taxAmount: this.TaxAmount,
       taxPercentage: this.TaxPercentage,
       taxMargin: this.taxSaleMargin,
@@ -289,9 +372,7 @@ export class PurchaseComponent implements OnInit {
     };
 
     let isOldProduct = this.products.findIndex(
-      (p) =>
-        p.batchNumber === productObjecct.batchNumber &&
-        p.invoiceNo === productObjecct.invoiceNo
+      (p) => p.batchNo === productObjecct.batchNumber
     );
     if (isOldProduct >= 0) {
       this.updateProduct(isOldProduct);
@@ -300,7 +381,7 @@ export class PurchaseComponent implements OnInit {
     }
     this.MainPostObject = {
       products: this.products,
-      invoiceNo: this.products[0].invoiceNo,
+      invoiceNo: f.invoiceNo,
       partyId: f.party.id,
       taxType: f.TaxType,
       purchaseDate: moment(f.PDate).format('YYYY-M-D'),
@@ -311,8 +392,68 @@ export class PurchaseComponent implements OnInit {
     this.updateFinal += 1;
   }
 
+  submitPurchase(finalComponent) {
+    this.spinner.show();
+    const purchaseModel: any = {
+      invoiceNo: this.MainPostObject.invoiceNo,
+      partyId: this.MainPostObject.partyId,
+      taxType: this.MainPostObject.taxType,
+      purchaseDate: this.MainPostObject.purchaseDate,
+      branchId: this.MainPostObject.branchId,
+      status: 'Unpaid',
+      grossAmount: finalComponent.finalGrossAmount,
+      discountAmount: finalComponent.finalDiscountAmount,
+      taxAmount: finalComponent.finalTotalTaxAmount,
+      roundOff: finalComponent.finalRoundOffAmount,
+      netAmount: finalComponent.finalGrandTotalAmount,
+      description: null,
+    };
+
+    if (this.orderId === undefined) {
+      purchaseModel.PurchaseOrderItems = this.products;
+      this.shopService.addPurchase(this.currentUser, purchaseModel).subscribe(
+        (next) => {
+          this.alertify.success('New purchase entry Added.');
+          this.router.navigate(['/order/purchase/list']);
+          console.log(next);
+          this.spinner.hide();
+        },
+        (error) => {
+          this.alertify.error(error.message);
+          console.log(error);
+          this.spinner.hide();
+        }
+      );
+    } else {
+      purchaseModel.status = 'Unpaid';
+      const purchaseUpdateModel = {
+        purchaseForUpdateDto: purchaseModel,
+        purchaseOrderItems: this.products,
+      };
+      this.shopService
+        .updatePurchase(this.orderId, purchaseUpdateModel)
+        .subscribe(
+          (next) => {
+            this.alertify.success('purchase entry updated.');
+            this.router.navigate(['/order/purchase/list']);
+            this.spinner.hide();
+          },
+          (error) => {
+            this.alertify.error(error.message);
+            this.spinner.hide();
+          }
+        );
+    }
+    console.log(purchaseModel);
+  }
+
   ngOnInit() {
+    this.orderId = this.route.snapshot.params.id;
+    console.log(this.orderId);
     this.getBrancheList();
     this.getTaxList();
+    if (this.orderId) {
+      this.getOrderFromRepo();
+    }
   }
 }

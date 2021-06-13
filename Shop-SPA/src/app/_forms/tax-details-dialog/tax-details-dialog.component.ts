@@ -47,7 +47,7 @@ export class TaxDetailsDialogComponent implements OnInit {
             acc.TotalTaxAmount =
               parseFloat(acc.TotalTaxAmount) + parseFloat(item.taxAmount);
             acc.GrandTotalAmount =
-              parseFloat(acc.GrandTotalAmount) + parseFloat(item.Amount);
+              parseFloat(acc.GrandTotalAmount) + parseFloat(item.amount);
             return acc;
           },
           {

@@ -26,13 +26,8 @@ export class AddedProductListComponent implements OnInit, DoCheck {
   public finalCalculatedAmount: number = 0;
   public gstTax: any = 0;
   public otherAmount: any = 0;
-  public currentUser: number = parseInt(localStorage.getItem('userId'));
 
-  constructor(
-    private _decimalPipe: DecimalPipe,
-    private shopService: ShopService,
-    private alertify: AlertifyService
-  ) {}
+  constructor(private _decimalPipe: DecimalPipe) {}
   ngOnInit() {
     this.CalculateFinalValues();
   }
@@ -107,8 +102,8 @@ export class AddedProductListComponent implements OnInit, DoCheck {
       this.finalTotalTaxAmount += parseFloat(e.taxAmount);
       this.finalDiscountAmount +=
         parseFloat(e.discountAmount) + parseFloat(e.otherDiscountAmount);
-      this.finalGrandTotalAmount += parseFloat(e.Amount);
-      GrandTotalAmount += parseFloat(e.Amount);
+      this.finalGrandTotalAmount += parseFloat(e.amount);
+      GrandTotalAmount += parseFloat(e.amount);
     });
 
     GrandTotalAmount += parseFloat(this.otherAmount);
@@ -124,34 +119,5 @@ export class AddedProductListComponent implements OnInit, DoCheck {
     if (e && e.value >= 0) {
       this.otherAmount = e.value;
     }
-  }
-  submitPurchase() {
-    const purchaseModel = {
-      invoiceNo: this.MainPostObject.invoiceNo,
-      partyId: this.MainPostObject.partyId,
-      taxType: this.MainPostObject.taxType,
-      purchaseDate: this.MainPostObject.purchaseDate,
-      branchId: this.MainPostObject.branchId,
-      status: 'Unpaid',
-      grossAmount: this.finalGrossAmount,
-      discountAmount: this.finalDiscountAmount,
-      taxAmount: this.finalTotalTaxAmount,
-      roundOff: this.finalRoundOffAmount,
-      netAmount: this.finalGrandTotalAmount,
-      description: null,
-      PurchaseOrderItems: this.products,
-    };
-    console.log(purchaseModel);
-    this.shopService.addPurchase(this.currentUser, purchaseModel).subscribe(
-      (next) => {
-        this.alertify.success('New purchase entry Added.');
-        // this.router.navigate(['/order/purchase/list']);
-        console.log(next);
-      },
-      (error) => {
-        this.alertify.error(error.message);
-        console.log(error);
-      }
-    );
   }
 }

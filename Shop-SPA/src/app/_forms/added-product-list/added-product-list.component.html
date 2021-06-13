@@ -23,19 +23,19 @@
       <tbody>
         <tr *ngFor="let item of products; let i = index">
           <th scope="row">{{ i + 1 }}</th>
-          <td>{{ item.productData.productName }}</td>
-          <td>{{ item.batchNumber }}</td>
+          <td>{{ item.productName }}</td>
+          <td>{{ item.batchNo }}</td>
           <td>{{ item.expireDate | date: "MM/dd/yyyy" }}</td>
-          <td>{{ item.mrp }}</td>
+          <td>{{ item.mRP }}</td>
           <td>{{ item.rate | number }}</td>
           <td>{{ item.quantity }}</td>
           <td>{{ item.schQuantity }}</td>
           <td>{{ item.discount }}%</td>
-          <td>{{ item.OtherDiscount }}%</td>
+          <td>{{ item.otherDiscount }}%</td>
           <td>{{ item.taxPercentage }}%</td>
 
           <td>{{ item.taxAmount }}</td>
-          <td>₹{{ item.Amount }}</td>
+          <td>₹{{ item.amount }}</td>
           <td class="align-middle text-right">
             <a
               (click)="editProduct(item)"
@@ -146,7 +146,7 @@
     </div>
   </div>
 </div>
-
+<!-- 
 <div class="card invoice">
   <div class="card-body">
     <div class="row">
@@ -167,4 +167,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

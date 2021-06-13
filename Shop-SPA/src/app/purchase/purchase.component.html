@@ -249,7 +249,32 @@
         (DeleteProduct)="handleDeleteProduct($event)"
         [products]="products"
         [MainPostObject]="MainPostObject"
+        #finalComponent
       ></app-added-product-list>
+
+      <div class="card invoice">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+              <div class="submit-section d-flex justify-content-center">
+                <button
+                  [disabled]="!products.length"
+                  (click)="submitPurchase(finalComponent)"
+                  class="btn btn-lg btn-primary btn-block submit-btn ml-1"
+                >
+                  {{ orderId ? "Update" : "Save" }}
+                </button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <app-tax-details-dialog
+                [products]="products"
+              ></app-tax-details-dialog>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
