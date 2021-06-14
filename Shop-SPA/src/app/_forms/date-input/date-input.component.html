@@ -10,7 +10,7 @@
     placeholder="mm/dd/yyyy"
     (blur)="onBlur()"
     [value]="date | date: 'MM/dd/yyyy'"
-    (keyup)="dateChanged($event)"
+    (keyup)="dateChanged($event.target.value)"
     autocomplete="off"
     class="form-control datepicker"
   />

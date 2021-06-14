@@ -21,7 +21,7 @@
           >
             Admin Allowed to sell.
           </div>
-          <form [formGroup]="addPurchaseForm">
+          <form [formGroup]="addPurchaseForm" (ngSubmit)="AddSale()">
             <div class="form-row border-bottom">
               <div class="col-md-2 mb-3">
                 <label for="invoiceNo">Invoice Number</label>
@@ -36,9 +36,7 @@
               </div>
               <div class="col-md-2 mb-3">
                 <label for="branchId">Branch</label>
-                <select class="custom-select" id="branchId" required>
-                  <option></option>
-                </select>
+                <app-branch-input formControlName="branch"></app-branch-input>
               </div>
 
               <!-- party input -->
@@ -51,39 +49,24 @@
               <!-- party input -->
               <div class="col mb-3">
                 <label for="saleDate">Date</label>
-                <input
-                  type="text"
-                  id="saleDate"
-                  disabled
-                  placeholder="Datepicker"
-                  class="form-control"
-                  name="saleDate"
-                  autocomplete="off"
-                  required
-                />
+
+                <app-date-input formControlName="date"></app-date-input>
               </div>
               <div class="col mb-3">
                 <label for="dueDate">Due</label>
-                <input
-                  type="text"
-                  id="dueDate"
-                  disabled
-                  placeholder="Datepicker"
-                  class="form-control"
-                  name="dueDate"
-                  autocomplete="off"
-                  required
-                />
+                <app-date-input formControlName="due"></app-date-input>
               </div>
               <div class="col mb-3">
                 <label for="taxType">Tax Type</label>
                 <select
                   class="custom-select"
-                  aria-readonly="true"
-                  name="taxType"
+                  tabindex="-1"
+                  formControlName="TaxType"
                   required
                 >
-                  <option></option>
+                  <option *ngFor="let item of taxTypeList" [ngValue]="item">
+                    {{ item }}
+                  </option>
                 </select>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MyServiceService } from 'src/app/_forms/my-service.service';
 
@@ -14,6 +14,7 @@ export class SellComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   isBillingEnabled: boolean = false;
   PartyDueDays: number;
+  taxTypeList: any = ['IntraState', 'InterState'];
 
   constructor(private _service: MyServiceService) {
     this.breadCrumbItems = [
@@ -23,9 +24,14 @@ export class SellComponent implements OnInit {
   }
   // form input values
   addPurchaseForm = new FormGroup({
-    party: new FormControl('', Validators.required),
     invoiceNo: new FormControl(''),
+    branch: new FormControl(1),
+    party: new FormControl('', Validators.required),
+    date: new FormControl(new Date()),
+    due: new FormControl(new Date()),
+    TaxType: new FormControl(),
   });
+
   generateInvoiceNo() {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -41,8 +47,11 @@ export class SellComponent implements OnInit {
     //   branchName.slice(0, 3).toUpperCase() + '/T-' + result;
     return result;
   }
-
+  AddSale() {
+    console.log(this.addPurchaseForm.value);
+  }
   ngOnInit() {
     this.generateInvoiceNo();
+    console.log(new Date());
   }
 }

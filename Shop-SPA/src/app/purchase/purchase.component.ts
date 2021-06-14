@@ -1,8 +1,13 @@
 import { AlertifyService } from './../_services/alertify.service';
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BranchService } from '../_services/branch.service';
-import { AuthService } from '../_services/auth.service';
 import { TaxService } from '../_services/tax.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -22,7 +27,6 @@ export class PurchaseComponent implements OnInit {
   public MainPostObject: any;
   // input properties
   taxes: any[];
-  branches: any[];
   taxTypeList: any = ['IntraState', 'InterState'];
 
   // additional form fields
@@ -37,7 +41,7 @@ export class PurchaseComponent implements OnInit {
   // this property is for callbacks
   updateFinal: number = 0;
   modalRef: BsModalRef;
-
+  Todaydate = new Date();
   constructor(
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
@@ -64,7 +68,7 @@ export class PurchaseComponent implements OnInit {
     batchNumber: new FormControl('', Validators.required),
     expireDate: new FormControl('', Validators.required),
     mrp: new FormControl('', Validators.required),
-    quantity: new FormControl(1, Validators.required),
+    quantity: new FormControl(0, Validators.required),
     schQuantity: new FormControl(0, Validators.required),
     rate: new FormControl('', Validators.required),
     discount: new FormControl(0, Validators.required),
@@ -74,7 +78,10 @@ export class PurchaseComponent implements OnInit {
   });
   // other properties
   public currentUser: number = parseInt(localStorage.getItem('userId'));
-
+  @ViewChild('InvoiceNumberField') Invoice: ElementRef;
+  ngAfterViewInit() {
+    this.Invoice.nativeElement.focus();
+  }
   get partyData() {
     return this.addPurchaseForm.get('party');
   }
@@ -94,20 +101,6 @@ export class PurchaseComponent implements OnInit {
       },
       (error) => {
         this.spinner.hide();
-        this.alertify.error(error);
-      }
-    );
-  }
-  public getBrancheList() {
-    this.spinner.show();
-    this.branchService.getBranches().subscribe(
-      (res: any) => {
-        this.branches = res;
-        this.spinner.hide();
-      },
-      (error) => {
-        this.spinner.hide();
-
         this.alertify.error(error);
       }
     );
@@ -279,7 +272,7 @@ export class PurchaseComponent implements OnInit {
       batchNumber: '',
       expireDate: '',
       mrp: '',
-      quantity: 1,
+      quantity: 0,
       schQuantity: 0,
       rate: '',
       discount: 0,
@@ -457,7 +450,6 @@ export class PurchaseComponent implements OnInit {
   ngOnInit() {
     this.orderId = this.route.snapshot.params.id;
     console.log(this.orderId);
-    this.getBrancheList();
     this.getTaxList();
     if (this.orderId) {
       this.getOrderFromRepo();

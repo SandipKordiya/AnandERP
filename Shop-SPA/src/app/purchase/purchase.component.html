@@ -27,7 +27,7 @@
               <div class="col-md-2">
                 <label for="invoiceNo">Invoice Number</label>
                 <input
-                  autofocus
+                  #InvoiceNumberField
                   type="text"
                   formControlName="invoiceNo"
                   class="form-control"
@@ -37,16 +37,10 @@
               </div>
               <div class="col-md-2">
                 <label for="invoiceNo">Branch</label>
-                <select
-                  class="custom-select"
-                  tabindex="-1"
+                <app-branch-input
+                  skipIndex="-1"
                   formControlName="branch"
-                  required
-                >
-                  <option *ngFor="let role of branches" [ngValue]="role.id">
-                    {{ role.name }}
-                  </option>
-                </select>
+                ></app-branch-input>
               </div>
               <div class="col-md-3">
                 <div style="display: flex; justify-content: space-between">
@@ -122,7 +116,10 @@
               <div class="col-md-2">
                 <label for="expireDate">Expire Date</label>
 
-                <app-date-input formControlName="expireDate"></app-date-input>
+                <app-date-input
+                  formControlName="expireDate"
+                  [minDate]="Todaydate"
+                ></app-date-input>
               </div>
 
               <div class="col-md-1">

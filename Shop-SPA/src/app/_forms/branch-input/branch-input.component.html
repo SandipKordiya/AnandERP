@@ -1,4 +1,10 @@
-<select class="custom-select" tabindex="-1" formControl="branch" required>
+<select
+  class="custom-select"
+  (change)="handleChangeBranch($event)"
+  (blur)="handleBlur()"
+  [formControl]="branch"
+  [tabindex]="skipIndex"
+>
   <option *ngFor="let role of branches" [ngValue]="role.id">
     {{ role.name }}
   </option>
