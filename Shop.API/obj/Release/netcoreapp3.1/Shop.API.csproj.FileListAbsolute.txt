@@ -3,7 +3,6 @@ F:\Projects\2020\MedicalShopERP\Shop.API\bin\Release\netcoreapp3.1\appsettings.j
 F:\Projects\2020\MedicalShopERP\Shop.API\bin\Release\netcoreapp3.1\package-lock.json
 F:\Projects\2020\MedicalShopERP\Shop.API\bin\Release\netcoreapp3.1\Shop.API.exe
 F:\Projects\2020\MedicalShopERP\Shop.API\bin\Release\netcoreapp3.1\wwwroot\assets\styles.css
-F:\Projects\2020\MedicalShopERP\Shop.API\bin\Release\netcoreapp3.1\libwkhtmltox.dll
 F:\Projects\2020\MedicalShopERP\Shop.API\bin\Release\netcoreapp3.1\Shop.API.deps.json
 F:\Projects\2020\MedicalShopERP\Shop.API\bin\Release\netcoreapp3.1\Shop.API.runtimeconfig.json
 F:\Projects\2020\MedicalShopERP\Shop.API\bin\Release\netcoreapp3.1\Shop.API.runtimeconfig.dev.json

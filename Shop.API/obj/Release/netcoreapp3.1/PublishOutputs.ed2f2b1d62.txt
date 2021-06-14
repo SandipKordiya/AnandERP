@@ -1,4 +1,3 @@
-F:\Projects\2020\MedicalShopERP\Shop.API\obj\Release\netcoreapp3.1\PubTmp\Out\libwkhtmltox.dll
 F:\Projects\2020\MedicalShopERP\Shop.API\obj\Release\netcoreapp3.1\PubTmp\Out\Shop.API.exe
 F:\Projects\2020\MedicalShopERP\Shop.API\obj\Release\netcoreapp3.1\PubTmp\Out\wwwroot\assets\invoice.css
 F:\Projects\2020\MedicalShopERP\Shop.API\obj\Release\netcoreapp3.1\PubTmp\Out\wwwroot\assets\styles.css

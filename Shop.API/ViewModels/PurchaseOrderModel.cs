@@ -17,6 +17,7 @@ namespace Shop.API.ViewModels
         public decimal Other { get; set; }
         public decimal RoundOff { get; set; }
         public decimal NetAmount { get; set; }
+        public int PartyId { get; set; }
         public string PartyName { get; set; }
         public string BranchName { get; set; }
     }

@@ -7,7 +7,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <_PublishTargetUrl>ftp://ambicionestechnology.com/ayurveda-api.ambicionestechnology.com</_PublishTargetUrl>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAACCCA5YoKvEKAL663/L4y7gAAAAACAAAAAAAQZgAAAAEAACAAAABUdO+yyX6wXmHX46TOea3XFr6SVeEvk0HUXphoxYpifAAAAAAOgAAAAAIAACAAAAChIR/MXw0ttO1ZvSwUfh9W4jTxxsxoEd1BBcHbru0ZFyAAAADFIuOdHWsfzrnU6PCIAJd1sErRLXiNMwuiJIupiw115kAAAADi1irLho8WUB6N5APR5CwG8UM/AImYLLlCK52I4EuDlQUhvDkPXaif8PEaG+TX4XPMeRdIkFUWA6bi6/VoHOKd</EncryptedPassword>
-    <History>True|2021-06-09T03:45:00.7701414Z;True|2021-06-08T17:57:48.1202993+05:30;False|2021-06-08T17:47:48.9109750+05:30;False|2021-06-08T17:44:16.7511793+05:30;True|2021-06-08T16:54:02.6517848+05:30;True|2021-06-08T08:55:10.2117824+05:30;True|2021-06-08T08:48:29.2198546+05:30;False|2021-06-08T08:43:01.0108343+05:30;True|2021-06-08T08:29:56.3908908+05:30;True|2021-06-08T08:12:21.8451515+05:30;True|2021-05-31T21:05:16.2364799+05:30;True|2021-05-31T20:40:16.5820119+05:30;True|2021-05-31T15:21:48.2513817+05:30;True|2021-05-31T15:10:13.6854544+05:30;False|2021-05-31T15:05:43.6467987+05:30;False|2021-05-31T15:01:08.4583308+05:30;True|2021-05-31T14:26:01.7345294+05:30;True|2021-05-31T13:24:47.7936910+05:30;False|2021-05-31T13:18:32.0594227+05:30;True|2021-05-31T13:03:19.9376728+05:30;True|2021-05-25T10:00:55.0984784+05:30;False|2021-05-25T09:36:01.2037804+05:30;True|2021-04-09T11:18:03.6141434+05:30;</History>
+    <History>True|2021-06-13T18:39:33.7558959Z;True|2021-06-13T23:15:43.7059158+05:30;True|2021-06-13T22:59:39.9704891+05:30;True|2021-06-09T09:15:00.7701414+05:30;True|2021-06-08T17:57:48.1202993+05:30;False|2021-06-08T17:47:48.9109750+05:30;False|2021-06-08T17:44:16.7511793+05:30;True|2021-06-08T16:54:02.6517848+05:30;True|2021-06-08T08:55:10.2117824+05:30;True|2021-06-08T08:48:29.2198546+05:30;False|2021-06-08T08:43:01.0108343+05:30;True|2021-06-08T08:29:56.3908908+05:30;True|2021-06-08T08:12:21.8451515+05:30;True|2021-05-31T21:05:16.2364799+05:30;True|2021-05-31T20:40:16.5820119+05:30;True|2021-05-31T15:21:48.2513817+05:30;True|2021-05-31T15:10:13.6854544+05:30;False|2021-05-31T15:05:43.6467987+05:30;False|2021-05-31T15:01:08.4583308+05:30;True|2021-05-31T14:26:01.7345294+05:30;True|2021-05-31T13:24:47.7936910+05:30;False|2021-05-31T13:18:32.0594227+05:30;True|2021-05-31T13:03:19.9376728+05:30;True|2021-05-25T10:00:55.0984784+05:30;False|2021-05-25T09:36:01.2037804+05:30;True|2021-04-09T11:18:03.6141434+05:30;</History>
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">
@@ -233,19 +233,19 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/15/2019 08:53:46</publishTime>
     </File>
     <File Include="Shop.API.deps.json">
-      <publishTime>06/09/2021 09:10:28</publishTime>
+      <publishTime>06/14/2021 00:06:09</publishTime>
     </File>
     <File Include="Shop.API.dll">
-      <publishTime>06/09/2021 09:10:27</publishTime>
+      <publishTime>06/14/2021 00:06:09</publishTime>
     </File>
     <File Include="Shop.API.exe">
-      <publishTime>06/09/2021 09:10:27</publishTime>
+      <publishTime>06/14/2021 00:06:09</publishTime>
     </File>
     <File Include="Shop.API.pdb">
-      <publishTime>06/09/2021 09:10:27</publishTime>
+      <publishTime>06/14/2021 00:06:09</publishTime>
     </File>
     <File Include="Shop.API.runtimeconfig.json">
-      <publishTime>06/09/2021 09:10:28</publishTime>
+      <publishTime>06/13/2021 22:53:28</publishTime>
     </File>
     <File Include="System.CodeDom.dll">
       <publishTime>11/15/2019 08:36:56</publishTime>
@@ -287,7 +287,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>06/09/2021 09:10:40</publishTime>
+      <publishTime>06/14/2021 00:06:17</publishTime>
     </File>
     <File Include="wkhtmltox/v0.12.4/32 bit/libwkhtmltox.dll">
       <publishTime>01/01/0001 00:00:00</publishTime>
