@@ -74,35 +74,33 @@
               <!-- product input  -->
               <div class="col-md-5 mb-3">
                 <label for="product">Product Item</label>
-                <app-product-input></app-product-input>
+                <app-product-input
+                  formControlName="productData"
+                ></app-product-input>
               </div>
               <!-- product input  -->
 
               <div class="col-md-2 mb-3">
                 <label for="date">Batch</label>
-                <select class="custom-select" name="batchNo" required>
+                <select class="custom-select" required>
                   <option></option>
                 </select>
                 <div class="invalid-feedback">Valid last name is required.</div>
               </div>
               <div class="col-md-2 mb-3">
                 <label for="expireDate">Expiry</label>
-                <input
-                  type="text"
-                  id="expireDate"
-                  placeholder="Datepicker"
-                  class="form-control"
-                  name="expireDate"
-                  autocomplete="off"
-                  required
-                />
+                <app-date-input
+                  formControlName="expireDate"
+                  [minDate]="Todaydate"
+                ></app-date-input>
               </div>
               <div class="col-md-1 mb-3">
                 <label for="quantity">QTY</label>
                 <input
                   type="text"
+                  formControlName="quantity"
                   class="form-control"
-                  name="quantity"
+                  id="quantity"
                   required
                 />
                 <div class="invalid-feedback">Valid last name is required.</div>
@@ -110,9 +108,10 @@
               <div class="col-md-1 mb-3">
                 <label for="invQuantity">I. Qty</label>
                 <input
+                  formControlName="invQuantity"
                   type="text"
                   class="form-control"
-                  name="invQuantity"
+                  id="invQuantity"
                   autocomplete="off"
                   required
                 />
@@ -121,9 +120,10 @@
               <div class="col-md-1 mb-3">
                 <label for="freeQuantity">F. Qty</label>
                 <input
+                  formControlName="freeQuantity"
                   type="text"
                   class="form-control"
-                  name="freeQuantity"
+                  id="freeQuantity"
                   autocomplete="off"
                   required
                 />
@@ -134,11 +134,17 @@
             <div class="form-row">
               <div class="col-md-1 mb-3">
                 <label for="mrp">MRP</label>
-                <input type="number" class="form-control" name="mrp" required />
+                <input
+                  formControlName="mrp"
+                  type="number"
+                  class="form-control"
+                  id="mrp"
+                  required
+                />
               </div>
               <div class="col-md-2 mb-3">
                 <label for="partyId">Rate</label>
-                <input type="number" class="form-control" name="rate" />
+                <input type="number" class="form-control" id="rate" />
               </div>
               <!-- <div class="col-md-1 mb-3">
                 <label for="saleRate">Sale Rate</label>
@@ -146,7 +152,12 @@
               </div> -->
               <div class="col-md-1 mb-3">
                 <label for="date">Disc % </label>
-                <input type="number" class="form-control" name="discount" />
+                <input
+                  formControlName="discount"
+                  type="number"
+                  class="form-control"
+                  id="discount"
+                />
                 <div class="invalid-feedback">Valid last name is required.</div>
               </div>
               <div class="col-md-2 mb-3">
@@ -154,25 +165,25 @@
                 <!-- <code> AMT: {{(model.otherDiscount * (model.amount * model.quantity))/100  }}</code> -->
 
                 <input
+                  formControlName="otherDiscount"
                   type="number"
                   class="form-control"
-                  name="otherDiscount"
+                  id="otherDiscount"
                 />
                 <div class="invalid-feedback">Valid last name is required.</div>
               </div>
               <div class="col-md-1 mb-3">
                 <label for="taxType">Tax</label>
-                <select class="custom-select" name="taxId" required>
-                  <option></option>
-                </select>
+                <app-tax-input formControlName="Tax"></app-tax-input>
               </div>
               <div class="col-md-2 mb-3">
                 <label for="taxType">Amount</label>
                 <input
+                  formControlName="Amount"
                   type="number"
                   disabled
                   class="form-control bg-light"
-                  name="amount"
+                  id="amount"
                   required
                 />
                 <div class="invalid-feedback">Valid last name is required.</div>

@@ -134,6 +134,7 @@ import { AddedProductListComponent } from './_forms/added-product-list/added-pro
 import { TaxDetailsDialogComponent } from './_forms/tax-details-dialog/tax-details-dialog.component';
 import { DialogTemplateComponent } from './_forms/dialog-template/dialog-template.component';
 import { BranchInputComponent } from './_forms/branch-input/branch-input.component';
+import { TaxInputComponent } from './_forms/tax-input/tax-input.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -215,6 +216,7 @@ export function createTranslateLoader(http: HttpClient): any {
     TaxDetailsDialogComponent,
     DialogTemplateComponent,
     BranchInputComponent,
+    TaxInputComponent,
   ],
   imports: [
     BrowserModule,

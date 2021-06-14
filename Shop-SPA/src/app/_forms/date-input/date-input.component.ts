@@ -43,9 +43,7 @@ export class DateInputComponent implements OnInit, ControlValueAccessor {
   };
   date;
   isValidDate = true;
-  ngOnInit() {
-    console.log(new Intl.DateTimeFormat().formatToParts(this.minDate));
-  }
+  ngOnInit() {}
   // this function wiil check if date isvalid or not
   dateValidator(date: any) {
     try {

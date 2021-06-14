@@ -15,6 +15,7 @@ export class SellComponent implements OnInit {
   isBillingEnabled: boolean = false;
   PartyDueDays: number;
   taxTypeList: any = ['IntraState', 'InterState'];
+  Todaydate = new Date();
 
   constructor(private _service: MyServiceService) {
     this.breadCrumbItems = [
@@ -29,7 +30,18 @@ export class SellComponent implements OnInit {
     party: new FormControl('', Validators.required),
     date: new FormControl(new Date()),
     due: new FormControl(new Date()),
-    TaxType: new FormControl(),
+    TaxType: new FormControl(''),
+    productData: new FormControl(''),
+    expireDate: new FormControl(''),
+    quantity: new FormControl(''),
+    invQuantity: new FormControl(''),
+    freeQuantity: new FormControl(''),
+    mrp: new FormControl(''),
+    rate: new FormControl(''),
+    discount: new FormControl(''),
+    otherDiscount: new FormControl(''),
+    Tax: new FormControl('1'),
+    Amount: new FormControl(''),
   });
 
   generateInvoiceNo() {
