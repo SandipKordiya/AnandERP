@@ -45,29 +45,50 @@ export class DateInputComponent implements OnInit, ControlValueAccessor {
   };
   date;
   isValidDate = true;
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.minDate);
+  }
   // this function wiil check if date isvalid or not
   dateValidator(date: any) {
     try {
       let _Date: any = new Intl.DateTimeFormat().formatToParts(new Date(date));
+      let minDate: any = new Intl.DateTimeFormat().formatToParts(
+        new Date(this.minDate)
+      );
+      console.log('minDate', minDate);
       if (this.minDate) {
-      }
-      if (_Date[4].value >= 1900) {
+        let minDataNumber = `${minDate[4].value}${this.pad(
+          minDate[0].value
+        )}${this.pad(minDate[2].value)}`;
+
+        let DataNumber = `${_Date[4].value}${this.pad(
+          _Date[0].value
+        )}${this.pad(_Date[2].value)}`;
+
+        console.log(
+          `${parseInt(minDataNumber)} > ${parseInt(DataNumber)}`,
+          parseInt(minDataNumber) > parseInt(DataNumber)
+        );
+        if (parseInt(minDataNumber) < parseInt(DataNumber)) {
+          return true;
+        }
+      } else if (_Date[4].value >= 1900) {
         return true;
       }
     } catch (error) {
       return false;
     }
+    return false;
   }
   // this function will  convert any valid date to mm/dd/yyyy
+  pad(d) {
+    return d < 10 ? '0' + d.toString() : d.toString();
+  }
   dateConverter(date: any) {
-    function pad(d) {
-      return d < 10 ? '0' + d.toString() : d.toString();
-    }
     try {
       let _Date: any = new Intl.DateTimeFormat().formatToParts(new Date(date));
-      let month = pad(_Date[0].value);
-      let day = pad(_Date[2].value);
+      let month = this.pad(_Date[0].value);
+      let day = this.pad(_Date[2].value);
       let year = _Date[4].value;
       var ConvertedDate = `${month}/${day}/${year}`;
       console.log('ConvertedDate', ConvertedDate);

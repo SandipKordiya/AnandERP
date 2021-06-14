@@ -112,11 +112,12 @@ export class PurchaseComponent implements OnInit {
   public onChangeProduct(e) {
     this.spinner.show();
     console.log('Parent', e);
-    this.addPurchaseForm.patchValue({
-      mrp: e.mrp,
-      quantity: 1,
-      Tax: e.taxId,
-    });
+    if (!this.orderId)
+      this.addPurchaseForm.patchValue({
+        mrp: e.mrp,
+        quantity: 1,
+        Tax: e.taxId,
+      });
     this.taxSaleMargin = e.saleMargin;
 
     this.spinner.hide();

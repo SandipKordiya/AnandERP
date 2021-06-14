@@ -23,7 +23,7 @@
           </div>
           <form [formGroup]="addSaleForm" (ngSubmit)="AddSale()">
             <div class="form-row border-bottom">
-              <div class="col-md-2 mb-3">
+              <div class="col-md-2">
                 <label for="invoiceNo">Invoice Number</label>
                 <input
                   type="text"
@@ -34,13 +34,13 @@
                   required
                 />
               </div>
-              <div class="col-md-2 mb-3">
+              <div class="col-md-2">
                 <label for="branchId">Branch</label>
                 <app-branch-input formControlName="branch"></app-branch-input>
               </div>
 
               <!-- party input -->
-              <div class="col-md-4 mb-3">
+              <div class="col-md-4">
                 <div class="d-flex justify-content-between">
                   <label for="partyId">Party </label>
                 </div>
@@ -50,7 +50,7 @@
                 ></app-party-input>
               </div>
               <!-- party input -->
-              <div class="col mb-3">
+              <div class="col">
                 <label for="saleDate">Date</label>
 
                 <app-date-input
@@ -58,14 +58,14 @@
                   formControlName="date"
                 ></app-date-input>
               </div>
-              <div class="col mb-3">
+              <div class="col">
                 <label for="dueDate">Due</label>
                 <app-date-input
                   skipIndex="-1"
                   formControlName="due"
                 ></app-date-input>
               </div>
-              <div class="col mb-3">
+              <div class="col">
                 <label for="taxType">Tax Type</label>
                 <select
                   class="custom-select"
@@ -81,7 +81,7 @@
             </div>
             <div class="form-row pt-1">
               <!-- product input  -->
-              <div class="col-md-5 mb-3">
+              <div class="col-md-5">
                 <label for="product">Product Item</label>
                 <span *ngIf="currentBatchProduct" class="product-show p-1"
                   >Stock: {{ currentBatchProduct?.stock }}</span
@@ -94,7 +94,7 @@
               </div>
               <!-- product input  -->
 
-              <div class="col-md-2 mb-3">
+              <div class="col-md-2">
                 <label for="date">Batch</label>
                 <select
                   (change)="onChangeBatchProduct($event.target.value)"
@@ -112,7 +112,7 @@
                 </select>
                 <div class="invalid-feedback">Valid last name is required.</div>
               </div>
-              <div class="col-md-2 mb-3">
+              <div class="col-md-2">
                 <label for="expireDate">Expiry</label>
                 <app-date-input
                   skipIndex="-1"
@@ -121,7 +121,7 @@
                   [minDate]="Todaydate"
                 ></app-date-input>
               </div>
-              <div class="col-md-1 mb-3">
+              <div class="col-md-1">
                 <label for="quantity">QTY</label>
                 <input
                   (keyup)="handleQuantityChange($event.target.value)"
@@ -134,7 +134,7 @@
                 />
                 <div class="invalid-feedback">Valid last name is required.</div>
               </div>
-              <div class="col-md-1 mb-3">
+              <div class="col-md-1">
                 <label for="invQuantity">I. Qty</label>
                 <input
                   [readonly]="partyData.invalid"
@@ -148,7 +148,7 @@
                 />
                 <div class="invalid-feedback">Valid last name is required.</div>
               </div>
-              <div class="col-md-1 mb-3">
+              <div class="col-md-1">
                 <label for="freeQuantity">F. Qty</label>
                 <input
                   [readonly]="partyData.invalid"
@@ -165,7 +165,7 @@
             </div>
 
             <div class="form-row">
-              <div class="col-md-1 mb-3">
+              <div class="col-md-1">
                 <label for="mrp">MRP</label>
                 <input
                   [readonly]="partyData.invalid"
@@ -177,7 +177,7 @@
                   tabindex="-1"
                 />
               </div>
-              <div class="col-md-2 mb-3">
+              <div class="col-md-2">
                 <label for="partyId">Rate</label>
                 <input
                   (keyup)="handleRateChange($event.target.value)"
@@ -189,11 +189,11 @@
                   tabindex="-1"
                 />
               </div>
-              <!-- <div class="col-md-1 mb-3">
+              <!-- <div class="col-md-1 ">
                 <label for="saleRate">Sale Rate</label>
                 <input type="text" class="form-control" name="saleRate" [(ngModel)]="model.saleRate">
               </div> -->
-              <div class="col-md-1 mb-3">
+              <div class="col-md-1">
                 <label for="date">Disc % </label>
                 <input
                   (keyup)="handleDiscountChange($event.target.value)"
@@ -206,7 +206,7 @@
                 />
                 <div class="invalid-feedback">Valid last name is required.</div>
               </div>
-              <div class="col-md-2 mb-3">
+              <div class="col-md-2">
                 <label for="taxType">O. Discount %</label>
                 <!-- <code> AMT: {{(model.otherDiscount * (model.amount * model.quantity))/100  }}</code> -->
 
@@ -221,7 +221,7 @@
                 />
                 <div class="invalid-feedback">Valid last name is required.</div>
               </div>
-              <div class="col-md-1 mb-3">
+              <div class="col-md-1">
                 <label for="taxType">Tax</label>
                 <app-tax-input
                   skipIndex="-1"
@@ -229,7 +229,7 @@
                   formControlName="Tax"
                 ></app-tax-input>
               </div>
-              <div class="col-md-2 mb-3">
+              <div class="col-md-2">
                 <label for="taxType">Amount</label>
                 <input
                   formControlName="Amount"
