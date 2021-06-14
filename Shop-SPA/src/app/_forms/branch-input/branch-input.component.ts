@@ -55,8 +55,7 @@ export class BranchInputComponent implements OnInit, ControlValueAccessor {
   }
 
   writeValue(obj: any): void {
-    this.branch.setValue(obj);
-    console.log(obj);
+    this.branch.setValue(parseInt(obj));
   }
 
   registerOnChange(fn: any): void {

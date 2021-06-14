@@ -31,6 +31,8 @@ export class DateInputComponent implements OnInit, ControlValueAccessor {
 
   @Input() skipIndex;
   @Input() minDate;
+  @Input() disabled;
+
   public DateValue = new FormControl();
 
   private onChange: (date: any) => void;

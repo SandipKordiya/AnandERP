@@ -201,17 +201,10 @@
               </div>
               <div class="col-md-2">
                 <label for="taxType">Tax</label>
-                <select
-                  class="custom-select"
-                  tabindex="-1"
-                  (change)="handleTaxRateChange($event.target.value)"
+                <app-tax-input
+                  (onChangeHandler)="handleTaxRateChange($event)"
                   formControlName="Tax"
-                  required
-                >
-                  <option *ngFor="let item of taxes" [ngValue]="item.id">
-                    {{ item.name }}
-                  </option>
-                </select>
+                ></app-tax-input>
               </div>
               <div class="col-md-1">
                 <label for="taxType">Amount</label>

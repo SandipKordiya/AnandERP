@@ -1,4 +1,11 @@
-import { Component, forwardRef, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  forwardRef,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   ControlValueAccessor,
   FormControl,
@@ -7,7 +14,6 @@ import {
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { TaxService } from 'src/app/_services/tax.service';
-import { BranchInputComponent } from '../branch-input/branch-input.component';
 
 @Component({
   selector: 'app-tax-input',
@@ -23,6 +29,10 @@ import { BranchInputComponent } from '../branch-input/branch-input.component';
 })
 export class TaxInputComponent implements OnInit, ControlValueAccessor {
   taxes;
+  @Input() disabled;
+  @Input() skipIndex;
+  @Output() onChangeHandler: EventEmitter<any> = new EventEmitter<string>();
+
   public tax = new FormControl();
   constructor(
     private spinner: NgxSpinnerService,
@@ -30,12 +40,15 @@ export class TaxInputComponent implements OnInit, ControlValueAccessor {
     private taxService: TaxService
   ) {}
   private onChange: (name: string) => void;
+
   private onTouched: () => void;
+
   public getTaxList() {
     this.spinner.show();
     this.taxService.getTaxes().subscribe(
       (res: any) => {
         this.taxes = res;
+        console.log(res);
         this.spinner.hide();
       },
       (error) => {
@@ -48,11 +61,19 @@ export class TaxInputComponent implements OnInit, ControlValueAccessor {
     this.onTouched();
   }
   handleTaxRateChange($event) {
+    console.log(this.tax.value);
     this.onChange(this.tax.value);
+    this.tax.setValue(parseInt(this.tax.value));
+    let taxObject = { taxes: this.taxes, id: this.tax.value };
+    this.onChangeHandler.emit(taxObject);
   }
   writeValue(obj: any): void {
-    this.tax.setValue(obj);
     console.log(obj);
+    if (obj) {
+      this.tax.setValue(parseInt(obj));
+      let taxObject = { taxes: this.taxes, id: obj };
+      this.onChangeHandler.emit(taxObject);
+    }
   }
 
   registerOnChange(fn: any): void {
@@ -61,5 +82,7 @@ export class TaxInputComponent implements OnInit, ControlValueAccessor {
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
-  ngOnInit() {}
+  ngOnInit() {
+    this.getTaxList();
+  }
 }

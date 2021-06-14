@@ -73,7 +73,7 @@ export class PurchaseComponent implements OnInit {
     rate: new FormControl('', Validators.required),
     discount: new FormControl(0, Validators.required),
     OtherDiscount: new FormControl(0, Validators.required),
-    Tax: new FormControl(1, Validators.required),
+    Tax: new FormControl('', Validators.required),
     Amount: new FormControl('', Validators.required),
   });
   // other properties
@@ -90,20 +90,6 @@ export class PurchaseComponent implements OnInit {
   }
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template);
-  }
-  // get data for dropdown - methods
-  public getTaxList() {
-    this.spinner.show();
-    this.taxService.getTaxes().subscribe(
-      (res: any) => {
-        this.taxes = res;
-        this.spinner.hide();
-      },
-      (error) => {
-        this.spinner.hide();
-        this.alertify.error(error);
-      }
-    );
   }
 
   // on select methods party/product dropdown
@@ -144,6 +130,8 @@ export class PurchaseComponent implements OnInit {
     this.ChangeTotalAmount();
   }
   handleTaxRateChange(_value) {
+    console.log(_value);
+    this.taxes = _value.taxes;
     this.ChangeTotalAmount();
   }
   handleDiscountChange(_value) {
@@ -168,7 +156,7 @@ export class PurchaseComponent implements OnInit {
       let TaxPercentage = this.taxes.find((e) => e.id === _taxid);
       this.TaxPercentage = TaxPercentage.rate;
       // percentage to value( don't try to understand just ask me i'll explain)
-      let taxValue = (_rate / 100) * TaxPercentage.rate;
+      let taxValue = (_rate / 100) * this.TaxPercentage;
       let discountValue = (_rate / 100) * _discount;
       let OtherdiscountValue = (_rate / 100) * _otherDiscount;
       this.DiscountAmount = discountValue;
@@ -450,7 +438,6 @@ export class PurchaseComponent implements OnInit {
   ngOnInit() {
     this.orderId = this.route.snapshot.params.id;
     console.log(this.orderId);
-    this.getTaxList();
     if (this.orderId) {
       this.getOrderFromRepo();
     }
