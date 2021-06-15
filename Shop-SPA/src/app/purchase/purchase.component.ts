@@ -104,7 +104,7 @@ export class PurchaseComponent implements OnInit {
     // if (e.stateId != 4030)
     // this.model.taxType = "InterState";
     this.addPurchaseForm.patchValue({
-      PDate: new Date(e.created),
+      PDate: new Date(),
       TaxType: e.stateId == 4030 ? 'IntraState' : 'InterState',
     });
 
@@ -143,30 +143,6 @@ export class PurchaseComponent implements OnInit {
     this.ChangeTotalAmount();
   }
 
-  // getRate(): void {
-  //   let mrp = this.mrp;
-  //   let tax = '1.' + ('00' + this.productTaxRate).slice(-2);
-  //   console.log('tax', tax);
-  //   let rate = this.model.saleMargin;
-  //   let quantity = 0;
-  //   let schquantity = 0;
-
-  //   quantity = this.model.quantity;
-  //   schquantity = 0;
-
-  //   this.model.freeQuantity = 0;
-  //   let discount = 0;
-
-  //   mrp = mrp / parseFloat(tax);
-  //   const rateValue = (mrp * rate) / 100;
-  //   let qtyRatio = ((mrp - rateValue) * quantity) / (quantity + schquantity);
-  //   const rateDiscount = (qtyRatio * discount) / 100;
-
-  //   qtyRatio = qtyRatio - rateDiscount;
-
-  //   this.model.saleRate = parseFloat(qtyRatio.toFixed(2));
-  //   console.log('rate', qtyRatio);
-  // }
   // total amount calculation
   public ChangeTotalAmount() {
     let temp_amount: number = 0;
