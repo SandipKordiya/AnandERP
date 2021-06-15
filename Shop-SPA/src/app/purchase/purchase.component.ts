@@ -73,7 +73,7 @@ export class PurchaseComponent implements OnInit {
     schQuantity: new FormControl(0, Validators.required),
     rate: new FormControl('', Validators.required),
     discount: new FormControl(0, Validators.required),
-    OtherDiscount: new FormControl(0, Validators.required),
+    otherDiscount: new FormControl(0, Validators.required),
     Tax: new FormControl('', Validators.required),
     Amount: new FormControl('', Validators.required),
   });
@@ -150,7 +150,7 @@ export class PurchaseComponent implements OnInit {
     let _quantity = this.addPurchaseForm.value.quantity;
     let _rate = this.addPurchaseForm.value.rate;
     let _discount = this.addPurchaseForm.value.discount;
-    let _otherDiscount = this.addPurchaseForm.value.OtherDiscount;
+    let _otherDiscount = this.addPurchaseForm.value.otherDiscount;
     let _taxid = this.addPurchaseForm.value.Tax;
     let _mrp = this.addPurchaseForm.value.mrp;
     // TaxPercentage
@@ -255,7 +255,7 @@ export class PurchaseComponent implements OnInit {
       schQuantity: e.schQuantity,
       rate: e.rate,
       discount: e.discount,
-      OtherDiscount: e.otherDiscount,
+      otherDiscount: e.otherDiscount,
       Tax: e.taxId,
       Amount: e.amount,
     });
@@ -285,7 +285,7 @@ export class PurchaseComponent implements OnInit {
       schQuantity: 0,
       rate: '',
       discount: 0,
-      OtherDiscount: 0,
+      otherDiscount: 0,
       Tax: '',
       Amount: '',
     });
@@ -309,7 +309,7 @@ export class PurchaseComponent implements OnInit {
       quantity: formData.quantity,
       schQuantity: formData.schQuantity,
       discount: formData.discount,
-      otherDiscount: formData.OtherDiscount,
+      otherDiscount: formData.otherDiscount,
       amount: formData.Amount,
       taxId: formData.Tax,
       taxRate: this.TaxPercentage,
@@ -348,7 +348,7 @@ export class PurchaseComponent implements OnInit {
       quantity: formData.quantity,
       schQuantity: formData.schQuantity,
       discount: formData.discount,
-      otherDiscount: formData.OtherDiscount,
+      otherDiscount: formData.otherDiscount,
       amount: formData.Amount,
       taxId: formData.Tax,
       taxRate: this.TaxPercentage,

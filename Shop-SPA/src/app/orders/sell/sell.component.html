@@ -6,7 +6,7 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="card">
-        <div class="card-body pb-0">
+        <div class="card-body">
           <div
             class="alert alert-danger text-center"
             *ngIf="PartyDueDays != null && PartyDueDays != undefined"
@@ -97,7 +97,8 @@
               <div class="col-md-2">
                 <label for="date">Batch</label>
                 <select
-                  (change)="onChangeBatchProduct($event.target.value)"
+                  formControlName="batchNumber"
+                  (change)="onChangeBatchProduct()"
                   class="custom-select"
                   [disabled]="partyData.invalid"
                   required
@@ -225,6 +226,7 @@
                 <label for="taxType">Tax</label>
                 <app-tax-input
                   skipIndex="-1"
+                  (disabled)="(true)"
                   (onChangeHandler)="handleTaxRateChange($event)"
                   formControlName="Tax"
                 ></app-tax-input>
@@ -261,7 +263,37 @@
           <!-- /form .needs-validation -->
         </div>
       </div>
+      <app-added-product-list
+        (EditProduct)="handleEditProduct($event)"
+        (DeleteProduct)="handleDeleteProduct($event)"
+        [products]="products"
+        [MainPostObject]="MainPostObject"
+        #finalComponent
+      ></app-added-product-list>
 
+      <div class="card invoice">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+              <div class="submit-section d-flex justify-content-center">
+                <button
+                  [disabled]="!products.length"
+                  (click)="submitSale(finalComponent)"
+                  class="btn btn-lg btn-primary btn-block submit-btn ml-1"
+                >
+                  {{ orderId ? "Update" : "Save" }}
+                </button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <app-tax-details-dialog
+                [products]="products"
+              ></app-tax-details-dialog>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- <div class="card invoice">
         <div class="card-body ">
           <div class="submit-section d-flex justify-content-center">

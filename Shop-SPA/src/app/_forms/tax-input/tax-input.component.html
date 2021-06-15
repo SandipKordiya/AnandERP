@@ -5,7 +5,7 @@
   (blur)="handleBlur()"
   [formControl]="tax"
   required
-  [disabled]="disabled"
+  [disabled]="true"
   [tabindex]="skipIndex"
 >
   <option *ngFor="let item of taxes" [ngValue]="item.id">

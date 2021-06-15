@@ -34,8 +34,8 @@
           <td>{{ item.otherDiscount }}%</td>
           <td>{{ item.taxRate }}%</td>
 
-          <td>{{ item.taxAmount }}</td>
-          <td>₹{{ item.amount }}</td>
+          <td>{{ item.taxAmount | number: "1.2-2" }}</td>
+          <td>₹{{ item.amount | number: "1.2-2" }}</td>
           <td class="align-middle text-right">
             <a
               (click)="editProduct(item)"

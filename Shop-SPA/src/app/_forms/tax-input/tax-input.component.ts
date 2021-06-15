@@ -29,7 +29,8 @@ import { TaxService } from 'src/app/_services/tax.service';
 })
 export class TaxInputComponent implements OnInit, ControlValueAccessor {
   taxes;
-  @Input() disabled;
+  // @Input() disabled;
+  disabled = true;
   @Input() skipIndex;
   @Output() onChangeHandler: EventEmitter<any> = new EventEmitter<string>();
 
@@ -73,6 +74,8 @@ export class TaxInputComponent implements OnInit, ControlValueAccessor {
       this.tax.setValue(parseInt(obj));
       let taxObject = { taxes: this.taxes, id: obj };
       this.onChangeHandler.emit(taxObject);
+    } else {
+      this.tax.setValue('');
     }
   }
 
