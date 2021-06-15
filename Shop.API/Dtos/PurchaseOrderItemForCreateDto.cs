@@ -21,6 +21,7 @@ namespace Shop.API.Dtos
         public decimal SaleRate { get; set; }
         public decimal Discount { get; set; }
         public decimal OtherDiscount { get; set; }
+        public double TaxAmount { get; set; }
         public decimal Amount { get; set; }
     }
 }

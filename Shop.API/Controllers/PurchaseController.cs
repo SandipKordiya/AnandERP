@@ -131,9 +131,9 @@ namespace Shop.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePurchase(int id, PurchaseModelForUpdateDto model)
         {
-            var userId = id;
-            if (id == 0)
-                return Unauthorized();
+            // var userId = id;
+            // if (id == 0)
+            //     return Unauthorized();
 
             var purchaseFromRepo = await _repo.GetPurchase(id);
             var purchaseOldAmount = purchaseFromRepo.NetAmount;
@@ -141,7 +141,7 @@ namespace Shop.API.Controllers
             if (purchaseFromRepo == null)
                 return BadRequest("Something wrong");
 
-            model.PurchaseForUpdateDto.UserId = userId;
+            model.PurchaseForUpdateDto.UserId = purchaseFromRepo.UserId;
             _mapper.Map(model.PurchaseForUpdateDto, purchaseFromRepo);
 
             // Delete children
@@ -183,7 +183,7 @@ namespace Shop.API.Controllers
                     var ledger = new Ledger
                     {
                         BranchId = model.PurchaseForUpdateDto.BranchId,
-                        UserId = userId,
+                        UserId = purchaseFromRepo.UserId,
                         PartyId = model.PurchaseForUpdateDto.PartyId,
                         OrderId = purchaseFromRepo.Id,
                         OrderType = "Purchase",
@@ -210,7 +210,7 @@ namespace Shop.API.Controllers
                     var ledger = new Ledger
                     {
                         BranchId = model.PurchaseForUpdateDto.BranchId,
-                        UserId = userId,
+                        UserId = purchaseFromRepo.UserId,
                         PartyId = model.PurchaseForUpdateDto.PartyId,
                         OrderId = purchaseFromRepo.Id,
                         OrderType = "Purchase",

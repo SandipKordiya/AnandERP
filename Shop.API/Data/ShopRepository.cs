@@ -432,7 +432,8 @@ namespace Shop.API.Data
                        new SqlParameter("@SortOrder", "")
                 };
 
-                List<PurchaseOrderItemsModel> data = await _context.PurchaseOrderItemsModels.FromSqlRaw("gensp_PurchaseOrderItemsByPurchaseOrder @purchaseId, @SortOrder", param).ToListAsync();
+                List<PurchaseOrderItemsModel> data = await _context.PurchaseOrderItemsModels.
+                FromSqlRaw("gensp_PurchaseOrderItemsByPurchaseOrder @purchaseId, @SortOrder", param).ToListAsync();
                 return data;
             }
             catch (Exception ex)

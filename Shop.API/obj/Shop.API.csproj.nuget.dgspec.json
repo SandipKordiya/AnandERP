@@ -1,23 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "F:\\Projects\\2020\\MedicalShopERP\\Shop.API\\Shop.API.csproj": {}
+    "F:\\Projects\\2020\\MedicalShopERP\\shop.api\\Shop.API.csproj": {}
   },
   "projects": {
-    "F:\\Projects\\2020\\MedicalShopERP\\Shop.API\\Shop.API.csproj": {
+    "F:\\Projects\\2020\\MedicalShopERP\\shop.api\\Shop.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Projects\\2020\\MedicalShopERP\\Shop.API\\Shop.API.csproj",
+        "projectUniqueName": "F:\\Projects\\2020\\MedicalShopERP\\shop.api\\Shop.API.csproj",
         "projectName": "Shop.API",
-        "projectPath": "F:\\Projects\\2020\\MedicalShopERP\\Shop.API\\Shop.API.csproj",
+        "projectPath": "F:\\Projects\\2020\\MedicalShopERP\\shop.api\\Shop.API.csproj",
         "packagesPath": "C:\\Users\\sandi\\.nuget\\packages\\",
-        "outputPath": "F:\\Projects\\2020\\MedicalShopERP\\Shop.API\\obj\\",
+        "outputPath": "F:\\Projects\\2020\\MedicalShopERP\\shop.api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
           "C:\\Users\\sandi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -126,7 +128,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.204\\RuntimeIdentifierGraph.json"
         }
       }
     }
