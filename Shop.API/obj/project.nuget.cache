@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "IWnbVHyHMZMrrRZLEd2HbUM9CJUQuGYmb4vhflpXLUIxDX7TO0Dt3zVEtnnF8xRVrn/BaItFpjV3ukaKowmKXw==",
+  "dgSpecHash": "HCXRtEJBh4UnwxWkwk1U+/1J2etLgTyqkr0glHVaFdBjsdqv96qaaFLRek2ffizPvdp7zkCOjUOLtodbEfnIsQ==",
   "success": true,
-  "projectFilePath": "F:\\Projects\\2020\\MedicalShopERP\\Shop.API\\Shop.API.csproj",
+  "projectFilePath": "F:\\Projects\\2020\\MedicalShopERP\\shop.api\\Shop.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\sandi\\.nuget\\packages\\automapper\\10.0.0\\automapper.10.0.0.nupkg.sha512",
     "C:\\Users\\sandi\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.0.1\\automapper.extensions.microsoft.dependencyinjection.8.0.1.nupkg.sha512",
