@@ -52,11 +52,11 @@ export class DateInputComponent implements OnInit, ControlValueAccessor {
   dateValidator(date: any) {
     try {
       let _Date: any = new Intl.DateTimeFormat().formatToParts(new Date(date));
-      let minDate: any = new Intl.DateTimeFormat().formatToParts(
-        new Date(this.minDate)
-      );
-      console.log('minDate', minDate);
       if (this.minDate) {
+        let minDate: any = new Intl.DateTimeFormat().formatToParts(
+          new Date(this.minDate)
+        );
+        console.log('minDate', minDate);
         let minDataNumber = `${minDate[4].value}${this.pad(
           minDate[0].value
         )}${this.pad(minDate[2].value)}`;
@@ -76,6 +76,7 @@ export class DateInputComponent implements OnInit, ControlValueAccessor {
         return true;
       }
     } catch (error) {
+      console.log(error);
       return false;
     }
     return false;

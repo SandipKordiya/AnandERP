@@ -33,6 +33,7 @@ export class PurchaseComponent implements OnInit {
   public orderId;
 
   taxSaleMargin: number;
+  saleRate: number = 0;
   TaxPercentage: number;
   TaxAmount: number;
   DiscountAmount: number;
@@ -142,6 +143,30 @@ export class PurchaseComponent implements OnInit {
     this.ChangeTotalAmount();
   }
 
+  // getRate(): void {
+  //   let mrp = this.mrp;
+  //   let tax = '1.' + ('00' + this.productTaxRate).slice(-2);
+  //   console.log('tax', tax);
+  //   let rate = this.model.saleMargin;
+  //   let quantity = 0;
+  //   let schquantity = 0;
+
+  //   quantity = this.model.quantity;
+  //   schquantity = 0;
+
+  //   this.model.freeQuantity = 0;
+  //   let discount = 0;
+
+  //   mrp = mrp / parseFloat(tax);
+  //   const rateValue = (mrp * rate) / 100;
+  //   let qtyRatio = ((mrp - rateValue) * quantity) / (quantity + schquantity);
+  //   const rateDiscount = (qtyRatio * discount) / 100;
+
+  //   qtyRatio = qtyRatio - rateDiscount;
+
+  //   this.model.saleRate = parseFloat(qtyRatio.toFixed(2));
+  //   console.log('rate', qtyRatio);
+  // }
   // total amount calculation
   public ChangeTotalAmount() {
     let temp_amount: number = 0;
@@ -151,9 +176,11 @@ export class PurchaseComponent implements OnInit {
     let _discount = this.addPurchaseForm.value.discount;
     let _otherDiscount = this.addPurchaseForm.value.OtherDiscount;
     let _taxid = this.addPurchaseForm.value.Tax;
+    let _mrp = this.addPurchaseForm.value.mrp;
     // TaxPercentage
     // taxe rate
     try {
+      let mrp = _mrp;
       let TaxPercentage = this.taxes.find((e) => e.id === _taxid);
       this.TaxPercentage = TaxPercentage.rate;
       // percentage to value( don't try to understand just ask me i'll explain)
@@ -178,6 +205,23 @@ export class PurchaseComponent implements OnInit {
         }
         if (_otherDiscount > 0) {
           temp_amount -= OtherdiscountValue;
+        }
+        if (this.taxSaleMargin > 0) {
+          mrp = mrp / taxValue;
+          let rate = this.taxSaleMargin;
+          let quantity = 0;
+          let schquantity = 0;
+          let discount = 0;
+          quantity = _quantity;
+          schquantity = 0;
+          const rateValue = (mrp * rate) / 100;
+          let qtyRatio =
+            ((mrp - rateValue) * quantity) / (quantity + schquantity);
+          const rateDiscount = (qtyRatio * discount) / 100;
+
+          qtyRatio = qtyRatio - rateDiscount;
+
+          this.saleRate = parseFloat(qtyRatio.toFixed(2));
         }
 
         console.log('taxValue', taxValue, 'Amount', temp_amount);
@@ -285,7 +329,7 @@ export class PurchaseComponent implements OnInit {
       expireDate: moment(formData.expireDate).format('YYYY-M-D'),
       mRP: formData.mrp,
       rate: formData.rate,
-      saleRate: 0,
+      saleRate: this.saleRate,
       quantity: formData.quantity,
       schQuantity: formData.schQuantity,
       discount: formData.discount,
@@ -324,7 +368,7 @@ export class PurchaseComponent implements OnInit {
       expireDate: moment(formData.expireDate).format('YYYY-M-D'),
       mRP: formData.mrp,
       rate: formData.rate,
-      saleRate: 0,
+      saleRate: formData.saleRate,
       quantity: formData.quantity,
       schQuantity: formData.schQuantity,
       discount: formData.discount,
@@ -432,8 +476,8 @@ export class PurchaseComponent implements OnInit {
             this.spinner.hide();
           }
         );
+      console.log(purchaseUpdateModel);
     }
-    console.log(purchaseModel);
   }
 
   ngOnInit() {
