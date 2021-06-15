@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MyServiceService } from 'src/app/_forms/my-service.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
+import { ProductService } from 'src/app/_services/product.service';
 import { ShopService } from 'src/app/_services/shop.service';
 
 const noop = () => {};
@@ -35,15 +36,18 @@ export class SellComponent implements OnInit {
   saleRate;
   orderId;
   status = 'Unpaid';
-
+  isSchemeApplied;
+  scheme = null;
   public currentUser: number = parseInt(localStorage.getItem('userId'));
 
   constructor(
     private _service: MyServiceService,
+    private productService: ProductService,
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     private alertify: AlertifyService,
-    private shopService: ShopService
+    private shopService: ShopService,
+    private router: Router
   ) {
     this.breadCrumbItems = [
       { label: 'PURCHASE' },
@@ -53,24 +57,24 @@ export class SellComponent implements OnInit {
 
   // form input values
   addSaleForm = new FormGroup({
-    invoiceNo: new FormControl(''),
-    branch: new FormControl('1'),
+    invoiceNo: new FormControl('', Validators.required),
+    branch: new FormControl('1', Validators.required),
     party: new FormControl('', Validators.required),
-    date: new FormControl(new Date()),
-    due: new FormControl(new Date()),
-    TaxType: new FormControl(''),
-    productData: new FormControl(''),
-    batchNumber: new FormControl(''),
-    expireDate: new FormControl(''),
-    quantity: new FormControl(''),
-    invQuantity: new FormControl(''),
-    freeQuantity: new FormControl(''),
-    mrp: new FormControl(''),
-    rate: new FormControl(''),
-    discount: new FormControl(''),
-    otherDiscount: new FormControl(''),
-    Tax: new FormControl(''),
-    Amount: new FormControl(''),
+    date: new FormControl(new Date(), Validators.required),
+    due: new FormControl(new Date(), Validators.required),
+    TaxType: new FormControl('', Validators.required),
+    productData: new FormControl('', Validators.required),
+    batchNumber: new FormControl('', Validators.required),
+    expireDate: new FormControl('', Validators.required),
+    quantity: new FormControl('', Validators.required),
+    invQuantity: new FormControl('', Validators.required),
+    freeQuantity: new FormControl('', Validators.required),
+    mrp: new FormControl('', Validators.required),
+    rate: new FormControl('', Validators.required),
+    discount: new FormControl('', Validators.required),
+    otherDiscount: new FormControl('', Validators.required),
+    Tax: new FormControl('', Validators.required),
+    Amount: new FormControl('', Validators.required),
   });
 
   get partyData() {
@@ -144,24 +148,66 @@ export class SellComponent implements OnInit {
 
     this.spinner.hide();
   }
-
+  getSchemeByProductId() {
+    console.log('isscheme', this.isSchemeApplied);
+    let f = this.addSaleForm.value;
+    if (f.productData.id && f.batchNumber) {
+      this.productService.getScheme(f.productData.id).subscribe(
+        (res: any) => {
+          console.log('scheme', res);
+          if (res != null) {
+            this.scheme = res;
+          } else {
+            this.scheme = null;
+          }
+          this.ChangeTotalAmount();
+          this.spinner.hide();
+        },
+        (error) => {
+          this.alertify.error(error);
+        }
+      );
+    } else {
+      this.alertify.error('Select Product and Batch Number');
+    }
+  }
+  toggleScheme(value) {
+    console.log(value.checked);
+    if (value.checked) {
+      this.isSchemeApplied = true;
+    } else {
+      this.isSchemeApplied = false;
+    }
+    this.onChangeBatchProduct();
+  }
   public onChangeBatchProduct() {
     let e = this.addSaleForm.value.batchNumber;
-
+    this.getSchemeByProductId();
     this.currentBatchProduct = this.batchProducts.find((f) => f.batchNo === e);
     console.log(this.currentBatchProduct);
+
     this.addSaleForm.patchValue({
       expireDate: this.currentBatchProduct?.expireDate,
-      quantity: 1,
       invQuantity: 0,
-      freeQuantity: 0,
       mrp: this.currentBatchProduct.mrp,
-      rate: this.currentBatchProduct.rate,
       discount: this.currentBatchProduct.mrpDiscount,
       otherDiscount: this.currentBatchProduct.otherDiscount,
       Tax: this.currentBatchProduct.taxId,
       batchNumber: e,
     });
+    if (this.isSchemeApplied && this.scheme) {
+      this.addSaleForm.patchValue({
+        quantity: this.scheme.quantity,
+        freeQuantity: this.scheme.schQuantity,
+        rate: this.scheme.schRate,
+      });
+    } else {
+      this.addSaleForm.patchValue({
+        quantity: 1,
+        freeQuantity: 0,
+        rate: this.currentBatchProduct.rate,
+      });
+    }
     this.ChangeTotalAmount();
   }
 
@@ -250,7 +296,56 @@ export class SellComponent implements OnInit {
       console.log(error);
     }
   }
+  getOrderFromRepo(): void {
+    this.shopService.getSaleOrder(this.orderId).subscribe((data) => {
+      // this.order = data;
+      // this.model.invoiceNo = data.invoiceNo;
+      // this.partyId = data.partyId;
+      // this.model.taxType = data.taxType;
+      // this.model.saleDate = moment(data.saleDate).format('DD/MM/YYYY');
+      // this.model.dueDate = moment(data.dueDate).format('DD/MM/YYYY');
+      // this.model.branchId = data.branchId;
+      // this.model.status = data.status;
+      // this.finalGrossAmount = data.grossAmount;
+      // this.finalTotalTaxAmount = data.taxAmount;
+      // this.finalRoundOffAmount = data.roundOff;
+      // this.finalGrandTotalAmount = data.netAmount;
+      this.status = data.status;
+      this.addSaleForm.patchValue({
+        invoiceNo: data.invoiceNo,
+        branch: data.branchId,
+        party: data.partyId,
+        // PDate: moment(data.purchaseDate).format('DD/MM/YYYY'),
+      });
+      console.log('order', data);
+      this.getOrderItemsFromRepo(data.id);
+      this.MainPostObject = {
+        products: this.products,
+        invoiceNo: data.invoiceNo,
+        partyId: data.partyId,
+        // purchaseDate: moment(data.purchaseDate).format('YYYY-M-D'),
+        saleDate: moment(data.date).format('YYYY-M-D'),
+        dueDate: moment(data.due).format('YYYY-M-D'),
+        TaxType: data.TaxType,
+        branchId: data.branchId,
+      };
+      console.log('order', data);
+      this.getOrderItemsFromRepo(data.id);
+    });
+  }
 
+  getOrderItemsFromRepo(id): void {
+    this.shopService.getSaleOrderItems(id).subscribe((data) => {
+      data.forEach((element, i) => {
+        data[i].mRP = element.mrp;
+        data[i].mRPDiscount = element.mrpDiscount;
+      });
+      this.products = data;
+      this.ChangeTotalAmount();
+
+      console.log('order items', this.products);
+    });
+  }
   // edit/delete product
   handleEditProduct(e) {
     this.addSaleForm.patchValue({
@@ -319,7 +414,7 @@ export class SellComponent implements OnInit {
       rate: formData.rate,
       saleRate: this.saleRate,
       quantity: formData.quantity,
-      schQuantity: formData.freeQuantity,
+      freeQuantity: formData.freeQuantity,
       discount: formData.discount,
       otherDiscount: formData.otherDiscount,
       amount: formData.Amount,
@@ -358,7 +453,7 @@ export class SellComponent implements OnInit {
       rate: formData.rate,
       saleRate: formData.saleRate,
       quantity: formData.quantity,
-      schQuantity: formData.schQuantity,
+      freeQuantity: formData.freeQuantity,
       discount: formData.discount,
       otherDiscount: formData.otherDiscount,
       amount: formData.Amount,
@@ -405,8 +500,10 @@ export class SellComponent implements OnInit {
       products: this.products,
       invoiceNo: f.invoiceNo,
       partyId: f.party.id,
-      purchaseDate: moment(f.PDate).format('YYYY-M-D'),
+      saleDate: moment(f.date).format('YYYY-M-D'),
+      dueDate: moment(f.due).format('YYYY-M-D'),
       branchId: f.branch,
+      TaxType: f.TaxType,
     };
     this.emptyForm();
     console.log(this.addSaleForm.value);
@@ -414,11 +511,12 @@ export class SellComponent implements OnInit {
 
   submitSale(finalComponent) {
     this.spinner.show();
-    const purchaseModel: any = {
+    const SaleModel: any = {
       invoiceNo: this.MainPostObject.invoiceNo,
       partyId: this.MainPostObject.partyId,
-      taxType: this.MainPostObject.taxType,
-      purchaseDate: this.MainPostObject.purchaseDate,
+      taxType: this.MainPostObject.TaxType,
+      saleDate: moment(this.MainPostObject.date).format('YYYY-M-D'),
+      dueDate: moment(this.MainPostObject.due).format('YYYY-M-D'),
       branchId: this.MainPostObject.branchId,
       status: 'Unpaid',
       grossAmount: finalComponent.finalGrossAmount,
@@ -430,25 +528,22 @@ export class SellComponent implements OnInit {
     };
 
     if (this.orderId === undefined) {
-      purchaseModel.PurchaseOrderItems = this.products;
-      // this.shopService.addPurchase(this.currentUser, purchaseModel).subscribe(
-      //   (next) => {
-      //     this.alertify.success('New purchase entry Added.');
-      //     this.router.navigate(['/order/purchase/list']);
-      //     console.log(next);
-      //     this.spinner.hide();
-      //   },
-      //   (error) => {
-      //     this.alertify.error(error.message);
-      //     console.log(error);
-      //     this.spinner.hide();
-      //   }
-      // );
-      console.log(purchaseModel);
+      SaleModel.SalesItems = this.products;
+
+      this.shopService.addSale(this.currentUser, SaleModel).subscribe(
+        (next) => {
+          this.alertify.success('New sale entry Added.');
+          this.router.navigate(['/order/sale/list']);
+        },
+        (error) => {
+          this.alertify.error(error.error);
+        }
+      );
+      console.log(SaleModel);
     } else {
-      purchaseModel.status = this.status;
-      const purchaseUpdateModel = {
-        purchaseForUpdateDto: purchaseModel,
+      SaleModel.status = this.status;
+      const saleUpdateModel = {
+        purchaseForUpdateDto: SaleModel,
         purchaseOrderItems: this.products,
       };
       // this.shopService
@@ -464,14 +559,17 @@ export class SellComponent implements OnInit {
       //       this.spinner.hide();
       //     }
       //   );
-      console.log(purchaseUpdateModel);
+      console.log(saleUpdateModel);
     }
     this.spinner.hide();
   }
   ngOnInit() {
     this.branchId = parseInt(localStorage.getItem('branchId'));
+    this.orderId = this.route.snapshot.params.id;
 
     this.generateInvoiceNo();
-    console.log(new Date());
+    if (this.orderId) {
+      this.getOrderFromRepo();
+    }
   }
 }

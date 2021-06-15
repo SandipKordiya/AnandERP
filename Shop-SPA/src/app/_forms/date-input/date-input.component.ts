@@ -142,6 +142,9 @@ export class DateInputComponent implements OnInit, ControlValueAccessor {
           this.date = _Date;
         } else {
           this.isValidDate = false;
+          this.DateValue.setValue('');
+          this.date = '';
+          this.dateChanged('');
         }
       } catch (error) {
         this.isValidDate = false;

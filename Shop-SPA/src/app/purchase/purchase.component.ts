@@ -47,10 +47,8 @@ export class PurchaseComponent implements OnInit {
     private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
     private alertify: AlertifyService,
-    private branchService: BranchService,
     private shopService: ShopService,
     private router: Router,
-    private taxService: TaxService,
     private modalService: BsModalService
   ) {
     this.breadCrumbItems = [

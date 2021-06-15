@@ -29,7 +29,7 @@
           <td>{{ item.mRP || item.mrp }}</td>
           <td>{{ item.rate | number }}</td>
           <td>{{ item.quantity }}</td>
-          <td>{{ item.schQuantity }}</td>
+          <td>{{ item.schQuantity || item.freeQuantity }}</td>
           <td>{{ item.discount }}%</td>
           <td>{{ item.otherDiscount }}%</td>
           <td>{{ item.taxRate }}%</td>

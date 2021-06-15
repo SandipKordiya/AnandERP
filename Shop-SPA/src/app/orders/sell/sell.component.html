@@ -247,13 +247,18 @@
 
               <div class="col-md-2">
                 <mat-checkbox
+                  [disabled]="this.addSaleForm.invalid"
+                  (change)="toggleScheme($event)"
                   tabindex="-1"
                   name="isSchemeApplied"
                   class="example-margin"
                   color="primary"
                   >Apply Scheme</mat-checkbox
                 >
-                <button class="btn btn-primary btn-block">
+                <button
+                  [disabled]="this.addSaleForm.invalid"
+                  class="btn btn-primary btn-block"
+                >
                   Add <span class="fa fa-plus"></span>
                 </button>
                 <!-- [disabled]="saleForm.invalid && !isBillingEnabled" -->
@@ -295,13 +300,13 @@
         </div>
       </div>
       <!-- <div class="card invoice">
-        <div class="card-body ">
-          <div class="submit-section d-flex justify-content-center">
-            <button [disabled]="!products.length" (click)="submitPurchase()"
-              class="btn btn-primary submit-btn">Save</button>
+          <div class="card-body ">
+            <div class="submit-section d-flex justify-content-center">
+              <button [disabled]="!products.length" (click)="submitPurchase()"
+                class="btn btn-primary submit-btn">Save</button>
+            </div>
           </div>
-        </div>
-      </div> -->
+        </div> -->
     </div>
   </div>
 </div>
