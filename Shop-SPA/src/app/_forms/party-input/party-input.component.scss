@@ -20,3 +20,17 @@
     }
   }
 }
+.party-input {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.party-info-icon-div {
+  position: absolute;
+  top: -30px;
+}
+.party-input-field {
+  width: 100%;
+}

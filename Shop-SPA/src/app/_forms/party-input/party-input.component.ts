@@ -7,6 +7,7 @@ import {
   Input,
   ViewChild,
   ElementRef,
+  TemplateRef,
 } from '@angular/core';
 import { Observable, Observer, of } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
@@ -16,6 +17,7 @@ import {
   ControlValueAccessor,
 } from '@angular/forms';
 import { MyServiceService } from '../my-service.service';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-party-input',
@@ -36,6 +38,7 @@ export class PartyInputComponent implements OnInit, ControlValueAccessor {
   errorMessage: string;
   searching = false;
   searchFailed = false;
+  modalRef;
   @Output() onChangeHandler: EventEmitter<any> = new EventEmitter<string>();
   @Input() activetabIndex;
   @ViewChild('PartyRef') PartyRef: ElementRef;
@@ -44,14 +47,21 @@ export class PartyInputComponent implements OnInit, ControlValueAccessor {
   private onTouched: () => void;
 
   public party = new FormControl();
-
-  constructor(private _service: MyServiceService) {}
+  partyData: any[];
+  isvalidParty: boolean = false;
+  constructor(
+    private _service: MyServiceService,
+    private modalService: BsModalService
+  ) {}
 
   ngAfterViewInit() {
     if (this.activetabIndex) {
       console.log(this.PartyRef);
       this.PartyRef.nativeElement.focus();
     }
+  }
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template);
   }
   // search
   ngOnInit(): void {
@@ -77,7 +87,10 @@ export class PartyInputComponent implements OnInit, ControlValueAccessor {
     this.onChange(e.item);
     this.onTouched();
     this.onChangeHandler.emit(e.item);
+    this.partyData = e.item;
+    this.isvalidParty = true;
   }
+
   typeaheadNoResults(event: boolean): void {
     this.noResult = event;
   }
