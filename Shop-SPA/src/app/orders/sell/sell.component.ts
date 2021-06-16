@@ -546,19 +546,16 @@ export class SellComponent implements OnInit {
         purchaseForUpdateDto: SaleModel,
         purchaseOrderItems: this.products,
       };
-      // this.shopService
-      //   .updatePurchase(this.orderId, purchaseUpdateModel)
-      //   .subscribe(
-      //     (next) => {
-      //       this.alertify.success('purchase entry updated.');
-      //       this.router.navigate(['/order/purchase/list']);
-      //       this.spinner.hide();
-      //     },
-      //     (error) => {
-      //       this.alertify.error(error.message);
-      //       this.spinner.hide();
-      //     }
-      //   );
+
+      this.shopService.updateSale(this.orderId, saleUpdateModel).subscribe(
+        (next) => {
+          this.alertify.success('sale entry updated.');
+          this.router.navigate(['/order/sale/list']);
+        },
+        (error) => {
+          this.alertify.error(error.error);
+        }
+      );
       console.log(saleUpdateModel);
     }
     this.spinner.hide();
