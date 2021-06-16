@@ -8,7 +8,6 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 import { ProductService } from 'src/app/_services/product.service';
 import { ShopService } from 'src/app/_services/shop.service';
 
-
 @Component({
   selector: 'app-sell',
   templateUrl: './sell.component.html',

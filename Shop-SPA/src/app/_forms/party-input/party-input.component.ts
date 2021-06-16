@@ -5,16 +5,17 @@ import {
   Output,
   EventEmitter,
   Input,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
-import { Observable, Observer, of, Subject } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { Observable, Observer, of } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import {
   FormControl,
   NG_VALUE_ACCESSOR,
   ControlValueAccessor,
 } from '@angular/forms';
 import { MyServiceService } from '../my-service.service';
-import { PartyService } from '../../_services/party.service';
 
 @Component({
   selector: 'app-party-input',
@@ -36,6 +37,8 @@ export class PartyInputComponent implements OnInit, ControlValueAccessor {
   searching = false;
   searchFailed = false;
   @Output() onChangeHandler: EventEmitter<any> = new EventEmitter<string>();
+  @Input() activetabIndex;
+  @ViewChild('PartyRef') PartyRef: ElementRef;
 
   private onChange: (name: string) => void;
   private onTouched: () => void;
@@ -44,6 +47,12 @@ export class PartyInputComponent implements OnInit, ControlValueAccessor {
 
   constructor(private _service: MyServiceService) {}
 
+  ngAfterViewInit() {
+    if (this.activetabIndex) {
+      console.log(this.PartyRef);
+      this.PartyRef.nativeElement.focus();
+    }
+  }
   // search
   ngOnInit(): void {
     this.suggestions$ = new Observable((observer: Observer<string>) => {
