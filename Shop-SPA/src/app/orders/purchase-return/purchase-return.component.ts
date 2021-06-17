@@ -8,8 +8,6 @@ import { AlertifyService } from 'src/app/_services/alertify.service';
 import { ProductService } from 'src/app/_services/product.service';
 import { ShopService } from 'src/app/_services/shop.service';
 
-const noop = () => {};
-
 @Component({
   selector: 'app-purchase-return',
   templateUrl: './purchase-return.component.html',
@@ -509,7 +507,7 @@ export class PurchaseReturnComponent implements OnInit {
     console.log(this.addPurchaseReturnForm.value);
   }
 
-  submitSale(finalComponent) {
+  submitPurchaseReturn(finalComponent) {
     this.spinner.show();
     const SaleModel: any = {
       invoiceNo: this.MainPostObject.invoiceNo,
