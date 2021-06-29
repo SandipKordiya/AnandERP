@@ -1,0 +1,73 @@
+<ng-template
+  #customListTemplate
+  let-matches="matches"
+  let-query="query"
+  let-typeaheadTemplateMethods
+>
+  <ul class="product-custom-list-group" [class.dropdown-menu]="isBs3">
+    <table class="table table-borderless">
+      <thead>
+        <tr>
+          <th scope="col">NAME</th>
+          <th scope="col">BRAND</th>
+          <th scope="col">QUANTITY</th>
+          <th scope="col">MRP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          [class.active]="typeaheadTemplateMethods.isActive(match)"
+          (click)="typeaheadTemplateMethods.selectMatch(match, $event)"
+          (mouseenter)="typeaheadTemplateMethods.selectActive(match)"
+          class="product-custom-list-group-item"
+          *ngFor="let match of matches"
+        >
+          <td scope="row " class="col-6">
+            <li>
+              {{ match.item.productName }}
+            </li>
+          </td>
+          <td scope="row" class="col-4">
+            <li>
+              {{ match.item.brandName }}
+            </li>
+          </td>
+          <td scope="row" class="col">
+            <li>
+              {{ match.item.mrp }}
+            </li>
+          </td>
+          <td scope="row" class="col">
+            <li>
+              {{ match.item.mrp }}
+            </li>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ul>
+</ng-template>
+
+<input
+  [(ngModel)]="search"
+  [readonly]="disabled"
+  [typeaheadScrollable]="true"
+  [typeaheadOptionsInScrollableView]="5"
+  [formControl]="product"
+  typeaheadOptionField="productName"
+  [typeahead]="suggestions$"
+  [optionsListTemplate]="customListTemplate"
+  [typeaheadAsync]="true"
+  (typeaheadOnSelect)="onSelectHandler($event)"
+  (typeaheadNoResults)="typeaheadNoResults($event)"
+  class="form-control"
+  placeholder="Search Product. eg 'Name'"
+/>
+<small *ngIf="searching" class="form-text text-muted">searching...</small>
+<div class="alert alert-danger" *ngIf="noResult">No Results Found</div>
+
+<div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+  {{ errorMessage }}
+</div>
+
+<!-- [typeaheadItemTemplate]="customItemTemplate" -->

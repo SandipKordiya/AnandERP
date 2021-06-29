@@ -1,0 +1,14 @@
+<select
+  class="custom-select"
+  tabindex="-1"
+  (change)="handleTaxRateChange($event.target.value)"
+  (blur)="handleBlur()"
+  [formControl]="tax"
+  required
+  [disabled]="true"
+  [tabindex]="skipIndex"
+>
+  <option *ngFor="let item of taxes" [ngValue]="item.id">
+    {{ item.name }}
+  </option>
+</select>

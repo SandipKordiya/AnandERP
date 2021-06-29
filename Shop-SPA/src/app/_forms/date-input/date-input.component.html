@@ -1,13 +1,18 @@
-<div class="form-group">
-  <input 
-      type="text"
-      [class.is-invalid]='ngControl.touched && ngControl.invalid'
-      class='form-control'
-      [formControl]='ngControl.control'
-      placeholder="{{label}}"
-      bsDatepicker
-      [bsConfig]='bsConfig'
-      [maxDate]='maxDate'
-  >
-  <div *ngIf="ngControl.control.errors?.required" class="invalid-feedback">{{label}} is required</div>
+<!-- <input type="text" id="purchaseDate" placeholder="Datepicker" [textMask]="mask"
+  [ngModel]="purchaseDate | date:'MM/dd/yyyy'" (blur)="onBlur()" (change)='todate($event.target.value)'
+  class="form-control" name="purchaseDate" autocomplete="off" required> -->
+<div class="input-group mb-3">
+  <input
+    [textMask]="mask"
+    [tabindex]="skipIndex"
+    [formControl]="DateValue"
+    [class.error_message]="!isValidDate"
+    placeholder="mm/dd/yyyy"
+    (blur)="onBlur()"
+    [value]="date | date: 'MM/dd/yyyy'"
+    (keyup)="dateChanged($event.target.value)"
+    autocomplete="off"
+    class="form-control datepicker"
+    [readonly]="disabled"
+  />
 </div>

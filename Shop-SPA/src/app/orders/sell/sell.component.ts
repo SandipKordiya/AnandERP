@@ -1,406 +1,89 @@
-import { ShopService } from './../../_services/shop.service';
-import { AlertifyService } from './../../_services/alertify.service';
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { environment } from 'src/environments/environment';
-import { Product } from '../../_models/product';
-import { BranchService } from '../../_services/branch.service';
-import csc from 'country-state-city';
-
-import * as moment from 'moment';
-import { AuthService } from '../../_services/auth.service';
-import { TaxService } from '../../_services/tax.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DecimalPipe } from '@angular/common';
-
-import { Options } from 'select2';
-import { Observable } from 'rxjs';
-import { Select2OptionData } from 'ng-select2';
-import { ProductService } from '../../_services/product.service';
-
-const noop = () => {
-};
-
+import * as moment from 'moment';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MyServiceService } from 'src/app/_forms/my-service.service';
+import { AlertifyService } from 'src/app/_services/alertify.service';
+import { ProductService } from 'src/app/_services/product.service';
+import { ShopService } from 'src/app/_services/shop.service';
 
 @Component({
   selector: 'app-sell',
   templateUrl: './sell.component.html',
-  styleUrls: ['./sell.component.scss']
+  styleUrls: ['./sell.component.scss'],
 })
 export class SellComponent implements OnInit {
+  // properties
   breadCrumbItems: Array<{}>;
-
-  baseUrl = environment.apiUrl;
-  model: any = {};
-  // products: Product[] = [];
   products: any[] = [];
-  branches: any[];
+  public MainPostObject: any;
   taxes: any[];
-  scheme: any;
-  invoiceNumber: any;
-  partyId: number;
-  finalGrossAmount = 0;
-  finalDiscountAmount = 0;
-  finalTotalTaxAmount = 0;
-  finalRoundOffAmount = 0;
-  finalGrandTotalAmount = 0;
-  finalOtherAmount = 0;
-  finalCalculatedAmount: number = 0;
-  currentUser: number = parseInt(localStorage.getItem('userId'));
-  taxTypeList: any = ['IntraState', 'InterState'];
-  showProductheader: boolean = false;
-
-
-  keyword = 'productName';
-  partyAutoSelect: any;
-  keywordParty = 'name';
-
-
-  data: any;
-  public batchProducts: any[] = [];
-  public options: Options;
-  errorMsg: string;
-  isLoadingResult: boolean;
-
-
-  dataParty: any;
-  errorMsgParty: string;
-  isLoadingResultParty: boolean;
+  isBillingEnabled: boolean = false;
   PartyDueDays: number;
-  isBillingEnabled: boolean;
-  party: any;
+  taxTypeList: any = ['IntraState', 'InterState'];
+  Todaydate = new Date();
+  taxSaleMargin;
+  batchProducts;
+  branchId;
+  currentBatchProduct: any;
+  TaxAmount;
+  TaxPercentage;
+  DiscountAmount;
+  OtherDiscountAmount;
+  saleRate;
+  orderId;
+  status = 'Unpaid';
+  isSchemeApplied;
+  scheme = null;
+  public currentUser: number = parseInt(localStorage.getItem('userId'));
 
-  public mask = {
-    guide: true,
-    showMask: true,
-    // keepCharPositions : true,
-    mask: [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]
-  };
-  productAutoName: any;
-  saleDate: any;
-  dueDate: any;
-  productExpireDate: any;
-  productTax: string;
-  productTaxRate: number;
-  isProductAdd: boolean = true;
-  states: any;
-
-  orderId: number;
-  type: string;
-  order: any;
-  btn: string = 'Save';
-
-
-  constructor(private http: HttpClient, private branchService: BranchService,
-    private route: ActivatedRoute,
+  constructor(
+    private _service: MyServiceService,
     private productService: ProductService,
-    private authService: AuthService, private taxService: TaxService, private router: Router,
-    private spinner: NgxSpinnerService, private alertify: AlertifyService, private _decimalPipe: DecimalPipe,
-    private shopService: ShopService) {
-    this.breadCrumbItems = [{ label: 'Sale' }, { label: 'New Sale Invoice', active: true }];
-
+    private route: ActivatedRoute,
+    private spinner: NgxSpinnerService,
+    private alertify: AlertifyService,
+    private shopService: ShopService,
+    private router: Router
+  ) {
+    this.breadCrumbItems = [
+      { label: 'PURCHASE' },
+      { label: 'New PURCHASE Invoice', active: true },
+    ];
   }
 
-  ngOnInit() {
-    this.getList();
+  // form input values
+  addSaleForm = new FormGroup({
+    invoiceNo: new FormControl('', Validators.required),
+    branch: new FormControl('1', Validators.required),
+    party: new FormControl('', Validators.required),
+    date: new FormControl(new Date(), Validators.required),
+    due: new FormControl(new Date(), Validators.required),
+    TaxType: new FormControl('', Validators.required),
+    productData: new FormControl('', Validators.required),
+    batchNumber: new FormControl('', Validators.required),
+    expireDate: new FormControl('', Validators.required),
+    quantity: new FormControl('', Validators.required),
+    invQuantity: new FormControl('', Validators.required),
+    freeQuantity: new FormControl('', Validators.required),
+    mrp: new FormControl('', Validators.required),
+    rate: new FormControl('', Validators.required),
+    discount: new FormControl('', Validators.required),
+    otherDiscount: new FormControl('', Validators.required),
+    Tax: new FormControl('', Validators.required),
+    Amount: new FormControl('', Validators.required),
+  });
 
-    this.model.branchId = parseInt(localStorage.getItem('branchId'));
-    this.getTaxList();
-    this.saleDate = new Date();
-    this.dueDate = new Date();
-    //  alert(this.model.branchId)
-    this.generateInvoiceNo('Sale');
-
-    this.orderId = this.route.snapshot.params.id;
-
-    if (this.orderId != undefined) {
-      this.getOrderFromRepo();
-      this.btn = 'Update';
-    }
-
-    this.states = csc.getStatesOfCountry('101');
-    // this.productExpireDate = '01/02/2021'
+  get partyData() {
+    return this.addSaleForm.get('party');
   }
 
-  getOrderFromRepo(): void {
-    this.shopService.getSaleOrder(this.orderId).subscribe(data => {
-      this.order = data;
-      this.model.invoiceNo = data.invoiceNo;
-      this.partyId = data.partyId;
-      this.model.taxType = data.taxType;
-      this.model.saleDate = moment(data.saleDate).format('DD/MM/YYYY');
-      this.model.dueDate = moment(data.dueDate).format('DD/MM/YYYY');
-      this.model.branchId = data.branchId;
-      this.model.status = data.status;
-      this.finalGrossAmount = data.grossAmount;
-      this.finalTotalTaxAmount = data.taxAmount;
-      this.finalRoundOffAmount = data.roundOff;
-      this.finalGrandTotalAmount = data.netAmount;
-      this.getPartyServerResponse(data.partyName);
-      console.log('order', data);
-      this.getOrderItemsFromRepo(data.id);
-    });
+  get productDataFeild() {
+    return this.addSaleForm.get('productData');
   }
 
-  getOrderItemsFromRepo(id): void {
-    this.shopService.getSaleOrderItems(id).subscribe(data => {
-      this.products = data;
-      console.log('order items', this.products);
-    });
-  }
-
-  private onTouchedCallback: () => void = noop;
-  private onChangeCallback: (_: any) => void = noop;
-  private onChangedueCallback: (_: any) => void = noop;
-  private onProductChangeCallback: (_: any) => void = noop;
-  private onBatchChangeCallback: (_: any) => void = noop;
-
-  onChange(event) {
-    // console.log(event);
-    this.saleDate = event;
-    this.onBlur();
-  }
-
-  todate(value) {
-    this.saleDate = new Date(value);
-  }
-
-  onBlur() {
-    this.onChangeCallback(this.saleDate);
-  }
-
-  ondueDateChange(event) {
-    // console.log(event);
-    this.dueDate = event;
-    this.ondueBlur();
-  }
-
-  toduedate(value) {
-    this.dueDate = new Date(value);
-  }
-
-  ondueBlur() {
-    this.onChangedueCallback(this.dueDate);
-  }
-
-
-  onProductChange(event) {
-    // console.log(event);
-    this.productExpireDate = event;
-    this.onProductBlur();
-  }
-
-  productExpireDateSelect(value) {
-    this.productExpireDate = new Date(value);
-  }
-
-  onProductBlur() {
-    this.onProductChangeCallback(this.productExpireDate);
-  }
-
-  getServerResponse(event) {
-    this.isLoadingResult = true;
-    // this.http.get(this.baseUrl + 'product/find/sell/' + event)
-    this.http.get(this.baseUrl + 'product/find/purchase/' + event)
-      .subscribe(data => {
-
-        if (data == undefined) {
-          this.data = [];
-          // this.errorMsg = data.Error;
-        } else {
-          console.log(data);
-          this.showProductheader = true;
-          this.data = data;
-        }
-
-        this.isLoadingResult = false;
-      });
-  }
-
-  searchCleared() {
-    console.log('searchCleared');
-    this.showProductheader = false;
-    this.productAutoName = '';
-    this.data = [];
-    this.clearProduct();
-  }
-
-  selectBatch() {
-    console.log('this.model.productId', this.model.productId, '-batchNo-', this.model.batchNo)
-    var data = this.batchProducts.find(x => x.id === this.model.productId && x.batchNo === this.model.batchNo);
-    console.log('data batch', data)
-    this.selectEvent(data);
-  }
-
-  selectProduct(item) {
-    this.model.productId = item.id;
-    this.model.productName = item.productName;
-    this.productExpireDate = moment(item.expireDate).format('L');
-    this.model.quantity = 1;
-    this.model.mrp = item.mrp;
-    this.model.saleMargin = item.saleMargin;
-    this.model.invQuantity = 0;
-    this.model.freeQuantity = 0;
-    this.model.mRPDiscount = 0;
-    this.model.discount = 0;
-    this.model.otherDiscount = 0;
-
-    // this.model.rate = item.rate;  
-    // this.model.amount = item.rate * item.quantity;
-    this.model.saleRate = item.saleRate;
-    this.model.taxId = item.taxId;
-    this.model.stock = item.stock;
-    this.showProductheader = false;
-    this.getProductsByProductIdAndPartyId(item.id);
-    this.onTaxSelect(item.taxId);
-  }
-
-  selectEvent(item) {
-    console.log('item p', item);
-    this.model.productId = item.id;
-    this.model.productName = item.productName;
-    this.model.batchNo = item.batchNo;
-    this.productExpireDate = moment(item.expireDate).format('L');
-    this.model.quantity = 1;
-    this.model.mrp = item.mrp;
-    this.model.invQuantity = 0;
-    this.model.freeQuantity = 0;
-    this.model.mRPDiscount = 0;
-    this.model.discount = 0;
-    this.model.otherDiscount = 0;
-    this.model.rate = item.rate;  
-    // this.model.amount = item.rate * item.quantity;
-    this.model.saleRate = item.saleRate;
-    this.model.taxId = item.taxId;
-    this.model.stock = item.stock;
-    this.model.pastSaleRate = item.pastSaleRate;
-    // this.onTaxSelect(item.taxId);
-
-    if (item.pastSaleRate == null) {
-      this.getSchemeByProductId();
-    }
-    if (item.pastSaleRate != null) {
-      this.model.rate = item.pastSaleRate;
-      this.onchangeQty();
-    }
-
-    console.log('amount', item.rate * item.quantity)
-  }
-
-  onchangeQty() {
-    let mrpdiscountAmount = 0;
-    let discountCount = 0;
-    let otherdiscountCount = 0;
-
-    let grossamount = this.model.rate * this.model.quantity;
-    console.log('grossamount', grossamount)
-
-    if (this.model.mRPDiscount > 0) {
-      mrpdiscountAmount = (grossamount * this.model.mRPDiscount) / 100;
-      this.model.mrpdiscountAmount = mrpdiscountAmount;
-      console.log('mrpdiscountAmount', mrpdiscountAmount)
-    } else {
-      this.model.mrpdiscountAmount = 0;
-    }
-    grossamount = grossamount - mrpdiscountAmount;
-
-    if (this.model.discount > 0) {
-      discountCount = (grossamount * this.model.discount) / 100;
-      this.model.discountCount = discountCount;
-      console.log('discount', discountCount);
-    } else {
-      this.model.discountCount = 0;
-    }
-    grossamount = grossamount - discountCount;
-    console.log('grossamount', grossamount)
-
-    if (this.model.otherDiscount > 0) {
-      otherdiscountCount = (grossamount * this.model.otherDiscount) / 100;
-      this.model.otherdiscountCount = otherdiscountCount;
-      console.log('otherdiscountCount', otherdiscountCount)
-    } else {
-      this.model.otherdiscountCount = 0;
-    }
-    grossamount = grossamount - otherdiscountCount;
-    console.log('grossamount', grossamount)
-
-    const tax = (grossamount * this.productTaxRate) / 100;
-    this.model.taxAmount = tax;
-    console.log('tax', tax)
-
-    this.model.amount = (grossamount + tax).toFixed(2);
-
-  }
-
-  onChangeSearch(val: string) {
-    // fetch remote data from here
-    // And reassign the 'data' which is binded to 'data' property.
-  }
-
-  onFocused(e) {
-  }
-  productOpened() {
-    this.showProductheader = true;
-  }
-  productClosed() {
-    this.showProductheader = false;
-  }
-
-  getPartyServerResponse(event) {
-    this.isLoadingResultParty = true;
-    this.http.get(this.baseUrl + 'party/findFromSP/' + event)
-      .subscribe(data => {
-
-        if (data == undefined) {
-          this.dataParty = [];
-          // this.errorMsgParty = data.Error;
-        } else {
-          console.log(data);
-          this.dataParty = data;
-
-          if (this.orderId !== undefined) {
-            let party = this.dataParty.filter(x => x.Id == this.order.partyId);
-            console.log('party', party)
-            this.dataParty = party;
-            this.partyAutoSelect = party[0].name;
-
-            this.selectPartyEvent(party[0]);
-          }
-
-        }
-
-        this.isLoadingResultParty = false;
-      });
-  }
-
-  searchPartyCleared() {
-    console.log('searchCleared');
-    this.dataParty = [];
-  }
-
-  selectPartyEvent(item) {
-    console.log(item);
-    this.PartyDueDays = item.totalDays;
-    this.isBillingEnabled = item.isBillingEnabled;
-    if (item.stateId == 4030)
-      this.model.taxType = "IntraState";
-
-    if (item.stateId != 4030)
-      this.model.taxType = "InterState";
-    this.partyId = item.id;
-  }
-
-  onPartyChangeSearch(val: string) {
-    // fetch remote data from here
-    // And reassign the 'data' which is binded to 'data' property.
-  }
-
-  onPartyFocused(e) {
-    // do something when input is focused
-  }
-
-  generateInvoiceNo(type) {
+  generateInvoiceNo() {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const charactersLength = characters.length;
@@ -408,358 +91,480 @@ export class SellComponent implements OnInit {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     let branchName = localStorage.getItem('branchName');
-    this.model.invoiceNo = branchName.slice(0, 3).toUpperCase() + '/T-' + result;
+    this.addSaleForm.patchValue({
+      invoiceNo: branchName.slice(0, 3).toUpperCase() + '/T-' + result,
+    });
+    // this.model.invoiceNo =
+    //   branchName.slice(0, 3).toUpperCase() + '/T-' + result;
     return result;
   }
 
-  AddProduct() {
-    console.log('this.model.expireDate', this.model.expireDate)
-    var data = this.products.find(x => x.productId === this.model.productId && x.batchNo === this.model.batchNo);
-    this.onchangeQty();
-    if (data) {
-      let index = this.products.indexOf(data);
-
-      if (this.isProductAdd) {
-        this.products[index].quantity = parseInt(this.model.quantity) + parseInt(this.products[index].quantity);
-        this.model.quantity = this.products[index].quantity;
-        this.products[index].batchNo = this.model.batchNo;
-        this.products[index].mRPDiscount = this.model.mRPDiscount;
-        this.products[index].expireDate = moment(this.productExpireDate).format('YYYY-M-D');
-        this.products[index].mRP = this.model.mrp;
-        this.products[index].rate = this.model.rate;
-        this.products[index].saleRate = this.model.saleRate;
-        this.products[index].freeQuantity = this.model.freeQuantity;
-        this.products[index].discount = this.model.discount;
-        this.products[index].otherDiscount = this.model.otherDiscount;
-        this.products[index].amount = parseFloat((parseFloat(this.model.amount) + parseFloat(this.products[index].amount)).toFixed(2));
-        this.model.amount = this.products[index].amount.toFixed(2);
-        this.products[index].taxId = this.model.taxId;
-        this.products[index].taxRate = this.productTaxRate;
-        this.products[index].taxAmount = this.model.taxAmount;
-        this.products[index].taxName = this.productTax;
-        this.products[index].partyId = this.partyId;
-      } else {
-        this.products[index].quantity = parseInt(this.model.quantity);
-        this.products[index].batchNo = this.model.batchNo;
-        this.products[index].mRPDiscount = this.model.mRPDiscount;
-        this.products[index].expireDate = moment(this.productExpireDate).format('YYYY-M-D');
-        this.products[index].mRP = this.model.mrp;
-        this.products[index].rate = this.model.rate;
-        this.products[index].saleRate = this.model.saleRate;
-        this.products[index].freeQuantity = this.model.freeQuantity;
-        this.products[index].discount = this.model.discount;
-        this.products[index].otherDiscount = this.model.otherDiscount;
-        this.products[index].amount = this.model.amount;
-        this.products[index].taxId = this.model.taxId;
-        this.products[index].taxRate = this.productTaxRate;
-        this.products[index].taxAmount = this.model.taxAmount;
-        this.products[index].taxName = this.productTax;
-        this.products[index].partyId = this.partyId;
-
-      }
-
-
-    } else {
-      const item = {
-        productId: this.model.productId,
-        partyId: this.partyId,
-        productName: this.model.productName,
-        branchId: this.model.branchId,
-        batchNo: this.model.batchNo,
-        mRPDiscount: this.model.mRPDiscount,
-        expireDate: moment(this.productExpireDate).format('YYYY-M-D'),
-        mRP: this.model.mrp,
-        rate: this.model.rate,
-        saleRate: this.model.saleRate,
-        quantity: this.model.quantity,
-        freeQuantity: this.model.freeQuantity,
-        discount: this.model.discount,
-        otherDiscount: this.model.otherDiscount,
-        amount: this.model.amount,
-        taxId: this.model.taxId,
-        taxRate: this.productTaxRate,
-        taxAmount: this.model.taxAmount,
-        taxName: this.productTax
-      };
-      // const disAmount1 = (item.discount * (item.mRP * item.quantity)) / 100;
-      // const disAmount2 = (item.otherDiscount * (item.mRP * item.quantity)) / 100;    
-      console.log('add product', item);
-      this.products.push(item);
-    }
-    this.searchCleared();
-    this.getColumnTotal();
-    this.clearProduct();
-    this.onChangeSearch('');
-    this.isProductAdd = true;
-    console.log('this.finalGrandTotalAmount', this.finalGrandTotalAmount)
-  }
-
-  clearProduct(): void {
-    this.model.batchNo = '';
-    this.productExpireDate = '';
-    this.model.quantity = 0;
-    this.model.freeQuantity = 0;
-    this.model.mrp = 0;
-    this.model.rate = 0;
-    this.batchProducts = [];
-    this.model.saleRate = 0;
-    this.model.mRPDiscount = 0;
-    this.model.discount = 0;
-    this.model.otherDiscount = 0;
-    this.model.taxId = 0;
-    this.model.amount = 0;
-  }
-
-  editProduct(item: any): void {
-    const index: number = this.products.indexOf(item);
-    this.model.productId = this.products[index].productId;
-    this.productAutoName = this.products[index].productName;
-    this.model.productName = this.products[index].productName;
-    this.model.batchNo = this.products[index].batchNo;
-    this.productExpireDate = this.products[index].expireDate;
-    this.model.quantity = this.products[index].quantity;
-    this.model.freeQuantity = this.products[index].freeQuantity;
-
-    if (this.orderId != undefined) {
-      this.model.mrp = this.products[index].mrp;
-      this.model.mRPDiscount = this.products[index].mrpDiscount;
-    }
-    if (this.orderId === undefined) {
-      this.model.mrp = this.products[index].mRP;
-      this.model.mRPDiscount = this.products[index].mRPDiscount;
-    }
-
-    this.model.rate = this.products[index].rate;
-    this.model.saleRate = this.products[index].saleRate;
-
-    this.model.discount = this.products[index].discount;
-    this.model.otherDiscount = this.products[index].otherDiscount;
-    this.model.taxId = this.products[index].taxId;
-    this.model.amount = this.products[index].amount;
-    this.model.taxAmount = this.products[index].taxAmount;
-    this.productTaxRate = this.products[index].taxRate;
-    this.productTax = this.products[index].taxName;
-    this.getProductsByProductIdAndPartyId(this.products[index].productId);
-    this.isProductAdd = false;
-  }
-
-
-  getColumnTotal() {
-    const { GrossAmount, TotalTaxAmount, GrandTotalAmount, discount, otherDiscount } = this.products.reduce((acc, item) => {
-      acc.GrossAmount = parseFloat(acc.GrossAmount) + (parseFloat(item.rate) * parseFloat(item.quantity));
-      acc.TotalTaxAmount = parseFloat(acc.TotalTaxAmount) + parseFloat(item.taxAmount);
-      acc.GrandTotalAmount = parseFloat(acc.GrandTotalAmount) + parseFloat(item.amount);
-      acc.discount = parseFloat(acc.discount) + ((parseFloat(acc.GrossAmount) * parseFloat(item.discount)) / 100);
-      acc.otherDiscount = parseFloat(acc.otherDiscount) + (((parseFloat(acc.GrossAmount) - parseFloat(acc.discount)) * parseFloat(item.otherDiscount)) / 100);
-      return acc;
-    }, {
-      GrossAmount: 0,
-      TotalTaxAmount: 0,
-      GrandTotalAmount: 0,
-      discount: 0,
-      otherDiscount: 0
-    });
-    this.finalDiscountAmount = discount + otherDiscount;
-    this.finalGrossAmount = GrossAmount;
-    this.finalTotalTaxAmount = TotalTaxAmount;
-    this.finalGrandTotalAmount = parseFloat((this._decimalPipe.transform(GrandTotalAmount, "1.0-0")).replace(/,/g, ''));
-    this.finalRoundOffAmount = parseFloat((this.finalGrandTotalAmount - parseFloat(GrandTotalAmount)).toFixed(2));
-  }
-
-
-  deleteProduct(item: any): void {
-    const index: number = this.products.indexOf(item);
-    console.log('delete index', index);
-    if (index !== -1) {
-      this.products.splice(index, 1);
-      this.getColumnTotal();
-    }
-  }
-
-  getList() {
-    this.spinner.show();
-    this.branchService.getBranches()
-      .subscribe((res: any) => {
-        console.log(res);
-        this.branches = res;
-        this.spinner.hide();
-      }, error => {
-        this.alertify.error(error.error);
-      });
-  }
-
-  getTaxList() {
-    this.spinner.show();
-    this.taxService.getTaxes()
-      .subscribe((res: any) => {
-        console.log(res);
-        this.taxes = res;
-        this.spinner.hide();
-      }, error => {
-        this.alertify.error(error);
-      });
-  }
-
-  onTaxSelect(id: number) {
-    let item = this.taxes.find(x => x.id === id);
-    this.productTaxRate = item.rate;
-    this.productTax = item.name;
-    console.log('taxrate', this.productTaxRate)
-    console.log('item', item)
-    this.onchangeQty();
-  }
-
-  onOtherChange() {
-    if (this.finalOtherAmount == undefined) {
-      this.finalOtherAmount = 0;
-    }
-    this.finalCalculatedAmount = this.finalGrandTotalAmount + this.finalOtherAmount;
-  }
-
-  onRoundOffChange() {
-    this.finalGrandTotalAmount += this.finalRoundOffAmount;
-  }
-
-  submitPurchase() {
-    if (this.orderId == undefined) {
-      const SaleModel = {
-        invoiceNo: this.model.invoiceNo,
-        partyId: this.partyId,
-        taxType: this.model.taxtype,
-        saleDate: moment(this.model.saleDate).format('YYYY-M-D'),
-        dueDate: moment(this.model.dueDate).format('YYYY-M-D'),
-        branchId: this.model.branchId,
-        status: "Unpaid",
-        doctor: '',
-        isRetail: false,
-        grossAmount: this.finalGrossAmount,
-        discountAmount: this.finalDiscountAmount,
-        taxAmount: this.finalTotalTaxAmount,
-        roundOff: this.finalRoundOffAmount,
-        netAmount: this.finalGrandTotalAmount,
-        description: null,
-        SalesItems: this.products
-      };
-      console.log('SaleModel', SaleModel);
-      this.shopService.addSale(this.currentUser, SaleModel).subscribe(next => {
-        this.alertify.success('New sale entry Added.');
-        this.router.navigate(['/order/sale/list']);
-      }, error => {
-        this.alertify.error(error.error);
-      });
-    }
-    else {
-      console.log('this.model', this.model)
-      const purchaseModel = {
-        invoiceNo: this.model.invoiceNo,
-        partyId: this.partyId,
-        taxType: this.model.taxtype,
-        saleDate: moment(this.model.saleDate, 'YYYY-M-D'),
-        // dueDate: moment(this.model.dueDate).format('YYYY-M-D'),
-        branchId: this.model.branchId,
-        status: this.model.status,
-        doctor: '',
-        isRetail: false,
-        grossAmount: this.finalGrossAmount,
-        discountAmount: this.finalDiscountAmount,
-        taxAmount: this.finalTotalTaxAmount,
-        roundOff: this.finalRoundOffAmount,
-        netAmount: this.finalGrandTotalAmount,
-        description: null
-      };
-      const saleUpdateModel = {
-        saleForUpdateDto: purchaseModel,
-        salesItems: this.products
-      }
-
-      console.log(saleUpdateModel);
-      this.shopService.updateSale(this.orderId, saleUpdateModel).subscribe(next => {
-        this.alertify.success('sale entry updated.');
-        this.router.navigate(['/order/sale/list']);
-      }, error => {
-        this.alertify.error(error.error);
-      });
-    }
-
-
-  }
-
   getProductsByProductIdAndPartyId(id: number): void {
-    this.shopService.getProductsByProductIdByParty(id, this.partyId, this.model.branchId).subscribe(next => {
-      this.batchProducts = next;
-      console.log('batchProducts', this.batchProducts)
-    }, error => {
-      this.alertify.error(error.error);
-    });
+    this.shopService
+      .getProductsByProductIdByParty(id, this.partyData.value.id, this.branchId)
+      .subscribe(
+        (next) => {
+          this.batchProducts = next;
+          this.addSaleForm.patchValue({
+            batchNumber: this.batchProducts[0].batchNo,
+          });
+          // this.onChangeBatchProduct(this.batchProducts[0].batchNo);
+          this.onChangeBatchProduct();
+
+          console.log('batchProducts', this.batchProducts);
+        },
+        (error) => {
+          this.alertify.error(error.error);
+        }
+      );
   }
 
+  // update amount methods
 
+  // on select methods party/product dropdown
+  public onChangeParty(e) {
+    this.spinner.show();
+    console.log('Parent', e);
+    this.addSaleForm.patchValue({
+      PDate: new Date(e.created),
+      TaxType: e.stateId == 4030 ? 'IntraState' : 'InterState',
+    });
+
+    this.spinner.hide();
+  }
+
+  public onChangeProduct(e) {
+    this.spinner.show();
+    console.log('Parent', e);
+    this.addSaleForm.patchValue({
+      mrp: e.mrp,
+      quantity: 1,
+      Tax: e.taxId,
+    });
+    this.getProductsByProductIdAndPartyId(e.id);
+    this.taxSaleMargin = e.saleMargin;
+
+    this.spinner.hide();
+  }
   getSchemeByProductId() {
-    console.log('isscheme', this.model.isSchemeApplied)
-
-    if (this.model.productId && this.model.batchNo) {
-      this.productService.getScheme(this.model.productId)
-          .subscribe((res: any) => {
-            console.log('scheme', res);
+    console.log('isscheme', this.isSchemeApplied);
+    let f = this.addSaleForm.value;
+    if (f.productData.id && f.batchNumber) {
+      this.productService.getScheme(f.productData.id).subscribe(
+        (res: any) => {
+          console.log('scheme', res);
+          if (res != null) {
             this.scheme = res;
-            if(res == null) {
-              this.model.freeQuantity = 0;
-              this.onchangeQty();
-              console.log('sch last rate', this.model.pastSaleRate)
-              if (this.model.pastSaleRate != null)
-                this.model.rate = this.model.pastSaleRate;
-      
-              if (this.model.pastSaleRate == null)
-                this.getRate();
-            }
-
-            if(res != null) {
-               this.model.isSchemeApplied = true;
-               this.model.rate = this.scheme.schRate;
-               this.model.schTotalQuantity = this.scheme.quantity;
-               this.model.freeQuantity = this.scheme.schQuantity;
-               this.onchangeQty();
-            }
-           
-            this.spinner.hide();
-          }, error => {
-            this.alertify.error(error);
-          });
+          } else {
+            this.scheme = null;
+          }
+          this.ChangeTotalAmount();
+          this.spinner.hide();
+        },
+        (error) => {
+          this.alertify.error(error);
+        }
+      );
     } else {
       this.alertify.error('Select Product and Batch Number');
     }
-
   }
-  getRate(): void {
-
-    let mrp = this.model.mrp;
-    let tax = '1.' + ("00" + this.productTaxRate).slice(-2);
-    console.log('tax', tax)
-    let rate = this.model.saleMargin;
-    let quantity = 0;
-    let schquantity = 0;
-    if (this.model.isSchemeApplied) {
-      quantity = this.scheme.quantity;
-      schquantity = this.scheme.schQuantity;
-      this.model.freeQuantity = this.scheme.schQuantity;
+  toggleScheme(value) {
+    console.log(value.checked);
+    if (value.checked) {
+      this.isSchemeApplied = true;
+    } else {
+      this.isSchemeApplied = false;
     }
-    if (!this.model.isSchemeApplied) {
-      quantity = this.model.quantity;
-      schquantity = 0;
-      this.model.freeQuantity = 0;
+    this.onChangeBatchProduct();
+  }
+  public onChangeBatchProduct() {
+    let e = this.addSaleForm.value.batchNumber;
+    this.getSchemeByProductId();
+    this.currentBatchProduct = this.batchProducts.find((f) => f.batchNo === e);
+    console.log(this.currentBatchProduct);
+
+    this.addSaleForm.patchValue({
+      expireDate: this.currentBatchProduct?.expireDate,
+      invQuantity: 0,
+      mrp: this.currentBatchProduct.mrp,
+      discount: this.currentBatchProduct.mrpDiscount,
+      otherDiscount: this.currentBatchProduct.otherDiscount,
+      Tax: this.currentBatchProduct.taxId,
+      batchNumber: e,
+    });
+    if (this.isSchemeApplied && this.scheme) {
+      this.addSaleForm.patchValue({
+        quantity: this.scheme.quantity,
+        freeQuantity: this.scheme.schQuantity,
+        rate: this.scheme.schRate,
+      });
+    } else {
+      this.addSaleForm.patchValue({
+        quantity: 1,
+        freeQuantity: 0,
+        rate: this.currentBatchProduct.rate,
+      });
     }
+    this.ChangeTotalAmount();
+  }
 
-    let discount = this.model.discount;
+  // on change input feilds
+  handleRateChange(_value) {
+    this.ChangeTotalAmount();
+  }
+  handleQuantityChange(_value) {
+    this.ChangeTotalAmount();
+  }
+  handleTaxRateChange(_value) {
+    console.log(_value);
+    this.taxes = _value.taxes;
+    this.ChangeTotalAmount();
+  }
+  handleDiscountChange(_value) {
+    this.ChangeTotalAmount();
+  }
+  handleOtherDiscountChange(_value) {
+    this.ChangeTotalAmount();
+  }
 
-    mrp = mrp / parseFloat(tax);
-    const rateValue = (mrp * rate) / 100;
-    let qtyRatio = (mrp - rateValue) * quantity / (quantity + schquantity);
-    const rateDiscount = qtyRatio * discount / 100;
+  // total amount calculation
+  public ChangeTotalAmount() {
+    let temp_amount: number = 0;
+    // values from form
+    let _quantity = this.addSaleForm.value.quantity;
+    let _rate = this.addSaleForm.value.rate;
+    let _discount = this.addSaleForm.value.discount;
+    let _otherDiscount = this.addSaleForm.value.otherDiscount;
+    let _taxid = this.addSaleForm.value.Tax;
+    let _mrp = this.addSaleForm.value.mrp;
+    // TaxPercentage
+    // taxe rate
+    try {
+      let mrp = _mrp;
+      let TaxPercentage = this.taxes.find((e) => e.id === _taxid);
+      this.TaxPercentage = TaxPercentage.rate;
+      // percentage to value( don't try to understand just ask me i'll explain)
+      let taxValue = (_rate / 100) * this.TaxPercentage;
+      let discountValue = (_rate / 100) * _discount;
+      let OtherdiscountValue = (_rate / 100) * _otherDiscount;
+      this.DiscountAmount = discountValue;
+      this.OtherDiscountAmount = OtherdiscountValue;
+      if (_discount > 0 || _otherDiscount > 0) {
+        let taxDiscountValue = (taxValue / 100) * _discount;
+        taxValue -= taxDiscountValue;
+        let otherTaxdiscountValue = (taxValue / 100) * _otherDiscount;
+        taxValue -= otherTaxdiscountValue;
+      }
+      this.TaxAmount = taxValue;
+      if (_quantity > 0) {
+        temp_amount = _rate;
+        temp_amount *= _quantity;
+        temp_amount += taxValue;
+        if (_discount > 0) {
+          temp_amount -= discountValue;
+        }
+        if (_otherDiscount > 0) {
+          temp_amount -= OtherdiscountValue;
+        }
+        if (this.taxSaleMargin > 0) {
+          mrp = mrp / taxValue;
+          let rate = this.taxSaleMargin;
+          let quantity = 0;
+          let schquantity = 0;
+          let discount = 0;
+          quantity = _quantity;
+          schquantity = 0;
+          const rateValue = (mrp * rate) / 100;
+          let qtyRatio =
+            ((mrp - rateValue) * quantity) / (quantity + schquantity);
+          const rateDiscount = (qtyRatio * discount) / 100;
 
-    qtyRatio = qtyRatio - rateDiscount;
+          qtyRatio = qtyRatio - rateDiscount;
 
-    this.model.rate = parseFloat(qtyRatio.toFixed(2));
-    this.onchangeQty();
-    console.log('rate', qtyRatio)
+          this.saleRate = parseFloat(qtyRatio.toFixed(2));
+        }
+
+        console.log('taxValue', taxValue, 'Amount', temp_amount);
+        this.addSaleForm.patchValue({
+          Amount: temp_amount,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  getOrderFromRepo(): void {
+    this.shopService.getSaleOrder(this.orderId).subscribe((data) => {
+      // this.order = data;
+      // this.model.invoiceNo = data.invoiceNo;
+      // this.partyId = data.partyId;
+      // this.model.taxType = data.taxType;
+      // this.model.saleDate = moment(data.saleDate).format('DD/MM/YYYY');
+      // this.model.dueDate = moment(data.dueDate).format('DD/MM/YYYY');
+      // this.model.branchId = data.branchId;
+      // this.model.status = data.status;
+      // this.finalGrossAmount = data.grossAmount;
+      // this.finalTotalTaxAmount = data.taxAmount;
+      // this.finalRoundOffAmount = data.roundOff;
+      // this.finalGrandTotalAmount = data.netAmount;
+      this.status = data.status;
+      this.addSaleForm.patchValue({
+        invoiceNo: data.invoiceNo,
+        branch: data.branchId,
+        party: data.partyId,
+        // PDate: moment(data.purchaseDate).format('DD/MM/YYYY'),
+      });
+      console.log('order', data);
+      this.getOrderItemsFromRepo(data.id);
+      this.MainPostObject = {
+        products: this.products,
+        invoiceNo: data.invoiceNo,
+        partyId: data.partyId,
+        // purchaseDate: moment(data.purchaseDate).format('YYYY-M-D'),
+        saleDate: moment(data.date).format('YYYY-M-D'),
+        dueDate: moment(data.due).format('YYYY-M-D'),
+        TaxType: data.TaxType,
+        branchId: data.branchId,
+      };
+      console.log('order', data);
+      this.getOrderItemsFromRepo(data.id);
+    });
+  }
+
+  getOrderItemsFromRepo(id): void {
+    this.shopService.getSaleOrderItems(id).subscribe((data) => {
+      data.forEach((element, i) => {
+        data[i].mRP = element.mrp;
+        data[i].mRPDiscount = element.mrpDiscount;
+      });
+      this.products = data;
+      this.ChangeTotalAmount();
+
+      console.log('order items', this.products);
+    });
+  }
+  // edit/delete product
+  handleEditProduct(e) {
+    this.addSaleForm.patchValue({
+      // branch: e.branchId,
+      // party: e.partyData,
+      productData: e.productData ? e.productData : e.productId,
+      batchNumber: e.batchNo,
+      expireDate: e.expireDate,
+      mrp: e.mRP,
+      quantity: e.quantity,
+      schQuantity: e.schQuantity,
+      rate: e.rate,
+      discount: e.discount,
+      OtherDiscount: e.otherDiscount,
+      Tax: e.taxId,
+      Amount: e.amount,
+    });
+    // this.taxSaleMargin = e.taxMargin;
+    this.TaxPercentage = e.taxRate;
+    this.TaxAmount = e.taxAmount;
+
+    this.onChangeBatchProduct();
+    console.log(e);
+  }
+
+  handleDeleteProduct(e) {
+    let deleteProduct = this.products.findIndex(
+      (p) => p.batchNumber === e.batchNumber
+    );
+    console.log(deleteProduct);
+    this.products.splice(deleteProduct, 1);
+  }
+
+  // form submit function
+  emptyForm() {
+    this.addSaleForm.patchValue({
+      productData: '',
+      batchNumber: '',
+      expireDate: '',
+      mrp: '',
+      quantity: 0,
+      freeQuantity: 0,
+      rate: '',
+      discount: 0,
+      OtherDiscount: 0,
+      Tax: '',
+      Amount: '',
+    });
+    this.currentBatchProduct = null;
+    this.taxSaleMargin = 0;
+    this.TaxPercentage = 0;
+    this.TaxAmount = 0;
+  }
+
+  private addNewProduct() {
+    let formData = this.addSaleForm.value;
+    const item = {
+      partyId: formData.party.id,
+      productId: formData.productData.id,
+      productName: formData.productData.productName,
+      branchId: formData.branch,
+      batchNo: formData.batchNumber,
+      mRPDiscount: 0,
+      expireDate: moment(formData.expireDate).format('YYYY-M-D'),
+      mRP: formData.mrp,
+      rate: formData.rate,
+      saleRate: this.saleRate,
+      quantity: formData.quantity,
+      freeQuantity: formData.freeQuantity,
+      discount: formData.discount,
+      otherDiscount: formData.otherDiscount,
+      amount: formData.Amount,
+      taxId: formData.Tax,
+      taxRate: this.TaxPercentage,
+      taxAmount: this.TaxAmount,
+      taxName: 'GST ' + this.TaxPercentage,
+      partyData: formData.party,
+      productData: formData.productData,
+    };
+    let productObject = {
+      ...item,
+      taxAmount: this.TaxAmount,
+      taxPercentage: this.TaxPercentage,
+      taxMargin: this.taxSaleMargin,
+      discountAmount: this.DiscountAmount,
+      otherDiscountAmount: this.OtherDiscountAmount,
+    };
+
+    console.log(productObject);
+    this.products.push(productObject);
+  }
+
+  private updateProduct(productObjectIndex) {
+    let formData = this.addSaleForm.value;
+
+    const item = {
+      partyId: formData.party.id,
+      productId: formData.productData.id,
+      productName: formData.productData.productName,
+      branchId: formData.branch,
+      batchNo: formData.batchNumber,
+      mRPDiscount: 0,
+      expireDate: moment(formData.expireDate).format('YYYY-MM-DD'),
+      mRP: formData.mrp,
+      rate: formData.rate,
+      saleRate: formData.saleRate,
+      quantity: formData.quantity,
+      freeQuantity: formData.freeQuantity,
+      discount: formData.discount,
+      otherDiscount: formData.otherDiscount,
+      amount: formData.Amount,
+      taxId: formData.Tax,
+      taxRate: this.TaxPercentage,
+      taxAmount: this.TaxAmount,
+      taxName: 'GST ' + this.TaxPercentage,
+      partyData: formData.party,
+      productData: formData.productData,
+    };
+    let productObject = {
+      ...item,
+      taxAmount: this.TaxAmount,
+      taxPercentage: this.TaxPercentage,
+      taxMargin: this.taxSaleMargin,
+      discountAmount: this.DiscountAmount,
+      otherDiscountAmount: this.OtherDiscountAmount,
+    };
+    this.products[productObjectIndex] = productObject;
+    console.log('updatedProductObject', productObject);
+  }
+
+  AddSale() {
+    this.ChangeTotalAmount();
+    let f = this.addSaleForm.value;
+    let productObject = {
+      ...this.addSaleForm.value,
+      taxAmount: this.TaxAmount,
+      taxPercentage: this.TaxPercentage,
+      taxMargin: this.taxSaleMargin,
+      discountAmount: this.DiscountAmount,
+      otherDiscountAmount: this.OtherDiscountAmount,
+    };
+
+    let isOldProduct = this.products.findIndex(
+      (p) => p.batchNo === productObject.batchNumber
+    );
+    if (isOldProduct >= 0) {
+      this.updateProduct(isOldProduct);
+    } else {
+      this.addNewProduct();
+    }
+    this.MainPostObject = {
+      products: this.products,
+      invoiceNo: f.invoiceNo,
+      partyId: f.party.id,
+      saleDate: moment(f.date).format('YYYY-M-D'),
+      dueDate: moment(f.due).format('YYYY-M-D'),
+      branchId: f.branch,
+      TaxType: f.TaxType,
+    };
+    this.emptyForm();
+    console.log(this.addSaleForm.value);
+  }
+
+  submitSale(finalComponent) {
+    this.spinner.show();
+    const SaleModel: any = {
+      invoiceNo: this.MainPostObject.invoiceNo,
+      partyId: this.MainPostObject.partyId,
+      taxType: this.MainPostObject.TaxType,
+      saleDate: moment(this.MainPostObject.date).format('YYYY-M-D'),
+      dueDate: moment(this.MainPostObject.due).format('YYYY-M-D'),
+      branchId: this.MainPostObject.branchId,
+      status: 'Unpaid',
+      grossAmount: finalComponent.finalGrossAmount,
+      discountAmount: finalComponent.finalDiscountAmount,
+      taxAmount: finalComponent.finalTotalTaxAmount,
+      roundOff: finalComponent.finalRoundOffAmount,
+      netAmount: finalComponent.finalGrandTotalAmount,
+      description: null,
+    };
+
+    if (this.orderId === undefined) {
+      SaleModel.SalesItems = this.products;
+
+      this.shopService.addSale(this.currentUser, SaleModel).subscribe(
+        (next) => {
+          this.alertify.success('New sale entry Added.');
+          this.router.navigate(['/order/sale/list']);
+        },
+        (error) => {
+          this.alertify.error(error.error);
+        }
+      );
+      console.log(SaleModel);
+    } else {
+      SaleModel.status = this.status;
+      const saleUpdateModel = {
+        purchaseForUpdateDto: SaleModel,
+        purchaseOrderItems: this.products,
+      };
+
+      this.shopService.updateSale(this.orderId, saleUpdateModel).subscribe(
+        (next) => {
+          this.alertify.success('sale entry updated.');
+          this.router.navigate(['/order/sale/list']);
+        },
+        (error) => {
+          this.alertify.error(error.error);
+        }
+      );
+      console.log(saleUpdateModel);
+    }
+    this.spinner.hide();
+  }
+  ngOnInit() {
+    this.branchId = parseInt(localStorage.getItem('branchId'));
+    this.orderId = this.route.snapshot.params.id;
+
+    this.generateInvoiceNo();
+    if (this.orderId) {
+      this.getOrderFromRepo();
+    }
   }
 }

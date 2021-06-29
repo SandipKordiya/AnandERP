@@ -509,9 +509,6 @@ namespace Shop.API.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Website")
                         .HasColumnType("nvarchar(max)");
 
@@ -523,7 +520,7 @@ namespace Shop.API.Migrations
 
                     b.HasIndex("StateId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Companies");
                 });
@@ -1118,6 +1115,9 @@ namespace Shop.API.Migrations
 
                     b.Property<int>("SchQuantity")
                         .HasColumnType("int");
+
+                    b.Property<double?>("TaxAmount")
+                        .HasColumnType("float");
 
                     b.Property<int>("TaxId")
                         .HasColumnType("int");
@@ -2287,6 +2287,41 @@ namespace Shop.API.Migrations
                     b.ToTable("AspNetUserRoles");
                 });
 
+            modelBuilder.Entity("Shop.API.ViewModels.BranchInventoryModel", b =>
+                {
+                    b.Property<string>("BatchNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BranchName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BrandName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("MRP")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("OCCURENCE")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaxId")
+                        .HasColumnType("int");
+
+                    b.ToTable("BranchInventoryModels");
+                });
+
             modelBuilder.Entity("Shop.API.ViewModels.ItemWisePurchaseViewModel", b =>
                 {
                     b.Property<decimal>("Amount")
@@ -2496,6 +2531,38 @@ namespace Shop.API.Migrations
                         .HasColumnType("int");
 
                     b.ToTable("PartyListViewModels");
+                });
+
+            modelBuilder.Entity("Shop.API.ViewModels.PaymentListViewModel", b =>
+                {
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PartyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentMode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("PaymentListViewModels");
                 });
 
             modelBuilder.Entity("Shop.API.ViewModels.ProductListModel", b =>
@@ -2866,6 +2933,9 @@ namespace Shop.API.Migrations
                     b.Property<decimal>("Other")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("PartyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PartyName")
                         .HasColumnType("nvarchar(max)");
 
@@ -3207,6 +3277,62 @@ namespace Shop.API.Migrations
                     b.ToTable("SalesDetailViewModels");
                 });
 
+            modelBuilder.Entity("Shop.API.ViewModels.SalesDetailsViewModel", b =>
+                {
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("BatchNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BrandName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CityName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpireDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FreeQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InvoiceNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("MRP")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("PartyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PartyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Rate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TaxId")
+                        .HasColumnType("int");
+
+                    b.ToTable("SalesDetailsViewModels");
+                });
+
             modelBuilder.Entity("Shop.API.ViewModels.StockLedgerViewModel", b =>
                 {
                     b.Property<string>("BatchNo")
@@ -3422,7 +3548,9 @@ namespace Shop.API.Migrations
 
                     b.HasOne("Shop.API.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Shop.API.Models.Inventory", b =>

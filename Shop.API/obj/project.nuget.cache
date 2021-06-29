@@ -1,6 +1,10 @@
 {
   "version": 2,
+<<<<<<< HEAD
+  "dgSpecHash": "HCXRtEJBh4UnwxWkwk1U+/1J2etLgTyqkr0glHVaFdBjsdqv96qaaFLRek2ffizPvdp7zkCOjUOLtodbEfnIsQ==",
+=======
   "dgSpecHash": "fEv8SnDuuJOyhuWHdAM36dtFejRb7WlLxHjAfTLRnotupWhNbZ1xhzr/80RX0bdSt8WBafYfqFdZsABTe9tD/Q==",
+>>>>>>> master
   "success": true,
   "projectFilePath": "F:\\Projects\\2020\\MedicalShopERP\\shop.api\\Shop.API.csproj",
   "expectedPackageFiles": [

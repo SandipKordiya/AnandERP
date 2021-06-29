@@ -1,0 +1,27 @@
+.product-custom-list-group {
+  display: flex;
+  flex-direction: column;
+  width: 60vw;
+  padding-left: 0;
+  margin: 0;
+  max-height: 40vh;
+
+  list-style: none;
+
+  &-item {
+    position: relative;
+    // display: block;
+    padding: 0.75rem 1.25rem;
+    background-color: #fff;
+    &.active {
+      z-index: 2;
+      color: #fff;
+      background-color: #1e8c5e !important;
+      border-color: #1e8c5e !important;
+      cursor: pointer;
+    }
+  }
+}
+.dropdown-menu {
+  top: 60px !important;
+}
