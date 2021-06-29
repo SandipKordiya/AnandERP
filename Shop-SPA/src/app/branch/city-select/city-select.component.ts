@@ -72,6 +72,7 @@ export class CitySelectComponent implements OnInit {
   }
 
   writeValue(obj: any): void {
+    console.log(obj);
     this.city.setValue(parseInt(obj));
   }
 

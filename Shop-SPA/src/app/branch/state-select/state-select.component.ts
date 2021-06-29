@@ -47,7 +47,6 @@ export class StateSelectComponent implements OnInit, OnChanges {
     if (this.countryId !== 0)
       this.StateService.getState(this.countryId).subscribe(
         (res: any) => {
-          console.log(res);
           this.spinner.hide();
           this.states = res;
         },
@@ -79,7 +78,6 @@ export class StateSelectComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     // changes.prop contains the old and the new value...
     this.getStateList();
-    console.log(this.countryId);
   }
   ngOnInit() {}
 }

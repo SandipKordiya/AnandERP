@@ -25,16 +25,18 @@ import { BranchFilterService } from './branchfilter.service';
   styleUrls: ['./branch.component.scss'],
 })
 export class BranchComponent implements OnInit {
-  branches: Branch[];
+  CurrentBranches: any;
   modalRef: BsModalRef;
   breadCrumbItems: Array<{}>;
-  countryId = 0;
+  countryId = 101;
   StateId = 0;
+  CityId = 0;
+
   branchFrom = new FormGroup({
     name: new FormControl(''),
     cityId: new FormControl(0),
     stateId: new FormControl(0),
-    country: new FormControl(0),
+    country: new FormControl(101),
     isActive: new FormControl(true),
   });
   // Table data
@@ -55,6 +57,7 @@ export class BranchComponent implements OnInit {
   ) {
     this.tables$ = service.tables$;
     this.total$ = service.total$;
+    console.log(this.tables$);
   }
 
   ngOnInit() {
@@ -67,12 +70,16 @@ export class BranchComponent implements OnInit {
   onCountryChange(e) {
     console.log(e);
     this.countryId = e;
-    this.branchFrom.patchValue({ state: 0, city: 0 });
+    this.branchFrom.patchValue({ stateId: 0, cityid: 0 });
   }
   onStateChange(e) {
-    this.branchFrom.patchValue({ city: 0 });
+    this.branchFrom.patchValue({ cityid: 0 });
     console.log(e);
     this.StateId = e;
+  }
+  onCityChange(e) {
+    console.log(e);
+    this.CityId = e;
   }
   getList() {
     this.spinner.show();
@@ -80,6 +87,7 @@ export class BranchComponent implements OnInit {
       (res: any) => {
         console.log(res);
         this.ordersData = res;
+
         this.spinner.hide();
       },
       (error) => {
@@ -92,7 +100,18 @@ export class BranchComponent implements OnInit {
   }
 
   openm(branch: any, template: TemplateRef<any>) {
-    console.log('branch', branch);
+    console.log('branch', branch.cityId);
+    this.CurrentBranches = branch;
+    this.branchFrom.patchValue({
+      country: 101,
+      stateId: branch.stateId,
+      cityId: branch.cityId,
+      isActive: branch.isActive,
+      name: branch.name,
+    });
+    this.countryId = 101;
+    this.StateId = branch.stateId;
+    this.CityId = branch.cityId;
     // this.model = branch;
     this.modalRef = this.modalService.show(template);
   }
@@ -115,6 +134,7 @@ export class BranchComponent implements OnInit {
       (error) => {
         console.log(error);
         this.alertify.error(error);
+        this.getList();
       }
     );
   }
@@ -124,17 +144,21 @@ export class BranchComponent implements OnInit {
     //   name: this.model.name,
     // };
     // const userId = parseInt(localStorage.getItem('userId'));
-    // this.branchService.updateBranch(this.model.id, updateBranch).subscribe(
-    //   (next) => {
-    //     this.alertify.success('Branch updated successfully');
-    //     this.modalService.hide();
-    //     this.model = {};
-    //     this.getList();
-    //   },
-    //   (error) => {
-    //     this.alertify.error(error);
-    //   }
-    // );
+    console.log(this.branchFrom.value);
+    this.branchService
+      .updateBranch(this.CurrentBranches.id, this.branchFrom.value)
+      .subscribe(
+        (next) => {
+          this.alertify.success('Branch updated successfully');
+          this.modalService.hide();
+          this.getList();
+        },
+        (error) => {
+          console.log(error);
+          this.alertify.error(error);
+          this.getList();
+        }
+      );
   }
 
   /**

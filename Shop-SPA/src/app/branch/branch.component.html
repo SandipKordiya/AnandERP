@@ -181,6 +181,7 @@
       <div class="form-group">
         <label for="City">City </label>
         <app-city-select
+          (onChangeHandler)="onCityChange($event)"
           formControlName="cityId"
           [stateId]="StateId"
         ></app-city-select>
@@ -214,14 +215,35 @@
     </button>
   </div>
   <div class="modal-body">
-    <form #editForm="ngForm" id="editForm" (ngSubmit)="updateBoard()">
+    <form [formGroup]="branchFrom" id="editForm" (ngSubmit)="updateBoard()">
+      <div class="form-group">
+        <label for="country">Country </label>
+        <app-country-select
+          (onChangeHandler)="onCountryChange($event)"
+          formControlName="country"
+        ></app-country-select>
+      </div>
+      <div class="form-group">
+        <label for="State">State </label>
+        <app-state-select
+          (onChangeHandler)="onStateChange($event)"
+          formControlName="stateId"
+          [countryId]="countryId"
+        ></app-state-select>
+      </div>
+      <div class="form-group">
+        <label for="City">City </label>
+        <app-city-select
+          formControlName="cityId"
+          [stateId]="StateId"
+        ></app-city-select>
+      </div>
       <div class="form-group">
         <label for="exampleInputEmail1">Branch Name</label>
         <input
           type="text"
           class="form-control"
-          name="name"
-          [(ngModel)]="model.name"
+          formControlName="name"
           placeholder="Enter Branch Name"
         />
       </div>
