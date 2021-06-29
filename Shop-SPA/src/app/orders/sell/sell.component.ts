@@ -474,7 +474,7 @@ export class SellComponent implements OnInit {
     console.log('updatedProductObject', productObject);
   }
 
-  AddProduct() {
+  AddSale() {
     this.ChangeTotalAmount();
     let f = this.addSaleForm.value;
     let productObject = {
