@@ -135,6 +135,12 @@ import { TaxDetailsDialogComponent } from './_forms/tax-details-dialog/tax-detai
 import { DialogTemplateComponent } from './_forms/dialog-template/dialog-template.component';
 import { BranchInputComponent } from './_forms/branch-input/branch-input.component';
 import { TaxInputComponent } from './_forms/tax-input/tax-input.component';
+import { CitySelectComponent } from './branch/city-select/city-select.component';
+import { StateSelectComponent } from './branch/state-select/state-select.component';
+import { CityService } from './branch/city-select/city.service';
+import { StateService } from './branch/state-select/state.service';
+import { CountrySelectComponent } from './branch/country-select/country-select.component';
+import { CountryService } from './branch/country-select/country.service';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -217,6 +223,9 @@ export function createTranslateLoader(http: HttpClient): any {
     DialogTemplateComponent,
     BranchInputComponent,
     TaxInputComponent,
+    CitySelectComponent,
+    StateSelectComponent,
+    CountrySelectComponent,
   ],
   imports: [
     BrowserModule,
@@ -293,7 +302,9 @@ export function createTranslateLoader(http: HttpClient): any {
     StockTransferOrderService,
     StockReturnOrderService,
     SidenavService,
-
+    CityService,
+    StateService,
+    CountryService,
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,

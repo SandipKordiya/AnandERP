@@ -1,0 +1,12 @@
+<select
+  class="custom-select"
+  (change)="handleChangeState($event)"
+  (blur)="handleBlur()"
+  [formControl]="state"
+  [tabindex]="skipIndex"
+  [attr.disabled]="this.countryId === 0 ? 'disabled' : null"
+>
+  <option *ngFor="let role of states" [ngValue]="role.id">
+    {{ role.name }}
+  </option>
+</select>

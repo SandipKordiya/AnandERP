@@ -1,0 +1,12 @@
+<select
+  class="custom-select"
+  (change)="handleChangeCity($event)"
+  (blur)="handleBlur()"
+  [formControl]="city"
+  [tabindex]="skipIndex"
+  [attr.disabled]="this.stateId === 0 ? 'disabled' : null"
+>
+  <option *ngFor="let role of Cities" [ngValue]="role.id">
+    {{ role.name }}
+  </option>
+</select>
