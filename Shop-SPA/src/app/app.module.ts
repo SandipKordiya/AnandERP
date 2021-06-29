@@ -293,6 +293,7 @@ export function createTranslateLoader(http: HttpClient): any {
     StockTransferOrderService,
     StockReturnOrderService,
     SidenavService,
+
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG,

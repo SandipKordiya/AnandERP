@@ -7,8 +7,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { BranchService } from '../_services/branch.service';
-import { TaxService } from '../_services/tax.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
@@ -210,10 +208,6 @@ export class PurchaseComponent implements OnInit {
   // update purchase
   getOrderItemsFromRepo(id): void {
     this.shopService.getPurchaseOrderItems(id).subscribe((data) => {
-      data.forEach((element, i) => {
-        data[i].mRP = element.mrp;
-        data[i].mRPDiscount = element.mrpDiscount;
-      });
       this.products = data;
       this.ChangeTotalAmount();
       console.log('order items', this.products);
@@ -248,7 +242,7 @@ export class PurchaseComponent implements OnInit {
       productData: e.productData ? e.productData : e.productId,
       batchNumber: e.batchNo,
       expireDate: e.expireDate,
-      mrp: e.mRP,
+      mrp: e.mrp,
       quantity: e.quantity,
       schQuantity: e.schQuantity,
       rate: e.rate,
@@ -293,15 +287,16 @@ export class PurchaseComponent implements OnInit {
   }
   private addNewProduct() {
     let formData = this.addPurchaseForm.value;
+
     const item = {
       partyId: formData.party.id,
       productId: formData.productData.id,
       productName: formData.productData.productName,
       branchId: formData.branch,
       batchNo: formData.batchNumber,
-      mRPDiscount: 0,
+      mrpDiscount: 0,
       expireDate: moment(formData.expireDate).format('YYYY-M-D'),
-      mRP: formData.mrp,
+      mrp: formData.mrp,
       rate: formData.rate,
       saleRate: this.saleRate,
       quantity: formData.quantity,
@@ -338,11 +333,11 @@ export class PurchaseComponent implements OnInit {
       productName: formData.productData.productName,
       branchId: formData.branch,
       batchNo: formData.batchNumber,
-      mRPDiscount: 0,
+      mrpDiscount: formData.mrpDiscount,
       expireDate: moment(formData.expireDate).format('YYYY-M-D'),
-      mRP: formData.mrp,
+      mrp: formData.mrp,
       rate: formData.rate,
-      saleRate: formData.saleRate,
+      saleRate: this.saleRate,
       quantity: formData.quantity,
       schQuantity: formData.schQuantity,
       discount: formData.discount,
@@ -404,7 +399,7 @@ export class PurchaseComponent implements OnInit {
     const purchaseModel: any = {
       invoiceNo: this.MainPostObject.invoiceNo,
       partyId: this.MainPostObject.partyId,
-      taxType: this.MainPostObject.taxType,
+      // taxType: this.MainPostObject.taxType,
       purchaseDate: this.MainPostObject.purchaseDate,
       branchId: this.MainPostObject.branchId,
       status: 'Unpaid',
@@ -413,8 +408,13 @@ export class PurchaseComponent implements OnInit {
       taxAmount: finalComponent.finalTotalTaxAmount,
       roundOff: finalComponent.finalRoundOffAmount,
       netAmount: finalComponent.finalGrandTotalAmount,
+      other: finalComponent.otherAmount,
       description: null,
     };
+    this.products.forEach((p, i) => {
+      delete this.products[i].partyData;
+      delete this.products[i].productData;
+    });
 
     if (this.orderId === undefined) {
       purchaseModel.PurchaseOrderItems = this.products;
@@ -433,9 +433,10 @@ export class PurchaseComponent implements OnInit {
       );
     } else {
       purchaseModel.status = this.status;
+
       const purchaseUpdateModel = {
-        purchaseForUpdateDto: purchaseModel,
-        purchaseOrderItems: this.products,
+        purchaseOrder: purchaseModel,
+        orderItems: this.products,
       };
       this.shopService
         .updatePurchase(this.orderId, purchaseUpdateModel)
@@ -446,11 +447,13 @@ export class PurchaseComponent implements OnInit {
             this.spinner.hide();
           },
           (error) => {
+            console.log(error);
             this.alertify.error(error.message);
             this.spinner.hide();
           }
         );
       console.log(purchaseUpdateModel);
+      this.spinner.hide();
     }
   }
 

@@ -8,41 +8,48 @@ import { AuthService } from 'src/app/_services/auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   @ViewChild('loginForm') loginForm: NgForm;
   model: any = {};
   isLoading = false;
   button = 'Submit';
-  constructor(public authService: AuthService, private alertify: AlertifyService,
-              private router: Router, private spinner: NgxSpinnerService) { }
+  constructor(
+    public authService: AuthService,
+    private alertify: AlertifyService,
+    private router: Router,
+    private spinner: NgxSpinnerService
+  ) {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 
   login() {
     // this.spinner.show();
     this.isLoading = true;
     this.button = 'Processing';
-    this.authService.login(this.model).subscribe(next => {
-      // this.spinner.hide();
-      // this.loginForm.reset(this.model);
-      this.isLoading = false;
-      this.button = 'Submit';
-      this.alertify.success('Logged in successfully');
-      this.router.navigate(['/dashboard']);
-    }, error => {
-      this.spinner.hide();
-      console.log(error);
-      this.alertify.error(error.statusText);
-      this.isLoading = false;
-      this.button = 'Submit';
-    }, () => {
-      // this.loginForm.reset(this.model);
+    console.log(this.model);
+    this.authService.login(this.model).subscribe(
+      (next) => {
+        // this.spinner.hide();
+        // this.loginForm.reset(this.model);
+        this.isLoading = false;
+        this.button = 'Submit';
+        this.alertify.success('Logged in successfully');
+        this.router.navigate(['/dashboard']);
+      },
+      (error) => {
+        this.spinner.hide();
+        console.log(error);
+        this.alertify.error(error.statusText);
+        this.isLoading = false;
+        this.button = 'Submit';
+      },
+      () => {
+        // this.loginForm.reset(this.model);
 
-      this.router.navigate(['/dashboard']);
-    });
+        this.router.navigate(['/dashboard']);
+      }
+    );
   }
 }

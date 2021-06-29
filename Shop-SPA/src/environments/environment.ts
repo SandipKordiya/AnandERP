@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   // apiUrl: 'http://localhost:5000/api/',
-  apiUrl: 'http://ayurveda-api.ambicionestechnology.com/api/',
+  // apiUrl: 'http://ayurveda-api.ambicionestechnology.com/api/',
+  apiUrl: 'http://13.233.198.45/api/',
+
   url: 'http://ayurveda-api.ambicionestechnology.com/',
 };
 
