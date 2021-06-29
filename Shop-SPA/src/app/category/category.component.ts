@@ -6,53 +6,64 @@ import { BrandService } from '../_services/brand.service';
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
-  styleUrls: ['./category.component.scss']
+  styleUrls: ['./category.component.scss'],
 })
 export class CategoryComponent implements OnInit {
   categories: any[];
   model: any = {};
   brands: any[];
   modalRef: BsModalRef;
-  constructor(private modalService: BsModalService, private brandService: BrandService,
-              private alertify: AlertifyService) { }
+  constructor(
+    private modalService: BsModalService,
+    private brandService: BrandService,
+    private alertify: AlertifyService
+  ) {}
 
   ngOnInit() {
     this.getList();
     // this.getBrandList();
   }
 
-
   getBrandList() {
-    this.brandService.getBrands()
-      .subscribe((res: any) => {
+    this.brandService.getBrands().subscribe(
+      (res: any) => {
         console.log(res);
         this.brands = res;
-      }, error => {
+      },
+      (error) => {
         this.alertify.error(error);
-      });
+      }
+    );
   }
 
   getList() {
-    this.brandService.getCategories()
-      .subscribe((res: any) => {
+    this.brandService.getCategories().subscribe(
+      (res: any) => {
         console.log(res);
         this.categories = res;
-      }, error => {
+      },
+      (error) => {
         this.alertify.error(error.error);
-      });
+      }
+    );
   }
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template);
   }
   addCategory() {
-    console.log(this.model);
-    this.brandService.addCategory(this.model).subscribe(next => {
-      this.alertify.success('category added successfully');
-      this.modalService.hide();
-      this.getList();
-    }, error => {
-      this.alertify.error(error.error);
-    });
-  }
+    this.model.isActive = true;
 
+    console.log(this.model);
+    this.brandService.addCategory(this.model).subscribe(
+      (next) => {
+        this.alertify.success('category added successfully');
+        this.modalService.hide();
+        this.getList();
+      },
+      (error) => {
+        console.log(error);
+        this.alertify.error(error.error);
+      }
+    );
+  }
 }
