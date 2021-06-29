@@ -7,8 +7,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { BranchService } from '../_services/branch.service';
-import { TaxService } from '../_services/tax.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
@@ -293,13 +291,14 @@ export class PurchaseComponent implements OnInit {
   }
   private addNewProduct() {
     let formData = this.addPurchaseForm.value;
+
     const item = {
       partyId: formData.party.id,
       productId: formData.productData.id,
       productName: formData.productData.productName,
       branchId: formData.branch,
       batchNo: formData.batchNumber,
-      mRPDiscount: 0,
+      mRPDiscount: this.DiscountAmount + this.OtherDiscountAmount,
       expireDate: moment(formData.expireDate).format('YYYY-M-D'),
       mRP: formData.mrp,
       rate: formData.rate,
@@ -338,7 +337,7 @@ export class PurchaseComponent implements OnInit {
       productName: formData.productData.productName,
       branchId: formData.branch,
       batchNo: formData.batchNumber,
-      mRPDiscount: 0,
+      mRPDiscount: this.DiscountAmount + this.OtherDiscountAmount,
       expireDate: moment(formData.expireDate).format('YYYY-M-D'),
       mRP: formData.mrp,
       rate: formData.rate,
@@ -404,7 +403,7 @@ export class PurchaseComponent implements OnInit {
     const purchaseModel: any = {
       invoiceNo: this.MainPostObject.invoiceNo,
       partyId: this.MainPostObject.partyId,
-      taxType: this.MainPostObject.taxType,
+      // taxType: this.MainPostObject.taxType,
       purchaseDate: this.MainPostObject.purchaseDate,
       branchId: this.MainPostObject.branchId,
       status: 'Unpaid',
@@ -415,6 +414,10 @@ export class PurchaseComponent implements OnInit {
       netAmount: finalComponent.finalGrandTotalAmount,
       description: null,
     };
+    this.products.forEach((p, i) => {
+      delete this.products[i].partyData;
+      delete this.products[i].productData;
+    });
 
     if (this.orderId === undefined) {
       purchaseModel.PurchaseOrderItems = this.products;
